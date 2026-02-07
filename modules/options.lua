@@ -1546,7 +1546,7 @@ addon.options.args["Credits"] = {
     contactStep1 = {
       type = 'description',
       order = 52,
-      name = "1. GitHub: |cff22FF80https://github.com/dandruff/xCT|r\n\n2. Send a PM to |cffFF8000Dandruff|r at |cff6495EDhttp://tukui.org/|r",
+      name = "Original: |cff22FF80https://github.com/Witnesscm/xCT_Classic|r\n\nTBC Fork by |cffFF8000paradosi@Dreamscythe US|r",
     }
   }
 }

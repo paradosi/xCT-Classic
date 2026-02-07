@@ -1,8 +1,10 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Script  file="compat.lua"/>
   <Include file="libs\include.xml"/>
   <Script  file="init.lua"/>
   <Include file="locales\include.xml"/>
   <Include file="config\include.xml"/>
   <Include file="media\include.xml"/>
   <Include file="modules\include.xml"/>
+  <Script  file="core.lua"/>
 </Ui>
