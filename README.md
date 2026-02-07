@@ -1,27 +1,39 @@
-# xCT+ (Classic)
-xCT+ for Mists of Pandaria Classic (5.5.0) , WotLK Classic (3.4.4) and Classic Era (1.15.7) 
+# xCT+ TBC Classic
 
+A floating combat text addon for **TBC Classic (2.5.4)** - the 2026 Anniversary Edition.
 
-Fork from https://github.com/dandruff/xCT
+xCT+ enhances the default floating combat text with highly customizable frames for damage, healing, loot, and more. Position frames anywhere, customize fonts, colors, icons, and filter out the spam you don't want to see.
 
-## Install & Auto-update via WowUp
+## Features
 
-1. Downlaod and install `WowUp with Curseforge` or `WowUp with Wago` from [WowUp.io](https://wowup.io/).
-2. Click 'Get Addons' -> 'Install from URL'.
-3. Input current page URL and click 'Import' Button, then click 'Install' button to install.
+- **Customizable Frames** - Separate frames for outgoing damage, crits, incoming damage, healing, loot, class power, and procs
+- **Spam Merger** - Combine rapid hits from the same spell into single messages
+- **Spell School Colors** - Color-code damage by school (fire, frost, shadow, etc.)
+- **Icon Support** - Show spell icons alongside combat text
+- **Filters** - Hide specific spells, buffs, debuffs, or items you don't care about
+- **Abbreviation** - Shorten large numbers (1.5k, 2.3M)
+- **Profiles** - Save and switch between different configurations
 
-## Manually Install
+## Installation
 
-1. Download the latest zip from [GitHub Release](https://github.com/Witnesscm/xCT_Classic/releases).
-2. Unzip to the corresponding game version AddOns folder.
+### Manual Install
+1. Download the latest release from [GitHub Releases](https://github.com/paradosi/xCT_TBC_Classic/releases)
+2. Extract the `xCT+` folder to your `World of Warcraft/_anniversary_/Interface/AddOns/` directory
+3. Restart WoW or type `/reload`
 
-## 使用 WowUp 安装并自动更新
+### CurseForge
+Search for "xCT+ TBC Classic" on CurseForge or install via your addon manager.
 
-1. 从 [WowUp.io](https://wowup.io/) 下载并安装 `WowUp with Curseforge` 或 `WowUp with Wago`
-2. 点击 '获取插件' -> '从 URL 安装'
-2. 输入当前页面 URL 并点击 '导入' 按钮，最后点击 '安装' 按钮
+## Usage
 
-## 手动安装
+Type `/xct` to open the configuration panel.
 
-1. 从 [GitHub Release](https://github.com/Witnesscm/xCT_Classic/releases) 下载最新版本插件zip压缩包
-2. 解压到对应游戏版本插件目录
+## Credits
+
+- **Original Author:** Dandruff-Stormreaver US
+- **Classic Port:** [Witnesscm/xCT_Classic](https://github.com/Witnesscm/xCT_Classic)
+- **TBC Fork:** paradosi@Dreamscythe US
+
+## License
+
+This addon is released under the same license as the original xCT+.
