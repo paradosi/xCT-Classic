@@ -36,4 +36,4 @@ Type `/xct` to open the configuration panel.
 
 ## License
 
-This addon is released under the same license as the original xCT+.
+This project is licensed under the [MIT License](LICENSE).
