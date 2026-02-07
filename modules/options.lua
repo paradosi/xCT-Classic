@@ -1546,7 +1546,7 @@ addon.options.args["Credits"] = {
     contactStep1 = {
       type = 'description',
       order = 52,
-      name = "Original: |cff22FF80https://github.com/Witnesscm/xCT_Classic|r\n\nTBC Fork by |cffFF8000paradosi@Dreamscythe US|r",
+      name = "TBC Fork: |cff22FF80https://github.com/paradosi/xCT_Plus_TBC|r\n\nOriginal: |cff22FF80https://github.com/Witnesscm/xCT_Classic|r\n\nMaintained by |cffFF8000paradosi@Dreamscythe US|r",
     }
   }
 }
