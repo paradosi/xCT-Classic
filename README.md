@@ -1,5 +1,7 @@
 # xCT+ TBC Classic
 
+![xCT+ Logo](logo.png)
+
 A floating combat text addon for **TBC Classic (2.5.4)** - the 2026 Anniversary Edition.
 
 xCT+ enhances the default floating combat text with highly customizable frames for damage, healing, loot, and more. Position frames anywhere, customize fonts, colors, icons, and filter out the spam you don't want to see.
