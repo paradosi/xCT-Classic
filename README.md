@@ -2,7 +2,7 @@
 
 ![xCT+ Logo](logo.png)
 
-Highly customizable floating combat text for **TBC Classic (2.5.4)** - 2026 Anniversary Edition.
+Highly customizable floating combat text for **TBC Classic (2.5.5)** - 2026 Anniversary Edition.
 
 ## Features
 
@@ -33,7 +33,7 @@ Type `/xct` to open the configuration panel.
 This is a **TBC Classic port** of [xCT_Classic](https://github.com/Witnesscm/xCT_Classic) by Witnesscm.
 
 **Changes from the original:**
-- Updated interface version for TBC Classic (2.5.4)
+- Updated interface version for TBC Classic (2.5.5)
 - Added API compatibility shims for TBC (C_Spell, C_Item, C_AddOns, C_CurrencyInfo)
 - Fixed LibSink channel scanning for TBC
 - Added Enum.PowerType constants for TBC
