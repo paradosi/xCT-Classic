@@ -29,9 +29,10 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: |
           curl -X POST "https://wow.curseforge.com/api/projects/1456663/upload-file" \
-            -H "X-Api-Token: $CF_API_TOKEN" \
-            -F "metadata={\"changelog\":\"See GitHub releases for changelog\",\"gameVersions\":[10272],\"releaseType\":\"release\"}" \
-            -F "file=@release/xCT+.zip"
+            -H "X-Api-Token: ${CF_API_TOKEN}" \
+            -F 'metadata={"changelog":"See GitHub releases for changelog","gameVersions":[10272],"releaseType":"release"}' \
+            -F "file=@release/xCT+.zip" \
+            --fail-with-body
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
