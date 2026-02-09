@@ -53,7 +53,7 @@ if not C_CurrencyInfo then
     end
 end
 
--- TBC Compatibility: Enum.PowerType
+-- TBC Compatibility: Enum.PowerType (TBC resources only)
 if not Enum then Enum = {} end
 if not Enum.PowerType then
     Enum.PowerType = {
@@ -62,21 +62,6 @@ if not Enum.PowerType then
         Focus = 2,
         Energy = 3,
         ComboPoints = 4,
-        Runes = 5,
-        RunicPower = 6,
-        SoulShards = 7,
-        LunarPower = 8,
-        HolyPower = 9,
-        Alternate = 10,
-        Maelstrom = 11,
-        Chi = 12,
-        Insanity = 13,
-        BurningEmbers = 14,
-        DemonicFury = 15,
-        ArcaneCharges = 16,
-        Fury = 17,
-        Pain = 18,
-        Balance = 19,
     }
 end
 

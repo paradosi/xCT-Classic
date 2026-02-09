@@ -1,18 +1,6 @@
---[[   ____    ______
-      /\  _`\ /\__  _\   __
- __  _\ \ \/\_\/_/\ \/ /_\ \___
-/\ \/'\\ \ \/_/_ \ \ \/\___  __\
-\/>  </ \ \ \L\ \ \ \ \/__/\_\_/
- /\_/\_\ \ \____/  \ \_\  \/_/
- \//\/_/  \/___/    \/_/
-
- [=====================================]
- [  Author: Dandraffbal-Stormreaver US ]
- [  xCT+ Version 4.x.x                 ]
- [  ©2020. All Rights Reserved.        ]
- [====================================]]
-
-local build = select(4, GetBuildInfo())
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License ]]
 
 local ADDON_NAME, addon = ...
 local L = addon.L
@@ -65,13 +53,6 @@ addon.options = {
       width = 'double',
     },
 
-    --[[xCT_Header = {
-      order = 10,
-      type = "header",
-      name = "Version: "..(C_AddOns.GetAddOnMetadata("xCT+", "Version") or "Unknown"),
-      width = "full",
-    },]]
-
     space1 = {
       order = 10,
       type = 'description',
@@ -94,12 +75,6 @@ addon.options = {
       get = function(info) return x.db.profile.hideConfig end,
       set = function(info, value) x.db.profile.hideConfig = value; if not value then StaticPopup_Show("XCT_PLUS_HIDE_IN_COMBAT") end end,
     },
-    --[==[RestoreDefaults = {
-      order = 3,
-      type = 'execute',
-      name = L["Restore Defaults"],
-      func = x.RestoreAllDefaults,
-    },]==]
     space2 = {
       order = 20,
       type = 'description',
@@ -372,7 +347,6 @@ local function isFrameIconDisabled(info) return isFrameItemDisabled(info) or not
 local function isFrameIconSpacerDisabled(info) return x.db.profile.frames[info[#info-2]].iconsEnabled end
 local function isFrameFontShadowDisabled(info) return isFrameItemDisabled(info) or not x.db.profile.frames[info[#info-2]].enableFontShadow end
 local function isFrameCustomColorDisabled(info) return not x.db.profile.frames[info[#info-2]].customColor end
--- This is TEMP
 local function isFrameItemEnabled(info) return x.db.profile.frames[info[#info-2]].enabledFrame end
 
 
@@ -641,32 +615,6 @@ addon.options.args["spells"] = {
           set = setColor0_1,
         },
 
-        --[[
-        spacer1 = {
-          type = "description",
-          order = 37,
-          name = "",
-          width = 'full',
-        },
-
-        mergeVehicle = {
-          order = 38,
-          type = 'toggle',
-          name = L["Merge Vehicle Abilities"],
-          desc = L["Merges all of your vehicle abilities together."],
-          get = get0_1,
-          set = set0_1,
-        },
-
-        mergeVehicleColor = {
-          order = 39,
-          type = 'color',
-          name = L["Vehicle Color"],
-          get = getColor0_1,
-          set = setColor0_1,
-        },
-        ]]
-
         listSpacer5 = {
           type = "description",
           order = 40,
@@ -731,8 +679,6 @@ addon.options.args["spells"] = {
           width = "double",
         },
 
-        --[[  TODO: Add Check all and uncheck all buttons ]]
-
         mergeListDesc = {
           type = "description",
           order = 1,
@@ -740,23 +686,10 @@ addon.options.args["spells"] = {
           name = L["Uncheck a spell if you do not want it merged. Contact me to add new spells. See |cffFFFF00Credits|r for contact info.\n\n"],
         },
 
-        --[[classes = {
-          name = L["Class Spells"],
-          type = 'group',
-          order = 2,
-          childGroups = 'select',
-          args = {
-
-          },
-        }]]
-
-
-        ["DEATHKNIGHT"] = { type = 'group', order = 1,  name = L["|cffC41F3BDeath Knight|r"] },
-        --["DEMONHUNTER"] = { type = 'group', order = 2,  name = L["|cffA330C9Demon Hunter|r"] },
-        ["DRUID"]       = { type = 'group', order = 2,  name = L["|cffFF7D0ADruid|r"] },
+        -- Death Knight, Demon Hunter, Monk removed - not in TBC
+        ["DRUID"]       = { type = 'group', order = 1,  name = L["|cffFF7D0ADruid|r"] },
         ["HUNTER"]      = { type = 'group', order = 3,  name = L["|cffABD473Hunter|r"] },
         ["MAGE"]        = { type = 'group', order = 4,  name = L["|cff69CCF0Mage|r"] },
-        --["MONK"]        = { type = 'group', order = 6,  name = L["|cff00FF96Monk|r"] },
         ["PALADIN"]     = { type = 'group', order = 5,  name = L["|cffF58CBAPaladin|r"] },
         ["PRIEST"]      = { type = 'group', order = 6,  name = L["|cffFFFFFFPriest|r"] },
         ["ROGUE"]       = { type = 'group', order = 7,  name = L["|cffFFF569Rogue|r"] },
@@ -817,13 +750,6 @@ addon.options.args["spellFilter"] = {
   type = "group",
   order = 3,
   args = {
-    --[[filterSpacer1 = {
-      type = 'description',
-      order = 1,
-      fontSize = "medium",
-      name = "",
-    },]]
-
     filterValues = {
       name = L["Minimal Value Thresholds"],
       type = 'group',
@@ -1286,7 +1212,7 @@ addon.options.args["spellFilter"] = {
           order = 1,
           type = 'toggle',
           name = L["Whitelist"],
-          desc = L["Temp Description"],
+          desc = L["When enabled, only spells in the list below will be shown. All other incoming damage will be hidden."],
           set = set0_1,
           get = get0_1,
           width = "full",
@@ -1337,7 +1263,7 @@ addon.options.args["spellFilter"] = {
           order = 1,
           type = 'toggle',
           name = L["Whitelist"],
-          desc = L["Temp Description"],
+          desc = L["When enabled, only spells in the list below will be shown. All other incoming healing will be hidden."],
           set = set0_1,
           get = get0_1,
           width = "full",
@@ -3347,7 +3273,7 @@ addon.options.args["Frames"] = {
               order = 24,
               type = 'toggle',
               name = L["Show Vehicle Damage"],
-              desc = L["Show damage that your vehicle does. This can be anything from a vehicle you are controlling to Hati, the beast mastery pet."],
+              desc = L["Show damage that your vehicle does."],
               get = get2,
               set = set2,
             },
@@ -3426,7 +3352,7 @@ addon.options.args["Frames"] = {
               order = 45,
               type = 'input',
               name = L["Overhealing Prefix"],
-              desc = L["Prefix this value to the beginning when displaying an overheal amount.\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              desc = L["Text placed before the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: (O:\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
               get = getTextIn2,
               set = setTextIn2,
               disabled = function(info)
@@ -3439,7 +3365,7 @@ addon.options.args["Frames"] = {
               order = 46,
               type = 'input',
               name = L["Overhealing Postfix"],
-              desc = L["Prefix this value to the endind when displaying an overheal amount.\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              desc = L["Text placed after the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: )\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
               get = getTextIn2,
               set = setTextIn2,
               disabled = function(info)
@@ -3657,6 +3583,35 @@ addon.options.args["Frames"] = {
               get = get2,
               set = set2_update,
               disabled = isFrameFadingDisabled,
+            },
+
+            stickyCrits = {
+              type = 'description',
+              order = 40,
+              name = L["\n|cff798BDDSticky Crits|r:"],
+              fontSize = 'large',
+            },
+            enableStickyMode = {
+              order = 41,
+              type = 'toggle',
+              name = L["Enable Sticky Crits"],
+              desc = L["Keep critical hits visible on screen longer than normal messages for extra emphasis."],
+              get = get2,
+              set = set2_update,
+              disabled = isFrameItemDisabled,
+            },
+            stickyDuration = {
+              order = 42,
+              name = L["Extra Duration"],
+              desc = L["Additional seconds to keep critical hits on screen beyond the normal visibility time. |cffFFFF00(Default: |cff798BDD3|r)|r\n\n|cffFF0000Requires:|r |cff798BDDEnable Sticky Crits|r"],
+              type = 'range',
+              min = 1, max = 10, step = 1,
+              get = get2,
+              set = set2_update,
+              disabled = function(info)
+                return not x.db.profile.frames.critical.enabledFrame or
+                  not x.db.profile.frames.critical.enableStickyMode
+              end,
             },
           },
         },
@@ -5570,8 +5525,58 @@ addon.options.args["Frames"] = {
               get = get2,
               set = set2,
             },
-            hideAbsorbedHeals = {
+            enableOverHealSubtraction = {
               order = 5,
+              type = 'toggle',
+              name = L["Subtract Overhealing"],
+              desc = L["Subtract the overhealed amount from the Total Amount.\n\n|cffFF0000Requires:|r |cff798BDDShow Overheals|r"],
+              get = get2,
+              set = set2,
+              disabled = function(info)
+                return not x.db.profile.frames.healing.enabledFrame or
+                  not x.db.profile.frames.healing.enableOverHeal
+              end,
+            },
+            enableOverHealFormat = {
+              order = 6,
+              type = 'toggle',
+              name = L["Format Overhealing"],
+              desc = L["Splits overhealing into its own section. Example: +43,000 (O: 12,000)\n\n|cffFF0000Requires:|r |cff798BDDShow Overheals|r"],
+              get = get2,
+              set = set2,
+              disabled = function(info)
+                return not x.db.profile.frames.healing.enabledFrame or
+                  not x.db.profile.frames.healing.enableOverHeal
+              end,
+            },
+            overhealingPrefix = {
+              order = 7,
+              type = 'input',
+              name = L["Overhealing Prefix"],
+              desc = L["Text placed before the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: (O:\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              get = getTextIn2,
+              set = setTextIn2,
+              disabled = function(info)
+                return not x.db.profile.frames.healing.enabledFrame or
+                  not x.db.profile.frames.healing.enableOverHeal or
+                  not x.db.profile.frames.healing.enableOverHealFormat
+              end,
+            },
+            overhealingPostfix = {
+              order = 8,
+              type = 'input',
+              name = L["Overhealing Postfix"],
+              desc = L["Text placed after the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: )\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              get = getTextIn2,
+              set = setTextIn2,
+              disabled = function(info)
+                return not x.db.profile.frames.healing.enabledFrame or
+                  not x.db.profile.frames.healing.enableOverHeal or
+                  not x.db.profile.frames.healing.enableOverHealFormat
+              end,
+            },
+            hideAbsorbedHeals = {
+              order = 10,
               type = 'toggle',
               name = L["Hide Absorbed Heals"],
               desc = L["If enabled, subtract any healing that was absorbed by a |cffFF0000debuff|r from the total."],
@@ -5579,7 +5584,7 @@ addon.options.args["Frames"] = {
               set = set2,
             },
             enableSelfAbsorbs = {
-              order = 6,
+              order = 11,
               type = 'toggle',
               name = L["Show Absorbs"],
               desc = L["Shows absorbs you gain from other players."],
@@ -5587,7 +5592,7 @@ addon.options.args["Frames"] = {
               set = set2,
             },
             showOnlyMyHeals = {
-              order = 7,
+              order = 12,
               type = 'toggle',
               name = L["Show My Heals Only"],
               desc = L["Shows only the player's healing done to himself or herself."],
@@ -5595,7 +5600,7 @@ addon.options.args["Frames"] = {
               set = set2,
             },
             showOnlyPetHeals = {
-              order = 7,
+              order = 13,
               type = 'toggle',
               name = L["Show Pet Heals Too"],
               desc = L["Will also attempt to show the player pet's healing."],
@@ -5605,236 +5610,6 @@ addon.options.args["Frames"] = {
             },
           },
         },
-      },
-    },
-
-    class = {
-      name = L["|cff808080Class Combo Points (Disabled)|r"],
-      type = 'group',
-      order = 16,
-      childGroups = 'tab',
-      disabled = true,
-
-      -- TODO: Still need to implement this
-      hidden = true,
-
-      args = {
-        frameSettings = {
-          order = 10,
-          type = 'group',
-          name = L["Frame"],
-          args = {
-            frameSettings = {
-              type = 'description',
-              order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
-              fontSize = 'large',
-            },
-            enabledFrame = {
-              order = 1,
-              type = 'toggle',
-              name = L["Enable"],
-              width = 'half',
-              get = get2,
-              set = set2_update,
-            },
-            secondaryFrame = {
-              type = 'description',
-              order = 2,
-              name = L["\n|cffFF0000Secondary Frame Not Available|r - |cffFFFFFFThis frame cannot output to another frame when it is disabled.\n\n"],
-              width = "double",
-            },
-            alpha = {
-              order = 4,
-              name = L["Frame Alpha"],
-              desc = L["Sets the alpha of the frame."],
-              type = 'range',
-              min = 0, max = 100, step = 1,
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },
-
-            --[[frameScrolling = {
-              type = 'description',
-              order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
-              fontSize = 'large',
-            },
-            enableScrollable = {
-              order = 11,
-              type = 'toggle',
-              name = L["Enabled"],
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },
-            scrollableLines = {
-              order = 12,
-              name = L["Number of Lines"],
-              type = 'range',
-              min = 10, max = 60, step = 1,
-              get = get2,
-              set = set2_update,
-              disabled = isFrameNotScrollable,
-            },
-            scrollableInCombat = {
-              order = 13,
-              type = 'toggle',
-              name = L["Disable in Combat"],
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },]]
-          },
-        },
-
-        fonts = {
-          order = 20,
-          type = 'group',
-          name = L["Font"],
-          args = {
-            fontSettings = {
-              type = 'description',
-              order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
-              fontSize = 'large',
-            },
-            font = {
-              type = 'select', dialogControl = 'LSM30_Font',
-              order = 1,
-              name = L["Font"],
-              desc = L["Set the font of the frame."],
-              values = AceGUIWidgetLSMlists.font,
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },
-            fontSize = {
-              order = 2,
-              name = L["Font Size"],
-              desc = L["Set the font size of the frame."],
-              type = 'range',
-              min = 6, max = 64, step = 1,
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },
-            fontOutline = {
-              type = 'select',
-              order = 3,
-              name = L["Font Outline"],
-              desc = L["Set the font outline."],
-              values = {
-                ['1NONE'] = L["None"],
-                ['2OUTLINE'] = L['OUTLINE'],
-                -- BUG: Setting font to monochrome AND above size 16 will crash WoW
-                -- http://us.battle.net/wow/en/forum/topic/6470967362
-                ['3MONOCHROME'] = L['MONOCHROME'],
-                ['4MONOCHROMEOUTLINE'] = L['MONOCHROMEOUTLINE'],
-                ['5THICKOUTLINE'] = L['THICKOUTLINE'],
-              },
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },
-
-            fontShadowSettings = {
-              type = 'description',
-              order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
-              fontSize = 'large',
-            },
-
-            enableFontShadow = {
-              order = 11,
-              type = 'toggle',
-              name = L["Enable Font Shadow"],
-              desc = L["Shows a shadow behind the combat text fonts."],
-              get = get2,
-              set = set2_update,
-              disabled = isFrameItemDisabled,
-            },
-
-            fontShadowColor = {
-              order = 12,
-              type = 'color',
-              hasAlpha = true,
-              name = L["Font Shadow Color"],
-              get = getColor2,
-              set = setColor2_alpha,
-              disabled = isFrameFontShadowDisabled,
-            },
-
-            fontShadowOffsetX = {
-              order = 13,
-              name = L["Horizonal Offset"],
-              type = 'range',
-              min = -10, max = 10, step = 1,
-              get = get2,
-              set = set2_update,
-              disabled = isFrameFontShadowDisabled,
-            },
-
-            fontShadowOffsetY = {
-              order = 14,
-              name = L["Vertical Offset"],
-              type = 'range',
-              min = -10, max = 10, step = 1,
-              get = get2,
-              set = set2_update,
-              disabled = isFrameFontShadowDisabled,
-            },
-          },
-        },
-
-        fontColors = {
-          order = 40,
-          type = 'group',
-          name = L["Colors"],
-          args = {
-            customColors_label = {
-              type = 'description',
-              order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
-              fontSize = 'large',
-            },
-
-            customColors_OverrideDesc = {
-              type = 'description',
-              order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
-              fontSize = 'small',
-            },
-
-            customColor = {
-              order = 2,
-              type = 'toggle',
-              name = L["All Text One Color (Override Color Settings)"],
-              width = 'double',
-              desc = L["Change all the text in this frame to a specific color."],
-              get = get2,
-              set = set2,
-            },
-
-            fontColor = {
-              order = 3,
-              type = 'color',
-              name = L["Color"],
-              get = getColor2,
-              set = setColor2,
-              hidden = isFrameCustomColorDisabled,
-            },
-
-            customColors_Desc = {
-              type = 'description',
-              order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
-              fontSize = 'small',
-            },
-          },
-        },
-
       },
     },
 
@@ -6235,123 +6010,12 @@ addon.options.args["Frames"] = {
             disableResource_ENERGY = {
               order = 103,
               type = 'toggle',
-              name = L["Disable |cff798BDD"]..ENERGY,
+              name = L["Disable |cff798BDD"]..(ENERGY or "Energy"),
               get = get2,
               set = set2,
               width = "normal",
             },
-
-            disableResource_RUNES = {
-              order = 104,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..RUNES,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_RUNIC_POWER = {
-              order = 105,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..RUNIC_POWER,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_SOUL_SHARDS = {
-              order = 106,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..SOUL_SHARDS,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_LUNAR_POWER = {
-              order = 107,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..LUNAR_POWER,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-
-
-
-
-            disableResource_CHI = {
-              order = 108,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..CHI,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_HOLY_POWER = {
-              order = 109,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..HOLY_POWER,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_INSANITY_POWER = {
-              order = 110,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..INSANITY,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_MAELSTROM_POWER = { -- Add in Maelstrom to resources
-              order = 111,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..MAELSTROM_POWER,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-
-            disableResource_ARCANE_CHARGES = {
-              order = 112,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..ARCANE_CHARGES_POWER,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_FURY = {
-              order = 113,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..FURY,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_PAIN = {
-              order = 114,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..PAIN,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_BALANCE_positive = {
-              order = 115,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..BALANCE_POSITIVE_ENERGY,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-            disableResource_BALANCE_negative = {
-              order = 116,
-              type = 'toggle',
-              name = L["Disable |cff798BDD"]..BALANCE_NEGATIVE_ENERGY,
-              get = get2,
-              set = set2,
-              width = "normal",
-            },
-
-
+            -- Non-TBC resources removed (Runes, Runic Power, Chi, Holy Power, etc.)
           },
         },
       },
@@ -7054,12 +6718,6 @@ addon.options.args["Frames"] = {
               hidden = isFrameCustomColorDisabled,
             },
 
-            --[[customColors_Desc = {
-              type = 'description',
-              order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
-              fontSize = 'small',
-            },]]
           },
         },
 
@@ -7152,14 +6810,12 @@ addon.options.args["Frames"] = {
               name = L["Filter Item Quality"],
               desc = L["Will not display any items that are below this quality (does not filter Quest or Crafted items)."],
               values = {
-                [0] = '1. |cff9d9d9d'..ITEM_QUALITY0_DESC..'|r',   -- Poor
-                [1] = '2. |cffffffff'..ITEM_QUALITY1_DESC..'|r',   -- Common
-                [2] = '3. |cff1eff00'..ITEM_QUALITY2_DESC..'|r',   -- Uncommon
-                [3] = '4. |cff0070dd'..ITEM_QUALITY3_DESC..'|r',   -- Rare
-                [4] = '5. |cffa335ee'..ITEM_QUALITY4_DESC..'|r',   -- Epic
-                [5] = '6. |cffff8000'..ITEM_QUALITY5_DESC..'|r',   -- Legendary
-                [6] = '7. |cffe6cc80'..ITEM_QUALITY6_DESC..'|r',   -- Artifact
-                [7] = '8. |cffe6cc80'..ITEM_QUALITY7_DESC..'|r',   -- Heirloom
+                [0] = '1. |cff9d9d9d'..(ITEM_QUALITY0_DESC or "Poor")..'|r',   -- Poor
+                [1] = '2. |cffffffff'..(ITEM_QUALITY1_DESC or "Common")..'|r',   -- Common
+                [2] = '3. |cff1eff00'..(ITEM_QUALITY2_DESC or "Uncommon")..'|r',   -- Uncommon
+                [3] = '4. |cff0070dd'..(ITEM_QUALITY3_DESC or "Rare")..'|r',   -- Rare
+                [4] = '5. |cffa335ee'..(ITEM_QUALITY4_DESC or "Epic")..'|r',   -- Epic
+                [5] = '6. |cffff8000'..(ITEM_QUALITY5_DESC or "Legendary")..'|r',   -- Legendary
               },
               get = get2,
               set = set2,

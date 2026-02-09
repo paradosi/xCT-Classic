@@ -1,23 +1,7 @@
---[[   ____    ______
-      /\  _`\ /\__  _\   __
- __  _\ \ \/\_\/_/\ \/ /_\ \___
-/\ \/'\\ \ \/_/_ \ \ \/\___  __\
-\/>  </ \ \ \L\ \ \ \ \/__/\_\_/
- /\_/\_\ \ \____/  \ \_\  \/_/
- \//\/_/  \/___/    \/_/
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License ]]
 
- [=====================================]
- [  Author: Dandraffbal-Stormreaver US ]
- [  xCT+ Version 4.x.x                 ]
- [  ©2020. All Rights Reserved.        ]
- [====================================]]
-
--- Dont do anything for Legion
---local build = select(4, GetBuildInfo())
---if build >= 70000 then return end
-
-
--- TODO: Fix this up
 
 local ADDON_NAME, addon = ...
 local x = addon.engine

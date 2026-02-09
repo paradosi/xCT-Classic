@@ -1,26 +1,12 @@
---[[   ____    ______
-      /\  _`\ /\__  _\   __
- __  _\ \ \/\_\/_/\ \/ /_\ \___
-/\ \/'\\ \ \/_/_ \ \ \/\___  __\
-\/>  </ \ \ \L\ \ \ \ \/__/\_\_/
- /\_/\_\ \ \____/  \ \_\  \/_/
- \//\/_/  \/___/    \/_/
-
- [=====================================]
- [  Author: Dandraffbal-Stormreaver US ]
- [  xCT+ Version 4.x.x                 ]
- [  ©2020. All Rights Reserved.        ]
- [====================================]]
-
--- Dont do anything for Legion
-local build = select(4, GetBuildInfo())
-
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License ]]
 
 -- Get Addon's name and Blizzard's Addon Stub
 local AddonName, addon = ...
 local L = addon.L
-local sgsub, ipairs, pairs, type, string_format, table_insert, table_remove, table_sort, print, tostring, tonumber, select, string_lower, collectgarbage, string_match, string_find =
-  string.gsub, ipairs, pairs, type, string.format, table.insert, table.remove, table.sort, print, tostring, tonumber, select, string.lower, collectgarbage, string.match, string.find
+local ipairs, pairs, type, string_format, table_insert, table_remove, table_sort, print, tostring, tonumber, select, string_lower, collectgarbage, string_match, string_find =
+  ipairs, pairs, type, string.format, table.insert, table.remove, table.sort, print, tostring, tonumber, select, string.lower, collectgarbage, string.match, string.find
 
 -- compares a tables values
 local function tableCompare(t1, t2)
@@ -50,7 +36,7 @@ local x = addon.engine
 -- Profile Updated, need to refresh important stuff
 local function RefreshConfig()
   -- Clean up the Profile
-  x:CompatibilityLogic(true)
+  x:CompatibilityLogic()
 
   x:UpdateFrames()
   x:UpdateSpamSpells()
@@ -68,7 +54,7 @@ end
 
 local function ProfileReset()
   -- Clean up the Profile
-  x:CompatibilityLogic(false)
+  x:CompatibilityLogic()
 
   x:UpdateFrames()
   x:UpdateSpamSpells()
@@ -77,23 +63,12 @@ local function ProfileReset()
   collectgarbage()
 end
 
-local function CheckExistingProfile()
-  local key = UnitName("player").." - "..GetRealmName()
-  return xCTSavedDB
-     and xCTSavedDB.profileKeys
-     and xCTSavedDB.profileKeys[key]
-     and xCTSavedDB.profiles[xCTSavedDB.profileKeys[key]]
-end
-
 -- Handle Addon Initialized
 function x:OnInitialize()
   if xCT or ct and ct.myname and ct.myclass then
     print(L["|cffFF0000WARNING:|r xCT+ cannot load. Please disable xCT in order to use xCT+."])
     return
   end
-
-  -- Check for new installs
-  self.existingProfile = CheckExistingProfile()
 
   -- Clean Up Colors in the DB
   addon.LoadDefaultColors()
@@ -110,7 +85,7 @@ function x:OnInitialize()
   self.db.RegisterCallback(self, 'OnProfileReset', ProfileReset)
 
   -- Clean up the Profile
-  local success = x:CompatibilityLogic(self.existingProfile)
+  local success = x:CompatibilityLogic()
   if not success then
     x:UpdateCombatTextEvents(false)
     return
@@ -136,7 +111,7 @@ function x:OnInitialize()
 
   -- Everything got Initialized, show Startup Text
   if self.db.profile.showStartupText then
-    print(L["Loaded |cffFF0000x|r|cffFFFF00CT|r|cffFF0000+|r. To configure, type: |cffFF0000/xct|r"])
+    print(L["|cff47E10CxCT+|r TBC Classic by paradosi@Dreamscythe has loaded. To configure, type: |cff47E10C/xct|r"])
   end
 end
 
@@ -147,148 +122,18 @@ frameUpdate:SetScript("OnEvent", function(self)
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
   x:UpdateFrames()
   x.cvar_update()
-  --x.UpdateBlizzardOptions()
 end)
 
--- Version Compare Helpers... Yeah!
-local function VersionToTable( version )
-  local major, minor, iteration, releaseMsg = string_match(string_lower(version), "(%d+)%.(%d+)%.(%d+)(.*)")
-  major, minor, iteration = tonumber(major) or 0, tonumber(minor) or 0, tonumber(iteration) or 0
-  local isAlpha, isBeta =  string_find(releaseMsg, "alpha") and true or false, string_find(releaseMsg, "beta") and true or false
-  local t = { }
-  t.major = major
-  t.minor = minor
-  t.iteration = iteration
-  t.isAlpha = isAlpha
-  t.isBeta = isBeta
-  t.isRelease = not (isAlpha or isBeta)
-
-  if not t.isReleased then
-    t.devBuild = tonumber(string_match(releaseMsg, "(%d+)")) or 1
-  end
-  return t
-end
-
-local function CompareVersions( a, b, debug )
-
-  if debug then
-  	print('First Build:')
-    for i,v in pairs(a) do
-      print('    '..i..' = '..tostring(v))
-    end
-    print('Second Build:')
-    for i,v in pairs(b) do
-      print('    '..i..' = '..tostring(v))
-    end
-  end
-
-  -- Compare Major numbers
-  if a.major > b.major then
-    return 1
-  elseif a.major < b.major then
-    return -1
-  end
-
-  -- Compare Minor numbers
-  if a.minor > b.minor then
-    return 1
-  elseif a.minor < b.minor then
-    return -1
-  end
-
-  -- Compare Iteration numbers
-  if a.iteration > b.iteration then
-    return 1
-  elseif a.iteration < b.iteration then
-    return -1
-  end
-
-  -- Compare Beta to Release then Alpha
-  if not a.isBeta and b.isBeta then
-    if a.isAlpha then
-      return -1
-    else
-      return 1
-    end
-  elseif a.isBeta and not b.isBeta then
-    if b.isAlpha then
-      return 1
-    else
-      return -1
-    end
-  end
-
-  -- Compare Beta Build Versions
-  if a.isBeta and b.isBeta then
-    if a.devBuild > b.devBuild then
-      return 1
-    elseif a.devBuild < b.devBuild then
-      return -1
-    end
-    return 0
-  end
-
-  -- Compare Alpha to Release
-  if not a.isAlpha and b.isAlpha then
-    return 1
-  elseif a.isAlpha and not b.isAlpha then
-    return -1
-  end
-
-  -- Compare Alpha Build Versions
-  if a.isAlpha and b.isAlpha then
-    if a.devBuild > b.devBuild then
-      return 1
-    elseif a.devBuild < b.devBuild then
-      return -1
-    end
-    return 0
-  end
-
-  return 0
-end
-
-do
-  local cleanUpShown = false
-  function x.MigratePrint(msg)
-    if not cleanUpShown then
-      print(L["|cffFF0000x|rCT|cffFFFF00+|r: |cffFF8000Clean Up - Migrated Settings|r"])
-      cleanUpShown = true
-    end
-    print("    "..msg)
-  end
-end
-
--- This function was created as the central location for crappy code
-function x:CompatibilityLogic( existing )
+-- Store the current addon version in the profile
+function x:CompatibilityLogic()
     local addonVersionString = C_AddOns.GetAddOnMetadata("xCT+", "Version")
     if addonVersionString and string_find(addonVersionString, "project%-version") then addonVersionString = "4.6.1" end
-    local currentVersion = VersionToTable(addonVersionString)
-    local previousVersion = VersionToTable(self.db.profile.dbVersion or "4.3.0 Beta 2")
-
-    if not currentVersion.devBuild and UnitName("player") == "Dandraffbal" then
-      currentVersion.devBuild = 1
-    end
-
-    if existing then
-    end
     self.db.profile.dbVersion = addonVersionString
-
     return true
 end
 
-function x.CleanUpForLegion()
-  local key = xCTSavedDB.profileKeys[UnitName("player").." - "..GetRealmName()]
-  xCTSavedDB.profiles[key] = {}
-  ReloadUI()
-end
-
 local CLASS_NAMES = {
-  ["DEATHKNIGHT"] = {
-    [250] = 1,   -- Blood
-    [251] = 2,   -- Frost
-    [252] = 3,   -- Unholy
-  },
+  -- Death Knight removed - not available in TBC
   ["DRUID"] = {
     [102] = 1,   -- Balance
     [103] = 2,   -- Feral
@@ -349,9 +194,7 @@ x.specName = {
    	[102] = L["Balance"],
    	[103] = L["Feral"],
    	[105] = L["Restoration"],
-   	[250] = L["Blood"],
-   	[251] = L["Frost"],
-   	[252] = L["Unholy"],
+   	-- Death Knight specs removed - not available in TBC
    	[253] = L["Beast Mastery"],
    	[254] = L["Marksmanship"],
    	[255] = L["Survival"],
@@ -456,8 +299,6 @@ function x:UpdateSpamSpells()
     for i, category in pairs(spamMergerGlobalSpellCategories) do
         local currentIndex = i * 1000
 
-        -- TODO localization for category.category?
-
         -- Create the Category Header
         global[category.category] = {
             type = "header",
@@ -470,8 +311,6 @@ function x:UpdateSpamSpells()
     local spamMergerRacialSpellOrders = {}
     for i, rcategory in pairs(spamMergerRacialSpellCategories) do
         local rcurrentIndex = i * 1000
-
-        -- TODO localization for rcategory.category?
 
         -- Create the Category Header
         racetab[rcategory.category] = {
@@ -487,14 +326,16 @@ function x:UpdateSpamSpells()
         local name = C_Spell.GetSpellName(spellID)
         if name then
             -- Create a useful description for the spell
+            local spellDesc = C_Spell.GetSpellDescription(spellID)
+            if not spellDesc or spellDesc == "" then
+                spellDesc = L["No Description"]
+            end
             local desc = string.format(
                 "%s\n\n|cffFF0000%s|r |cff798BDD%s|r",
-                C_Spell.GetSpellDescription(spellID) or L["No Description"],
+                spellDesc,
                 L["ID"],
                 spellID
             )
-
-            -- TODO C_Spell.GetSpellDescription() sometimes returns "", what to do I do then ?
 
             local firstSecondaryIdFound = true
             for originalSpellId, replaceSpellId in pairs(addon.replaceSpellId) do
@@ -510,8 +351,6 @@ function x:UpdateSpamSpells()
             if not firstSecondaryIdFound then
                 desc = desc .. "|r"
             end
-            -- TODO replacement spells without explicit merging entries are not displayed here
-
             -- Add the spell to the UI
             if CLASS_NAMES[entry.category] then
                 local index = CLASS_NAMES[entry.category][tonumber(entry.desc) or 0]
@@ -557,310 +396,7 @@ function x:UpdateSpamSpells()
     end
 end
 
-local function ItemToggleAll(info)
-  local state = (info[#info] == "disableAll")
-  for key in pairs(x.db.profile.spells.items[info[#info-1]]) do
-    x.db.profile.spells.items[info[#info-1]][key] = state
-  end
-end
-
-local function getIF_1(info) return x.db.profile.spells.items[info[#info - 1]][info[#info]] end
-local function setIF_1(info, value) x.db.profile.spells.items[info[#info - 1]][info[#info]] = value end
-local function getIF_2(info) return x.db.profile.spells.items[info[#info - 1]][info[#info - 1]] end
-local function setIF_2(info, value) x.db.profile.spells.items[info[#info - 1]][info[#info - 1]] = value end
-
--- For Legion - Reimplement legacy GetAuctionItemClasses and GetAuctionItemSubClasses
-
-
--- TODO: Figure out how to list all items in Legion
---[[if build >= 70000 then
-
-
-  function GetAuctionItemClasses()
-    local list = {}
-    for i, v in pairs(OPEN_FILTER_LIST) do
-      if v.type == "category" then
-        list[v.categoryIndex] = v.name
-      end
-    end
-    return list
-  end
-
-  function GetAuctionItemSubClasses(index)
-    local list, found = {}
-    for i, v in pairs(OPEN_FILTER_LIST) do
-      if v.type == "category" then
-        if found then break end
-        if v.categoryIndex == index then
-          found = 1
-        end
-      elseif v.type == "subCategory" then
-        if found then
-          list[v.subCategoryIndex] = v.name
-        end
-      end
-    end
-    return list
-  end
-end]]
-
-x.UpdateItemTypes = function(self)end
-
-
---[===[
-
--- Updates item filter list
-function x:UpdateItemTypes()
-  -- check to see if this is the first time we are loading this version
-  local first = false
-  if not self.db.profile.spells.items.version then
-    self.db.profile.spells.items.version = 1
-    first = true
-  end
-
-  local itemTypes = { GetAuctionItemClasses() }
-
-  local allTypes = {
-    order = 100,
-    name = "|cffFFFFFFFilter:|r |cff798BDDLoot|r",
-    type = 'group',
-    childGroups = "select",
-    args = {
-      secondaryFrame = {
-          type = 'description',
-          order = 0,
-          name = "These options allow you to bypass the loot item filter and always show a item from any category, reguardless of the quality.\n",
-        },
-    },
-  }
-
-  for i, itype in ipairs(itemTypes) do
-    local subtypes = { GetAuctionItemSubClasses(i) }
-
-    if self.db.profile.spells.items[itype] == nil then
-      self.db.profile.spells.items[itype] = { }
-    end
-
-    -- Page for the MAIN ITEM GROUP
-    local group = {
-      order = i,
-      name = itype,
-      type = 'group',
-      args = { },
-    }
-
-    -- the footer for the current MAIN ITEM GROUP
-    if #subtypes > 0 then
-      -- Separator for the TOP toggle switches, and the BOTTOM enable/disable buttons
-      group.args['enableHeader'] = {
-        order = 100,
-        type = 'header',
-        name = "",
-        width = "full",
-      }
-
-      -- Button to DISABLE all
-      group.args['disableAll'] = {
-        order = 101,
-        type = 'execute',
-        name = "|cffDDDD00Enable All|r",
-        --width = "half",
-        func = ItemToggleAll,
-      }
-
-      -- Button to ENABLE all
-      group.args['enableAll'] = {
-        order = 102,
-        type = 'execute',
-        name = "|cffDD0000Disable All|r",
-        --width = "half",
-        func = ItemToggleAll,
-      }
-    else
-      -- Quest Items... maybe others
-      if first or self.db.profile.spells.items[itype][itype] == nil then
-        self.db.profile.spells.items[itype][itype] = false
-      end
-
-      group.args[itype] = {
-        order = 1,
-        type = 'toggle',
-        name = "Enable",
-        get = getIF_2,
-        set = setIF_2,
-      }
-    end
-
-    -- add all the SUBITEMS
-    for j, subtype in ipairs(subtypes) do
-      if first or self.db.profile.spells.items[itype][subtype] == nil then
-        self.db.profile.spells.items[itype][subtype] = false
-      end
-
-      group.args[subtype] = {
-        order = j,
-        type = 'toggle',
-        name = subtype,
-        get = getIF_1, --function(info) return self.db.profile.spells.items[itype][subtype] end,
-        set = setIF_1, --function(info, value) self.db.profile.spells.items[itype][subtype] = value end,
-      }
-    end
-
-    allTypes.args[itype] = group
-  end
-
-  addon.options.args["spellFilter"].args["typeFilter"] = allTypes
-end
-
-]===]
-
-
-local function getCP_1(info) return x.db.profile.spells.combo[x.player.class][info[#info]] end
-local function setCP_1(info, value) x.db.profile.spells.combo[x.player.class][info[#info]] = value end
-
-local function getCP_2(info)
-  local spec, index = string_match(info[#info], "(%d+),(.+)")
-  local value = x.db.profile.spells.combo[x.player.class][tonumber(spec)][tonumber(index) or index]
-  if type(value) == "table" then
-    return value.enabled
-  else
-    return value
-  end
-end
-local function setCP_2(info, value)
-  local spec, index = string_match(info[#info], "(%d+),(.+)")
-
-  if value == true then
-    for key, entry in pairs(x.db.profile.spells.combo[x.player.class][tonumber(spec)]) do
-      if type(entry) == "table" then
-        entry.enabled = false
-      else
-        x.db.profile.spells.combo[x.player.class][tonumber(spec)][key] = false
-      end
-    end
-  end
-
-  if tonumber(index) then   -- it is a spell ID
-    x.db.profile.spells.combo[x.player.class][tonumber(spec)][tonumber(index)].enabled = value
-  else                      -- it is a unit's power
-    x.db.profile.spells.combo[x.player.class][tonumber(spec)][index] = value
-  end
-
-  -- Update tracker
-  x:UpdateComboTracker()
-end
-
--- Update the combo point list
-function x:UpdateComboPointOptions(force)
-  if x.LOADED_COMBO_POINTS_OPTIONS and not force then return end
-  local myClass, offset = x.player.class, 2
-
-  local comboSpells = {
-    order = 100,
-    name = "Misc",
-    type = 'group',
-    args = {
-      specialTweaks = {
-        type = 'description',
-        order = 0,
-        name = "|cff798BDDMiscellaneous Settings|r:",
-        fontSize = 'large',
-      },
-      specialTweaksDesc = {
-        type = 'description',
-        order = 1,
-        name = "|cffFFFFFF(Choose one per specialization)|r\n",
-        fontSize = 'small',
-      },
-    },
-  }
-
-  -- Add "All Specializations" Entries
-  for name in pairs(x.db.profile.spells.combo[myClass]) do
-    if not tonumber(name) then
-      if not comboSpells.args['allSpecsHeader'] then
-        comboSpells.args['allSpecsHeader'] = {
-          order = 2,
-          type = 'header',
-          name = "All Specializations",
-          width = "full",
-        }
-      end
-      comboSpells.args[name] = {
-        order = offset,
-        type = 'toggle',
-        name = name,
-        get = getCP_1,
-        set = setCP_1,
-      }
-      offset = offset + 1
-    end
-  end
-
-  -- Add the each spec
-  for spec in ipairs(x.db.profile.spells.combo[myClass]) do
-    local haveSpec = false
-    for index, entry in pairs(x.db.profile.spells.combo[myClass][spec] or { }) do
-      if not haveSpec then
-        haveSpec = true
-        local mySpecName = select(2, GetSpecializationInfo(spec)) or "Tree " .. spec
-
-        comboSpells.args["title" .. tostring(spec)] = {
-            order = offset,
-            type = 'header',
-            name = "Specialization: |cff798BDD" .. mySpecName .. "|r",
-            width = "full",
-          }
-        offset = offset + 1
-      end
-
-      if tonumber(index) then
-        -- Class Combo Points ( UNIT_AURA Tracking)
-        comboSpells.args[tostring(spec) .. "," .. tostring(index)] = {
-          order = offset,
-          type = 'toggle',
-          name = GetSpellInfo(entry.id),
-          desc = "Unit to track: |cffFF0000" .. entry.unit .. "|r\nSpell ID: |cffFF0000" .. entry.id .. "|r",
-          get = getCP_2,
-          set = setCP_2,
-        }
-      else
-        -- Special Combo Point ( Unit Power )
-        comboSpells.args[tostring(spec) .. "," .. tostring(index)] = {
-          order = offset,
-          type = 'toggle',
-          name = index,
-          desc = "Unit Power",
-          get = getCP_2,
-          set = setCP_2,
-        }
-      end
-
-      offset = offset + 1
-    end
-  end
-
-  addon.options.args["Frames"].args["class"].args["tracker"] = comboSpells
-
-  x.LOADED_COMBO_POINTS_OPTIONS = true
-
-  x:UpdateComboTracker()
-end
-
-function x:UpdateComboTracker()
-  local myClass, mySpec = x.player.class, x.player.spec
-  x.TrackingEntry = nil
-
-  if not mySpec or mySpec < 1 or mySpec > 4 then return end  -- under Level 10 return 5
-
-  for i, entry in pairs(x.db.profile.spells.combo[myClass][mySpec]) do
-    if type(entry) == "table" and entry.enabled then
-      x.TrackingEntry = entry
-    end
-  end
-
-  x:QuickClassFrameUpdate()
-end
+x.UpdateItemTypes = function() end
 
 -- Get and set methods for the spell filter
 local function getSF(info)
@@ -868,338 +404,133 @@ local function getSF(info)
 end
 local function setSF(info, value) x.db.profile.spellFilter[info[#info-2]][info[#info]] = value end
 
+-- Filter section configurations: { filterKey, dbKey, label, mode }
+-- mode: "name" = simple name toggle, "spell" = spell ID lookup, "item" = item ID lookup
+local FILTER_SECTIONS = {
+  { "buffs",   "listBuffs",   L["Filtered Buffs |cff798BDD(Uncheck to Disable)|r"],            "name" },
+  { "debuffs", "listDebuffs", L["Filtered Debuffs |cff798BDD(Uncheck to Disable)|r"],           "name" },
+  { "procs",   "listProcs",   L["Filtered Procs |cff798BDD(Uncheck to Disable)|r"],             "name" },
+  { "spells",  "listSpells",  L["Filtered Spells |cff798BDD(Uncheck to Disable)|r"],            "spell" },
+  { "items",   "listItems",   L["Filtered Items |cff798BDD(Uncheck to Disable)|r"],             "item" },
+  { "damage",  "listDamage",  L["Filtered Incoming Damage |cff798BDD(Uncheck to Disable)|r"],   "spell" },
+  { "healing", "listHealing", L["Filtered Incoming Healing |cff798BDD(Uncheck to Disable)|r"],  "spell" },
+}
+
+-- Maps db category key -> filter key for Add/RemoveFilteredSpell
+local CATEGORY_TO_FILTER = {}
+for _, section in ipairs(FILTER_SECTIONS) do
+  CATEGORY_TO_FILTER[section[2]] = section[1]
+end
+
 -- Update the Buff, Debuff and Spell filter list
 function x:UpdateAuraSpellFilter(specific)
-  local i = 10
+  for _, section in ipairs(FILTER_SECTIONS) do
+    local filterKey, dbKey, label, mode = section[1], section[2], section[3], section[4]
 
-  if not specific or specific == "buffs" then
-    -- Redo all the list
-    addon.options.args.spellFilter.args.listBuffs.args.list = {
-      name = L["Filtered Buffs |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
-
-    local buffs = addon.options.args.spellFilter.args.listBuffs.args.list.args
-    local updated = false
-
-    -- Update buffs
-    for name in pairs(x.db.profile.spellFilter.listBuffs) do
-      updated = true
-      buffs[name] = {
-        order = i,
-        name = name,
-        type = 'toggle',
-        get = getSF,
-        set = setSF,
+    if not specific or specific == filterKey then
+      addon.options.args.spellFilter.args[dbKey].args.list = {
+        name = label,
+        type = 'group',
+        guiInline = true,
+        order = 11,
+        args = { },
       }
-    end
 
-    if not updated then
-      buffs["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
-  end
+      local entries = addon.options.args.spellFilter.args[dbKey].args.list.args
+      local dbList = x.db.profile.spellFilter[dbKey]
+      local updated = false
+      local order = 10
 
-  -- Update debuffs
-  if not specific or specific == "debuffs" then
-    i = 10
-    addon.options.args.spellFilter.args.listDebuffs.args.list = {
-      name = L["Filtered Debuffs |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
+      for id in pairs(dbList) do
+        if mode == "name" then
+          updated = true
+          entries[id] = {
+            order = order,
+            name = id,
+            type = 'toggle',
+            get = getSF,
+            set = setSF,
+          }
+        elseif mode == "spell" then
+          local spellID = tonumber(string_match(id, "%d+"))
+          local spellName = GetSpellInfo(spellID or id)
+          if spellName then
+            updated = true
+            entries[id] = {
+              order = order,
+              name = spellName,
+              desc = "|cffFF0000ID|r |cff798BDD" .. id .. "|r\n",
+              type = 'toggle',
+              get = getSF,
+              set = setSF,
+            }
+          else
+            dbList[id] = nil
+          end
+        elseif mode == "item" then
+          local itemID = tonumber(string_match(id, "%d+"))
+          local itemName, _, _, _, _, _, _, _, _, texture = C_Item.GetItemInfo(itemID or id)
+          updated = true
+          entries[id] = {
+            order = order,
+            name = string_format("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s", texture or x.BLANK_ICON, 16, 16, itemName or "Unknown Item"),
+            desc = "|cffFF0000ID|r |cff798BDD" .. id .. "|r\n",
+            type = 'toggle',
+            get = getSF,
+            set = setSF,
+          }
+        end
+        order = order + 1
+      end
 
-    local debuffs = addon.options.args.spellFilter.args.listDebuffs.args.list.args
-    local updated = false
-
-    for name in pairs(x.db.profile.spellFilter.listDebuffs) do
-      updated = true
-      debuffs[name] = {
-        order = i,
-        name = name,
-        type = 'toggle',
-        get = getSF,
-        set = setSF,
-      }
-    end
-
-    if not updated then
-      debuffs["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
-  end
-
-
-  -- Update procs
-  if not specific or specific == "procs" then
-    i = 10
-    addon.options.args.spellFilter.args.listProcs.args.list = {
-      name = L["Filtered Procs |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
-
-    local procs = addon.options.args.spellFilter.args.listProcs.args.list.args
-    local updated = false
-
-    for name in pairs(x.db.profile.spellFilter.listProcs) do
-      updated = true
-      procs[name] = {
-        order = i,
-        name = name,
-        type = 'toggle',
-        get = getSF,
-        set = setSF,
-      }
-    end
-
-    if not updated then
-      procs["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
-  end
-
-  -- Update spells
-  if not specific or specific == "spells" then
-    i = 10
-    addon.options.args.spellFilter.args.listSpells.args.list = {
-      name = L["Filtered Spells |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
-
-    local spells = addon.options.args.spellFilter.args.listSpells.args.list.args
-    local updated = false
-
-    for id in pairs(x.db.profile.spellFilter.listSpells) do
-      local spellID = tonumber(string_match(id, "%d+"))
-      local spellName = GetSpellInfo(spellID)
-      if spellName then
-        updated = true
-        spells[id] = {
-          order = i,
-          name = spellName,
-          desc = "|cffFF0000ID|r |cff798BDD" .. id .. "|r\n",
-          type = 'toggle',
-          get = getSF,
-          set = setSF,
+      if not updated then
+        entries["noSpells"] = {
+          order = 1,
+          name = L["No items have been added to this list yet."],
+          type = 'description',
         }
-      else
-        x.db.profile.spellFilter.listSpells[id] = nil
       end
     end
-
-    if not updated then
-      spells["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
   end
-
-  -- Update spells
-  if not specific or specific == "items" then
-    i = 10
-    addon.options.args.spellFilter.args.listItems.args.list = {
-      name = L["Filtered Items |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
-
-    local spells = addon.options.args.spellFilter.args.listItems.args.list.args
-    local updated = false
-
-    for id in pairs(x.db.profile.spellFilter.listItems) do
-      local spellID = tonumber(string_match(id, "%d+"))
-      local name, _, _, _, _, _, _, _, _, texture = C_Item.GetItemInfo(spellID or id)
-      name = name or "Unknown Item"
-      updated = true
-      spells[id] = {
-        order = i,
-        name = string_format("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s", texture or x.BLANK_ICON, 16, 16, name),
-        desc = "|cffFF0000ID|r |cff798BDD" .. id .. "|r\n",
-        type = 'toggle',
-        get = getSF,
-        set = setSF,
-      }
-    end
-
-    if not updated then
-      spells["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
-  end
-
-  if not specific or specific == "damage" then
-    i = 10
-    addon.options.args.spellFilter.args.listDamage.args.list = {
-      name = L["Filtered Incoming Damage |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
-
-    local spells = addon.options.args.spellFilter.args.listDamage.args.list.args
-    local updated = false
-
-    for id in pairs(x.db.profile.spellFilter.listDamage) do
-      local spellID = tonumber(string_match(id, "%d+"))
-      local spellName = GetSpellInfo(spellID or id)
-      if spellName then
-        updated = true
-        spells[id] = {
-          order = i,
-          name = spellName,
-          desc = "|cffFF0000ID|r |cff798BDD" .. id .. "|r\n",
-          type = 'toggle',
-          get = getSF,
-          set = setSF,
-        }
-      else
-        x.db.profile.spellFilter.listDamage[id] = nil
-      end
-    end
-
-    if not updated then
-      spells["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
-  end
-
-  if not specific or specific == "healing" then
-    i = 10
-    addon.options.args.spellFilter.args.listHealing.args.list = {
-      name = L["Filtered Incoming Healing |cff798BDD(Uncheck to Disable)|r"],
-      type = 'group',
-      guiInline = true,
-      order = 11,
-      args = { },
-    }
-
-    local spells = addon.options.args.spellFilter.args.listHealing.args.list.args
-    local updated = false
-
-    for id in pairs(x.db.profile.spellFilter.listHealing) do
-      local spellID = tonumber(string_match(id, "%d+"))
-      local spellName = GetSpellInfo(spellID or id)
-      if spellName then
-        updated = true
-        spells[id] = {
-          order = i,
-          name = spellName,
-          desc = "|cffFF0000ID|r |cff798BDD" .. id .. "|r\n",
-          type = 'toggle',
-          get = getSF,
-          set = setSF,
-        }
-      else
-        x.db.profile.spellFilter.listHealing[id] = nil
-      end
-    end
-
-    if not updated then
-      spells["noSpells"] = {
-        order = 1,
-        name = L["No items have been added to this list yet."],
-        type = 'description',
-      }
-    end
-  end
-
 end
 
 -- Add and remove Buffs, debuffs, and spells from the filter
 function x.AddFilteredSpell(name, category)
-  if category == "listBuffs" then
-    x.db.profile.spellFilter.listBuffs[name] = true
-    x:UpdateAuraSpellFilter("buffs")
-  elseif category == "listDebuffs" then
-    x.db.profile.spellFilter.listDebuffs[name] = true
-    x:UpdateAuraSpellFilter("debuffs")
-  elseif category == "listSpells" then
-    local spellID = tonumber(string_match(name, "%d+"))
-    if spellID and GetSpellInfo(spellID) then
-      x.db.profile.spellFilter.listSpells[name] = true
-      x:UpdateAuraSpellFilter("spells")
-    else
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Could not add invalid Spell ID: |cff798BDD"] .. name .. "|r")
-    end
-  elseif category == "listProcs" then
-    x.db.profile.spellFilter.listProcs[name] = true
-    x:UpdateAuraSpellFilter("procs")
-  elseif category == "listItems" then
-    x.db.profile.spellFilter.listItems[name] = true
-    x:UpdateAuraSpellFilter("items")
-  elseif category == "listDamage" then
-    x.db.profile.spellFilter.listDamage[name] = true
-    x:UpdateAuraSpellFilter("damage")
-  elseif category == "listHealing" then
-    x.db.profile.spellFilter.listHealing[name] = true
-    x:UpdateAuraSpellFilter("healing")
-  else
+  local filterKey = CATEGORY_TO_FILTER[category]
+  if not filterKey then
     print(L["|cffFF0000x|r|cffFFFF00CT+|r  |cffFF0000Error:|r Unknown filter type '"] .. category .. "'!")
+    return
   end
+
+  if category == "listSpells" then
+    local spellID = tonumber(string_match(name, "%d+"))
+    if not spellID or not GetSpellInfo(spellID) then
+      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Could not add invalid Spell ID: |cff798BDD"] .. name .. "|r")
+      return
+    end
+  end
+
+  x.db.profile.spellFilter[category][name] = true
+  x:UpdateAuraSpellFilter(filterKey)
 end
 
 function x.RemoveFilteredSpell(name, category)
-  if category == "listBuffs" then
-    x.db.profile.spellFilter.listBuffs[name] = nil
-    x:UpdateAuraSpellFilter("buffs")
-  elseif category == "listDebuffs" then
-    x.db.profile.spellFilter.listDebuffs[name] = nil
-    x:UpdateAuraSpellFilter("debuffs")
-  elseif category == "listSpells" then
-    local spellID = tonumber(string_match(name, "%d+"))
-    if spellID and GetSpellInfo(spellID) then
-      x.db.profile.spellFilter.listSpells[name] = nil
-      x:UpdateAuraSpellFilter("spells")
-    else
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Could not remove invalid Spell ID: |cff798BDD"] .. name .. "|r")
-    end
-    x:UpdateAuraSpellFilter("spells")
-  elseif category == "listProcs" then
-    x.db.profile.spellFilter.listProcs[name] = nil
-    x:UpdateAuraSpellFilter("procs")
-  elseif category == "listItems" then
-    x.db.profile.spellFilter.listItems[name] = nil
-    x:UpdateAuraSpellFilter("items")
-  elseif category == "listDamage" then
-    x.db.profile.spellFilter.listDamage[name] = nil
-    x:UpdateAuraSpellFilter("damage")
-  elseif category == "listHealing" then
-    x.db.profile.spellFilter.listHealing[name] = nil
-    x:UpdateAuraSpellFilter("healing")
-  else
+  local filterKey = CATEGORY_TO_FILTER[category]
+  if not filterKey then
     print(L["|cffFF0000x|r|cffFFFF00CT+|r  |cffFF0000Error:|r Unknown filter type '"] .. category .. "'!")
+    return
   end
+
+  if category == "listSpells" then
+    local spellID = tonumber(string_match(name, "%d+"))
+    if not spellID or not GetSpellInfo(spellID) then
+      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Could not remove invalid Spell ID: |cff798BDD"] .. name .. "|r")
+      return
+    end
+  end
+
+  x.db.profile.spellFilter[category][name] = nil
+  x:UpdateAuraSpellFilter(filterKey)
 end
 
 local colorNameDB = { }

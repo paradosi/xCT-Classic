@@ -1,18 +1,6 @@
---[[   ____    ______
-      /\  _`\ /\__  _\   __
- __  _\ \ \/\_\/_/\ \/ /_\ \___
-/\ \/'\\ \ \/_/_ \ \ \/\___  __\
-\/>  </ \ \ \L\ \ \ \ \/__/\_\_/
- /\_/\_\ \ \____/  \ \_\  \/_/
- \//\/_/  \/___/    \/_/
-
- [=====================================]
- [  Author: Dandraffbal-Stormreaver US ]
- [  xCT+ Version 4.x.x                 ]
- [  ©2020. All Rights Reserved.        ]
- [====================================]]
-
-local build = select(4, GetBuildInfo())
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License ]]
 
 -- this file handles updating the frame settings and anything that changes the UI frames themselves
 local ADDON_NAME, addon = ...
@@ -249,10 +237,18 @@ function x:UpdateFrames(specificFrame)
 			if settings.enableCustomFade then
 				f:SetFading(settings.enableFade)
 				f:SetFadeDuration(settings.fadeTime)
-				f:SetTimeVisible(settings.visibilityTime)
+				local visTime = settings.visibilityTime
+				if framename == "critical" and settings.enableStickyMode then
+					visTime = visTime + (settings.stickyDuration or 3)
+				end
+				f:SetTimeVisible(visTime)
 			else
 				f:SetFading(true)
-				f:SetTimeVisible(3)
+				local visTime = 3
+				if framename == "critical" and settings.enableStickyMode then
+					visTime = visTime + (settings.stickyDuration or 3)
+				end
+				f:SetTimeVisible(visTime)
 			end
 
 			if settings.enableFontShadow then
@@ -1364,17 +1360,3 @@ StaticPopupDialogs["XCT_PLUS_SUGGEST_MULTISTRIKE_OFF"] = {
 
 }
 
-StaticPopupDialogs["XCT_PLUS_DB_CLEANUP_2"] = {
-	text			= "|cffD7DF23xCT+ Legion Clean Up|r\n\nHello Again,\n\n I am sorry to inform you that |cffFFFF00xCT|r|cffFF0000+|r needs to\n\n|cffFF0000COMPLETELY RESET YOUR PROFILE|r\n\n back to the original defaults. \n\nI know this may significantly inconvenience many of you, but after much deliberation, the profile reset is the only way to properly prepare your profile for Legion.\n\n|cffFFFF00We will need to |r|cff798BDDReload Your UI|r|cffFFFF00 after we |cff798BDDReset Your Profile|r|cffFFFF00. Press the button below to continue...\n\n|cffaaaaaa(Your saved vars have NOT been reset yet and you may revert to an older version of xCT+ at this time by simply exiting the game, but that is not recommended)|r",
-	timeout			= 0,
-	whileDead		= 1,
-
-	button1			= "Exit WoW",
-	button2			= "Reset Profile and Reload UI",
-
-	OnAccept		= Quit,
-	OnCancel		= function () print("Resetting UI"); x.CleanUpForLegion() end,
-
-	-- Taint work around
-	preferredIndex	= 3,
-}

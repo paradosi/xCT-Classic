@@ -1,40 +1,22 @@
-name: Release to CurseForge
+name: Package and release
 
 on:
   push:
     tags:
-      - 'v*'
+      - '**'
 
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
-      - name: Create addon zip
-        run: |
-          mkdir -p release
-          zip -r release/xCT+.zip . -x ".git/*" -x ".github/*" -x "*.md" -x "LICENSE"
-
-      - name: Upload to CurseForge
-        env:
-          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        run: |
-          # Get game version ID for TBC Classic 2.5.5
-          # 10272 = Burning Crusade Classic (2.5.5)
-
-          curl -X POST "https://wow.curseforge.com/api/projects/1456663/upload-file" \
-            -H "X-Api-Token: $CF_API_TOKEN" \
-            -F "metadata={\"changelog\":\"See GitHub releases for changelog\",\"gameVersions\":[10272],\"releaseType\":\"release\"}" \
-            -F "file=@release/xCT+.zip"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Clone project
+        uses: actions/checkout@v3
         with:
-          files: release/xCT+.zip
-          generate_release_notes: true
+          fetch-depth: 0
+
+      - name: Package and release
+        uses: BigWigsMods/packager@master

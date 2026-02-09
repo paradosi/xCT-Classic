@@ -1,16 +1,6 @@
---[[   ____    ______
-      /\  _`\ /\__  _\   __
- __  _\ \ \/\_\/_/\ \/ /_\ \___
-/\ \/'\\ \ \/_/_ \ \ \/\___  __\
-\/>  </ \ \ \L\ \ \ \ \/__/\_\_/
- /\_/\_\ \ \____/  \ \_\  \/_/
- \//\/_/  \/___/    \/_/
-
- [=====================================]
- [  Author: Dandraffbal-Stormreaver US ]
- [  xCT+ Version 4.x.x                 ]
- [  ©2020. All Rights Reserved.        ]
- [====================================]]
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License ]]
 
 -- This file is a static default profile.  After your first profile is created, editing this file will do nothing.
 local ADDON_NAME, addon = ...
@@ -390,8 +380,8 @@ addon.defaults = {
         ["enableOverhealing"] = true,
         ["enableOverhealingFormat"] = false,
         ["enableOverhealingSubtraction"] = false,
-        ["overhealingPrefix"] = " |cffFFFFFF(O: ",
-        ["overhealingPostfix"] = ")|r",
+        ["overhealingPrefix"] = " (O: ",
+        ["overhealingPostfix"] = ")",
       },
 
       critical = {
@@ -503,6 +493,8 @@ addon.defaults = {
         ["enableAutoAttack_Critical"] = true, -- OLD: showSwing
         ["prefixAutoAttack_Critical"] = true, -- OLD: prefixSwing
         ["petCrits"] = false,
+        ["enableStickyMode"] = false,
+        ["stickyDuration"] = 3,
       },
 
       damage = {
@@ -766,6 +758,10 @@ addon.defaults = {
 
         -- special tweaks
         ["enableOverHeal"] = true,
+        ["enableOverHealFormat"] = false,
+        ["enableOverHealSubtraction"] = false,
+        ["overhealingPrefix"] = " (O: ",
+        ["overhealingPostfix"] = ")",
         ["hideAbsorbedHeals"] = false,
         ["enableSelfAbsorbs"] = true,
         ["showOnlyMyHeals"] = false,
@@ -831,30 +827,12 @@ addon.defaults = {
         ["customColor"] = false,
         ["fontColor"] = { 1.00, 1.00, 1.00 },
 
-        -- https://github.com/Gethe/wow-ui-source/blob/e337b8949ffad2876ea0489d8331db2414342d32
-        -- /AddOns/Blizzard_CombatLog/Blizzard_CombatLog.lua#L1797
+        -- TBC Power Type Colors
         colors = {
-          ['color_MANA'] = { enabled = false, desc = MANA, default = {  0.00,  0.00,  1.00 } },
-          ['color_RAGE'] = { enabled = false, desc = RAGE, default = {  1.00,  0.00,  0.00 } },
-          ['color_FURY'] = { enabled = false, desc = FURY, default = { 0.788, 0.259, 0.992 } },
-          ['color_PAIN'] = { enabled = false, desc = PAIN, default = { 1.000, 0.612, 0.000 } },
-
-          ['color_FOCUS']  = { enabled = false, desc = FOCUS,  default = { 1.00, 0.50, 0.25 } },
-          ['color_RUNES']  = { enabled = false, desc = RUNES,  default = { 0.50, 0.50, 0.50 } },
-          ['color_ENERGY'] = { enabled = false, desc = ENERGY, default = { 1.00, 1.00, 0.00 } },
-
-          ['color_CHI_POWER']            = { enabled = false, desc = CHI_POWER,            default = { 0.71, 1.00, 0.92 } },
-          ['color_HOLY_POWER']           = { enabled = false, desc = HOLY_POWER,           default = { 0.95, 0.90, 0.60 } },
-          ['color_RUNIC_POWER']          = { enabled = false, desc = RUNIC_POWER,          default = { 0.00, 0.82, 1.00 } },
-          ['color_SOUL_SHARDS']          = { enabled = false, desc = SOUL_SHARDS,          default = { 0.50, 0.32, 0.55 } },
-          ['color_LUNAR_POWER']          = { enabled = false, desc = LUNAR_POWER,          default = { 0.30, 0.52, 0.90 } },
-          ['color_INSANITY_POWER']       = { enabled = false, desc = INSANITY_POWER,       default = { 0.40, 0.00, 0.80 } },
-          ['color_MAELSTROM_POWER']      = { enabled = false, desc = MAELSTROM_POWER,      default = { 0.00, 0.50, 1.00 } },
-          ['color_ALTERNATE_POWER']      = { enabled = false, desc = ALTERNATE_POWER_TEXT, default = { 0.10, 0.10, 0.98 } },
-          ['color_ARCANE_CHARGES_POWER'] = { enabled = false, desc = ARCANE_CHARGES_POWER, default = { 0.10, 0.10, 0.98 } },
-
-          ['color_BALANCE_positive']     = { enabled = false, desc = BALANCE_POSITIVE_ENERGY, default = { 0.80, 0.82, 0.60 } },
-          ['color_BALANCE_negative']     = { enabled = false, desc = BALANCE_NEGATIVE_ENERGY, default = { 0.30, 0.52, 0.90 } },
+          ['color_MANA']   = { enabled = false, desc = MANA or "Mana",     default = { 0.00, 0.00, 1.00 } },
+          ['color_RAGE']   = { enabled = false, desc = RAGE or "Rage",     default = { 1.00, 0.00, 0.00 } },
+          ['color_FOCUS']  = { enabled = false, desc = FOCUS or "Focus",   default = { 1.00, 0.50, 0.25 } },
+          ['color_ENERGY'] = { enabled = false, desc = ENERGY or "Energy", default = { 1.00, 1.00, 0.00 } },
         },
 
         -- scrollable
@@ -874,28 +852,11 @@ addon.defaults = {
         ["showEnergyType"] = true,
 
 
-        -- Generated from "Blizzard Add-On's/Constants.lua"
-        ["disableResource_MANA"]             = false,
-        ["disableResource_RAGE"]             = false,
-        ["disableResource_FOCUS"]            = false,
-        ["disableResource_ENERGY"]           = false,
-
-        ["disableResource_RUNES"]            = true,
-        ["disableResource_RUNIC_POWER"]      = false,
-        ["disableResource_SOUL_SHARDS"]      = false,
-        ["disableResource_LUNAR_POWER"]      = true,
-
-        ["disableResource_CHI_POWER"]        = true,
-        ["disableResource_HOLY_POWER"]       = false,
-        ["disableResource_INSANITY_POWER"]   = false,
-        ["disableResource_MAELSTROM_POWER"]  = true,
-
-        ["disableResource_ARCANE_CHARGES"]   = false,
-        ["disableResource_FURY"]             = false,
-        ["disableResource_PAIN"]             = false,
-
-        ["disableResource_BALANCE_positive"] = false,
-        ["disableResource_BALANCE_negative"] = false,
+        -- TBC Resource Toggles
+        ["disableResource_MANA"]   = false,
+        ["disableResource_RAGE"]   = false,
+        ["disableResource_FOCUS"]  = false,
+        ["disableResource_ENERGY"] = false,
       },
 
       procs = {
@@ -1027,16 +988,7 @@ addon.defaults = {
       formatGroups = true,
 
       combo = {
-        ["DEATHKNIGHT"] = {
-          [1] = { },
-          [2] = { },
-          [3] = { },
-        },
-
-        ["DEMONHUNTER"] = {
-          [1] = { },
-          [2] = { },
-        },
+        -- Death Knight, Demon Hunter removed - not in TBC
 
         ["DRUID"] = {
           [1] = { },
@@ -1057,11 +1009,7 @@ addon.defaults = {
           [3] = { },
         },
 
-        ["MONK"] = {
-          [1] = { },
-          [2] = { },
-          [3] = { },
-        },
+        -- Monk removed - not available in TBC
 
         ["PALADIN"] = {
           [1] = { },

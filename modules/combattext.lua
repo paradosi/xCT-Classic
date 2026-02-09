@@ -1,16 +1,6 @@
---[[   ____    ______
-      /\  _`\ /\__  _\   __
- __  _\ \ \/\_\/_/\ \/ /_\ \___
-/\ \/'\\ \ \/_/_ \ \ \/\___  __\
-\/>  </ \ \ \L\ \ \ \ \/__/\_\_/
- /\_/\_\ \ \____/  \ \_\  \/_/
- \//\/_/  \/___/    \/_/
-
- [=====================================]
- [  Author: Dandraffbal-Stormreaver US ]
- [  xCT+ Version 4.x.x                 ]
- [  ©2020. All Rights Reserved.        ]
- [====================================]]
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License ]]
 
 local ADDON_NAME, addon = ...
 
@@ -73,7 +63,7 @@ local function tdel( t )
 end
 
 --[=====================================================[
- Power Type Definitions
+ Power Type Definitions (TBC)
 --]=====================================================]
 x.POWER_LOOKUP = {
 	[Enum.PowerType.Mana] = "MANA",
@@ -81,21 +71,6 @@ x.POWER_LOOKUP = {
 	[Enum.PowerType.Focus] = "FOCUS",
 	[Enum.PowerType.Energy] = "ENERGY",
 	[Enum.PowerType.ComboPoints] = "COMBO_POINTS",
-	[Enum.PowerType.Runes] = "RUNES",
-	[Enum.PowerType.RunicPower] = "RUNIC_POWER",
-	[Enum.PowerType.SoulShards] = "SOUL_SHARDS",
-	[Enum.PowerType.LunarPower] = "LUNAR_POWER",
-	[Enum.PowerType.HolyPower] = "HOLY_POWER",
-	[Enum.PowerType.Alternate] = "ALTERNATE_POWER_INDEX",
-	[Enum.PowerType.Maelstrom] = "MAELSTROM",
-	[Enum.PowerType.Chi] = "CHI",
-	[Enum.PowerType.Insanity] = "INSANITY",
-	[Enum.PowerType.BurningEmbers] = "BURNING_EMBERS",
-	[Enum.PowerType.DemonicFury] = "DEMONIC_FURY",
-	[Enum.PowerType.ArcaneCharges] = "ARCANE_CHARGES",
-	[Enum.PowerType.Fury] = "FURY",
-	[Enum.PowerType.Pain] = "PAIN",
-	[Enum.PowerType.Balance] = "BALANCE",
 }
 
 
@@ -165,9 +140,6 @@ function x:UpdateCombatTextEvents(enable)
     f:RegisterEvent("UNIT_PET")
     f:RegisterEvent("PLAYER_TARGET_CHANGED")
     f:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-
-    -- if runes
-    f:RegisterEvent("RUNE_POWER_UPDATE")
 
     -- if loot
     f:RegisterEvent("CHAT_MSG_LOOT")
@@ -247,6 +219,9 @@ local function ShowPartyKill() return x.db.profile.frames["general"].showPartyKi
 local function ShowBuffs() return x.db.profile.frames["general"].showBuffs end
 local function ShowDebuffs() return x.db.profile.frames["general"].showDebuffs end
 local function ShowOverHealing() return x.db.profile.frames["healing"].enableOverHeal end
+local function IsIncomingOverHealFormatted() return x.db.profile.frames["healing"].enableOverHealFormat end
+local function IsIncomingOverHealSubtracted() return x.db.profile.frames["healing"].enableOverHealSubtraction end
+local function FormatIncomingOverhealing(amount) return x.db.profile.frames["healing"].overhealingPrefix .. amount .. x.db.profile.frames["healing"].overhealingPostfix end
 local function HideAbsorbedHealing() return x.db.profile.frames["healing"].hideAbsorbedHeals end
 local function ShowEnergyGains() return x.db.profile.frames["power"].showEnergyGains end
 local function ShowPeriodicEnergyGains() return x.db.profile.frames["power"].showPeriodicEnergyGains end
@@ -259,15 +234,9 @@ local function IsOutgoingOverHealingFormatted() return x.db.profile.frames["outg
 local function IsOverhealingSubtracted() return x.db.profile.frames["outgoing"].enableOverhealingSubtraction end
 local function FormatOutgoingOverhealing(amount) return x.db.profile.frames["outgoing"].overhealingPrefix .. amount .. x.db.profile.frames["outgoing"].overhealingPostfix end
 
--- TODO: Add Combo Point Support
-local function ShowRogueComboPoints() return false end -- x.db.profile.spells.combo["ROGUE"][COMBAT_TEXT_SHOW_COMBO_POINTS_TEXT] and x.player.class == "ROGUE" end
-local function ShowFeralComboPoints() return false end -- x.db.profile.spells.combo["DRUID"][2][COMBAT_TEXT_SHOW_COMBO_POINTS_TEXT] and x.player.class == "DRUID" and x.player.spec == 2 end
-local function ShowMonkChi() return false end -- return x.db.profile.spells.combo["MONK"][CHI] and x.player.class == "MONK" end
-local function ShowPaladinHolyPower() return false end -- return x.db.profile.spells.combo["PALADIN"][HOLY_POWER] and x.player.class == "PALADIN" end
-local function ShowPriestShadowOrbs() return false end -- return x.db.profile.spells.combo["PRIEST"][3][SHADOW_ORBS] and x.player.class == "PRIEST" and x.player.spec == 3 end
-local function ShowWarlockSoulShards() return false end -- return x.db.profile.spells.combo["WARLOCK"][1][SOUL_SHARDS] and x.player.class == "WARLOCK" and x.player.spec == 1 end
-local function ShowWarlockDemonicFury() return false end -- return x.db.profile.spells.combo["WARLOCK"][2][DEMONIC_FURY] and x.player.class == "WARLOCK" and x.player.spec == 2 end
-local function ShowWarlockBurningEmbers() return false end -- return x.db.profile.spells.combo["WARLOCK"][3][BURNING_EMBERS] and x.player.class == "WARLOCK" and x.player.spec == 3 end
+-- Combo Points (TBC - disabled, would need implementation)
+local function ShowRogueComboPoints() return false end
+local function ShowFeralComboPoints() return false end
 
 local function ClearWhenLeavingCombat() return x.db.profile.frameSettings.clearLeavingCombat end
 
@@ -403,7 +372,6 @@ local format_pet  = sformat("|cff798BDD[%s]:|r %%s (%%s)", sgsub(BATTLE_PET_CAGE
 
 local format_fade               = "-%s"
 local format_gain               = "+%s"
-local format_gain_rune          = "%s +%s %s"
 local format_resist             = "-%s |c%s(%s %s)|r"
 local format_energy             = "+%s %s"
 local format_honor              = sgsub(COMBAT_TEXT_HONOR_GAINED, "%%s", "+%%s")
@@ -659,95 +627,10 @@ local function UpdateComboPoints()
 end
 
 --[=====================================================[
-  Combo Points - Class Power Types
+  Combo Points - Class Power Types (TBC: Not implemented)
 --]=====================================================]
 local function UpdateUnitPower(unit, powertype)
-  if unit == x.player.unit then
-    local value
-
-    if powertype == "CHI" and ShowMonkChi() then
-      value = UnitPower(x.player.unit, SPELL_POWER_CHI)
-    elseif powertype == "HOLY_POWER" and ShowPaladinHolyPower() then
-      value = UnitPower(x.player.unit, SPELL_POWER_HOLY_POWER)
-    elseif powertype == "SHADOW_ORBS" and ShowPriestShadowOrbs() then
-      value = UnitPower(x.player.unit, SPELL_POWER_SHADOW_ORBS)
-    elseif powertype == "SOUL_SHARDS" and ShowWarlockSoulShards() then
-      value = UnitPower(x.player.unit, SPELL_POWER_SOUL_SHARDS) / 100
-    elseif powertype == "DEMONIC_FURY" and ShowWarlockDemonicFury() then
-      value = UnitPower(x.player.unit, SPELL_POWER_DEMONIC_FURY) / 100
-    elseif powertype == "BURNING_EMBERS" and ShowWarlockBurningEmbers() then
-      value = UnitPower(x.player.unit, SPELL_POWER_BURNING_EMBERS)
-    end
-
-    if value then
-      if value < 1 then
-        if value == 0 then
-          x:AddMessage("class", " ", "comboPoints")
-        else
-          x:AddMessage("class", "0", "comboPoints")
-        end
-      else
-        x:AddMessage("class", mfloor(value), "comboPoints")
-      end
-    end
-  end
-end
-
---[=====================================================[
- Combo Points - Class Aura Types
---]=====================================================]
-local function UpdateAuraTracking(unit)
-  local entry = x.TrackingEntry
-
-  if entry then
-    if unit == entry.unit then
-      local i, name, icon, count, _, _, _, _, _, _, spellId = 1, UnitBuff(entry.unit, 1)
-
-      while name do
-        if entry.id == spellId then
-          break
-        end
-        i = i + 1;
-        name, icon, count, _, _, _, _, _, _, spellId = UnitBuff(entry.unit, i)
-      end
-
-      if name and count > 0 then
-        x:AddMessage("class", count, "comboPoints")
-      else
-        x:AddMessage("class", " ", "comboPoints")
-      end
-
-    -- Fix issue of not reseting when unit disapears (e.g. dismiss pet)
-    elseif not UnitExists(entry.unit) then
-      x:AddMessage("class", " ", "comboPoints")
-    end
-  end
-end
-
-function x:QuickClassFrameUpdate()
-  local entry = x.TrackingEntry
-  if entry and UnitExists(entry.unit) then
-    -- Update Buffs
-    UpdateAuraTracking(entry.unit)
-
-    -- Update Unit's Power
-    if ShowMonkChi() then
-      UpdateUnitPower(entry.unit, "LIGHT_FORCE")
-    elseif ShowPaladinHolyPower() then
-      UpdateUnitPower(entry.unit, "HOLY_POWER")
-    elseif ShowPriestShadowOrbs() then
-      UpdateUnitPower(entry.unit, "SHADOW_ORBS")
-    elseif ShowWarlockSoulShards() then
-      UpdateUnitPower(entry.unit, "SOUL_SHARDS")
-    elseif ShowWarlockDemonicFury() then
-      UpdateUnitPower(entry.unit, "DEMONIC_FURY")
-    elseif ShowWarlockBurningEmbers() then
-      UpdateUnitPower(entry.unit, "BURNING_EMBERS")
-    end
-  else
-    -- Update Combo Points
-    UpdateComboPoints()
-  end
+  -- TBC doesn't have the modern class resource system
 end
 
 --[=====================================================[
@@ -869,14 +752,6 @@ x.events = {
         x.lowMana = false
       end
     end,
-  ["RUNE_POWER_UPDATE"] = function(slot)
-      if IsResourceDisabled("RUNES") then return end
-      if GetRuneCooldown(slot) ~= 0 then return end
-      local runeType = GetRuneType(slot)
-      local message = sformat(format_gain_rune, x.runeIcons[runeType], _G["COMBAT_TEXT_RUNE_"..runeMapping[runeType]], x.runeIcons[runeType])
-      --x:AddSpamMessage("power", RUNES, message, x.runecolors[runeType], 1)
-      x:AddMessage('power', message, x.runecolors[runeType])
-    end,
   ["PLAYER_REGEN_ENABLED"] = function()
       x.inCombat = false
       x:CombatStateChanged()
@@ -901,13 +776,11 @@ x.events = {
   ["UNIT_COMBO_POINTS"] = function() UpdateComboPoints() end,
 
   ["PLAYER_TARGET_CHANGED"] = function() UpdateComboPoints() end,
-  ["UNIT_AURA"] = function(unit) UpdateAuraTracking(unit) end,
 
   ["UNIT_ENTERED_VEHICLE"] = function(unit) if unit == "player" then x:UpdatePlayer() end end,
   ["UNIT_EXITING_VEHICLE"] = function(unit) if unit == "player" then x:UpdatePlayer() end end,
   ["PLAYER_ENTERING_WORLD"] = function()
       x:UpdatePlayer()
-      --x:UpdateComboPointOptions()
       x:Clear()
 
       -- Lazy Coding (Clear up messy libraries... yuck!)
@@ -918,10 +791,9 @@ x.events = {
       x:UpdatePlayer()
     end,
 
-  ["ACTIVE_TALENT_GROUP_CHANGED"] = function() x:UpdatePlayer() end, -- x:UpdateComboTracker(); x:UpdateComboPointOptions(true),
+  ["ACTIVE_TALENT_GROUP_CHANGED"] = function() x:UpdatePlayer() end,
 
   ["CHAT_MSG_LOOT"] = function(msg)
-      -- Fixing Loot for Legion
       local preMessage, linkColor, itemString, itemName, amount = string.match(msg, format_getItemString)
 
       if not preMessage or preMessage == "" then
@@ -1378,10 +1250,6 @@ local CombatEventHandlers = {
 			xCTFormat:SPELL_PERIODIC_HEAL(outputFrame, spellID, amount, overhealing, critical, merged, args, settings)
 		elseif args.event == "SPELL_HEAL" then
 			xCTFormat:SPELL_HEAL(outputFrame, spellID, amount, overhealing, critical, merged, args, settings)
-		else
-			if UnitName('player') == "Dandraffbal" then
-				print("xCT Needs Some Help: unhandled _HEAL event", args.event)
-			end
 		end
 	end,
 
@@ -1426,7 +1294,7 @@ local CombatEventHandlers = {
 
 		if args:IsSourceMyVehicle() then
 			if not ShowVehicleDamage() then return end
-			if isSwing and not ShowPetAutoAttack_Outgoing() then return end -- for BM's second pet, Hati
+			if isSwing and not ShowPetAutoAttack_Outgoing() then return end
 			if not ShowPetCrits() then
 				critical = nil -- stupid spam fix for hunter pets
 			end
@@ -1644,9 +1512,16 @@ local CombatEventHandlers = {
 
 		if IsHealingFiltered(args.spellId) then return end
 
-		-- Adjust the amount if the user doesnt want over healing
-		if not ShowOverHealing() then
-			amount = amount - args.overhealing
+		-- Adjust the amount based on overheal settings
+		local overhealing = args.overhealing
+		if ShowOverHealing() then
+			if IsIncomingOverHealSubtracted() then
+				amount = amount - overhealing
+			end
+		else
+			amount = amount - overhealing
+			overhealing = 0
+			if amount < 1 then return end
 		end
 
 		-- Don't show healing that gets absorbed by a debuff or mechanic
@@ -1666,7 +1541,12 @@ local CombatEventHandlers = {
 		end
 
 		-- format_gain = "+%s"
-		local message = sformat(format_gain, x:Abbreviate(amount,"healing"))
+		local message = sformat(format_gain, x:Abbreviate(amount, "healing"))
+
+		-- Append formatted overheal amount
+		if overhealing > 0 and IsIncomingOverHealFormatted() then
+			message = message .. FormatIncomingOverhealing(x:Abbreviate(overhealing, "healing"))
+		end
 
 		if MergeIncomingHealing() then
 			x:AddSpamMessage("healing", args.sourceName or "Unknown Source Name", amount, "healingTaken", 5, nil, "sourceGUID", args.sourceGUID, "sourceController", args:GetSourceController())
@@ -1877,77 +1757,13 @@ local BuffsOrDebuffs = {
 	--["_AURA_REFRESH"] = true, -- I dont know how we should support this
 }
 
--- List from: http://www.tukui.org/addons/index.php?act=view&id=236
+-- TBC Absorb Spell List
 local AbsorbList = {
-	-- All
-	[187805] = true, -- Etheralus (WoD Legendary Ring)
-	[173260] = true, -- Shield Tronic (Like a health potion from WoD)
-	[64413]  = true, -- Val'anyr, Hammer of Ancient Kings (WotLK Legendary Mace)
-	[82626]  = true, -- Grounded Plasma Shield (Engineer's Belt Enchant)
-	[207472] = true, -- Prydaz, Xavaric's Magnum Opus (Legendary Neck)
-
-	-- Coming Soon (Delicious Cake!) Trinket
-	--[231290] = true, -- TODO: Figure out which one is correct
-	[225723] = true, -- Both are Delicious Cake! from item:140793
-
-	-- Coming Soon (Royal Dagger Haft, item:140791)
-	-- Sooooo I dont think this one is going to be trackable... we will see when i can get some logs!
-	--[225720] = true, -- TODO: Figure out which is the real one
-	--[229457] = true, -- Sands of Time (From the Royal Dagger Haft tinket) (Its probably this one)
-	--[229333] = true, -- Sands of Time (From the Royal Dagger Haft tinket)
-	--[225124] = true, -- Sands of Time (From the Royal Dagger Haft tinket)
-
-	-- Coming Soon -- Animated Exoskeleton (Trinket, Item: 140789)
-	[225033] = true, -- Living Carapace (Needs to be verified)
-
-	-- Coming Soon -- Infernal Contract (Trinket, Item: 140807)
-	[225140] = true, -- Infernal Contract (Needs to be verified)
-
-
-
-	-- Legion Trinkets
-	[221878] = true, -- Buff: Spirit Fragment        - Trinket[138222]: Vial of Nightmare Fog
-	[215248] = true, -- Buff: Shroud of the Naglfar  - Trinket[133645]: Naglfar Fare
-	[214366] = true, -- Buff: Crystalline Body       - Trinket[137338]: Shard of Rokmora
-	[214423] = true, -- Buff: Stance of the Mountain - Trinket[137344]: Talisman of the Cragshaper
-	[214971] = true, -- Buff: Gaseous Bubble         - Trinket[137369]: Giant Ornamental Pearl
-	[222479] = true, -- Buff: Shadowy Reflection     - Trinket[138225]: Phantasmal Echo
-
-	-- Death Knight
-	[48707] = true,  -- Anti-Magic Shield
-	[77535] = true,  -- Blood Shield
-	[116888] = true, -- Purgatory
-	[219809] = true, -- Tombstone
-
-	-- Demon Hunter
-	[227225] = true, -- Soul Barrier
-
 	-- Mage
 	[11426] = true,  -- Ice Barrier
 
-	-- Monk
-	[116849] = true, -- Life Cocoon
-
-	-- Paladin
-	[203538] = true, -- Greater Blessing of Kings
-	[185676] = true, -- Protection Paladin T18 - 2 piece
-	[184662] = true, -- Shield of Vengeance
-
-	--Priest
-	[152118] = true, -- Clarity of Will
+	-- Priest
 	[17] = true,     -- Power Word: Shield
-
-	-- Shaman
-	[145378] = true, -- Shaman T16 - 2 piece
-	[114893] = true, -- Stone Bulwark
-
-	-- Warlock
-	[108416] = true, -- Dark Pact
-	[108366] = true, -- Soul Leech
-
-	-- Warrior
-	[190456] = true, -- Ignore Pain
-	[112048] = true, -- Shield Barrier
 }
 
 function x.CombatLogEvent (args)
