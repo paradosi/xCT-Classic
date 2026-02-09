@@ -1,22 +1,37 @@
-name: Package and release
+name: Release to CurseForge
 
 on:
   push:
     tags:
-      - '**'
+      - 'v*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    env:
-      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
-      - name: Clone project
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Package and release
-        uses: BigWigsMods/packager@master
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create addon zip
+        run: |
+          mkdir -p release
+          zip -r release/xCT+.zip . -x ".git/*" -x ".github/*" -x "*.md" -x "LICENSE" -x ".luarc.json"
+
+      - name: Upload to CurseForge
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          curl -X POST "https://wow.curseforge.com/api/projects/1456663/upload-file" \
+            -H "X-Api-Token: $CF_API_TOKEN" \
+            -F "metadata={\"changelog\":\"See GitHub releases for changelog\",\"gameVersions\":[10272],\"releaseType\":\"release\"}" \
+            -F "file=@release/xCT+.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release/xCT+.zip
+          generate_release_notes: true
