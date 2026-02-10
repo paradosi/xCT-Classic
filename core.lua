@@ -79,6 +79,9 @@ function x:OnInitialize()
   -- Add the profile options to my dialog config
   addon.options.args['Profiles'] = LibStub('AceDBOptions-3.0'):GetOptionsTable(self.db)
 
+  -- Initialize Minimap Button
+  x:InitializeMinimapButton()
+
   -- Had to pass the explicit method into here, not sure why
   self.db.RegisterCallback(self, 'OnProfileChanged', RefreshConfig)
   self.db.RegisterCallback(self, 'OnProfileCopied', RefreshConfig)
@@ -111,7 +114,72 @@ function x:OnInitialize()
 
   -- Everything got Initialized, show Startup Text
   if self.db.profile.showStartupText then
-    print(L["|cff47E10CxCT+|r TBC Classic by paradosi@Dreamscythe has loaded. To configure, type: |cff47E10C/xct|r"])
+    local version = C_AddOns.GetAddOnMetadata("xCT+", "Version") or "Unknown"
+    local playerName = UnitName("player")
+    print(string_format("Hello %s. |cff11a34axCT+|r %s is loaded. To configure, type |cff11a34a/xct|r", playerName, version))
+  end
+end
+
+-- Initialize Minimap Button using LibDBIcon
+function x:InitializeMinimapButton()
+  local LDB = LibStub("LibDataBroker-1.1", true)
+  local LDBIcon = LibStub("LibDBIcon-1.0", true)
+
+  if not LDB or not LDBIcon then return end
+
+  -- Check if already registered (happens on reload)
+  if LDBIcon:IsRegistered("xCT+") then return end
+
+  local dataObject = LDB:NewDataObject("xCT+", {
+    type = "launcher",
+    text = "xCT+",
+    icon = [[Interface\AddOns\xCT+\media\Textures\xtc_logo]],
+    OnClick = function(_, button)
+      if button == "LeftButton" then
+        if IsShiftKeyDown() then
+          x.ToggleConfigMode()
+        else
+          x:ToggleConfigTool()
+        end
+      elseif button == "RightButton" then
+        x.ToggleConfigMode()
+      end
+    end,
+    OnTooltipShow = function(tooltip)
+      tooltip:AddLine("|cff11a34axCT+|r TBC Classic")
+      tooltip:AddLine(" ")
+      tooltip:AddLine("|cffFFFFFFLeft-Click:|r Open Options")
+      tooltip:AddLine("|cffFFFFFFShift+Left-Click:|r Toggle Frames")
+      tooltip:AddLine("|cffFFFFFFRight-Click:|r Toggle Frames")
+    end,
+  })
+
+  if dataObject then
+    LDBIcon:Register("xCT+", dataObject, self.db.profile.minimap)
+  end
+end
+
+-- Toggle minimap button visibility
+function x:ToggleMinimapButton()
+  local LDBIcon = LibStub("LibDBIcon-1.0", true)
+  if not LDBIcon then return end
+  if not x.db or not x.db.profile or not x.db.profile.minimap then return end
+
+  local button = _G["LibDBIcon10_xCT+"]
+
+  if x.db.profile.minimap.hide then
+    LDBIcon:Hide("xCT+")
+    -- Use alpha/mouse as backup for addons that override Hide()
+    if button then
+      button:SetAlpha(0)
+      button:EnableMouse(false)
+    end
+  else
+    LDBIcon:Show("xCT+")
+    if button then
+      button:SetAlpha(1)
+      button:EnableMouse(true)
+    end
   end
 end
 
@@ -122,6 +190,8 @@ frameUpdate:SetScript("OnEvent", function(self)
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
   x:UpdateFrames()
   x.cvar_update()
+  -- Apply minimap button visibility state
+  x:ToggleMinimapButton()
 end)
 
 -- Store the current addon version in the profile
@@ -498,14 +568,14 @@ end
 function x.AddFilteredSpell(name, category)
   local filterKey = CATEGORY_TO_FILTER[category]
   if not filterKey then
-    print(L["|cffFF0000x|r|cffFFFF00CT+|r  |cffFF0000Error:|r Unknown filter type '"] .. category .. "'!")
+    print(L["|cff11a34axCT+|r  |cffFF0000Error:|r Unknown filter type '"] .. category .. "'!")
     return
   end
 
   if category == "listSpells" then
     local spellID = tonumber(string_match(name, "%d+"))
     if not spellID or not GetSpellInfo(spellID) then
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Could not add invalid Spell ID: |cff798BDD"] .. name .. "|r")
+      print(L["|cff11a34axCT+|r  Could not add invalid Spell ID: |cff798BDD"] .. name .. "|r")
       return
     end
   end
@@ -517,14 +587,14 @@ end
 function x.RemoveFilteredSpell(name, category)
   local filterKey = CATEGORY_TO_FILTER[category]
   if not filterKey then
-    print(L["|cffFF0000x|r|cffFFFF00CT+|r  |cffFF0000Error:|r Unknown filter type '"] .. category .. "'!")
+    print(L["|cff11a34axCT+|r  |cffFF0000Error:|r Unknown filter type '"] .. category .. "'!")
     return
   end
 
   if category == "listSpells" then
     local spellID = tonumber(string_match(name, "%d+"))
     if not spellID or not GetSpellInfo(spellID) then
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Could not remove invalid Spell ID: |cff798BDD"] .. name .. "|r")
+      print(L["|cff11a34axCT+|r  Could not remove invalid Spell ID: |cff798BDD"] .. name .. "|r")
       return
     end
   end
@@ -977,12 +1047,12 @@ function x:OpenxCTCommand(input)
     elseif x.configuring then
       x:SaveAllFrames()
       x.EndConfigMode()
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  Frames have been saved. Please fasten your seat belts."])
+      print(L["|cff11a34axCT+|r  Frames have been saved. Please fasten your seat belts."])
       StaticPopup_Hide("XCT_PLUS_CONFIGURING")
     else
       x.ToggleConfigMode()
 
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  You are now free to move about the cabin."])
+      print(L["|cff11a34axCT+|r  You are now free to move about the cabin."])
       print(L["      |cffFF0000/xct lock|r      - Saves your frames."])
       print(L["      |cffFF0000/xct cancel|r  - Cancels all your recent frame movements."])
     end
@@ -995,15 +1065,15 @@ function x:OpenxCTCommand(input)
     if x.configuring then
       x:UpdateFrames();
       x.EndConfigMode()
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  canceled frame move."])
+      print(L["|cff11a34axCT+|r  canceled frame move."])
     else
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r  There is nothing to cancel."])
+      print(L["|cff11a34axCT+|r  There is nothing to cancel."])
     end
     return
   end
 
   if string_lower(input) == 'help' then
-    print(L["|cffFF0000x|r|cffFFFF00CT+|r  Commands:"])
+    print(L["|cff11a34axCT+|r  Commands:"])
     print(L["      |cffFF0000/xct lock|r - Locks and unlocks the frame movers."])
     print(L["      |cffFF0000/xct test|r - Attempts to emulate combat."])
     return
@@ -1027,7 +1097,7 @@ function x:OpenxCTCommand(input)
     end
 
     x:UpdatePlayer()
-    print("|cffFF0000x|r|cffFFFF00CT+|r Tracking Unit:", name or "default")
+    print("|cff11a34axCT+|r Tracking Unit:", name or "default")
 
     return
   end
@@ -1057,7 +1127,7 @@ function x:ShowConfigTool(...)
   if x.isConfigToolOpen then return end
   if x.inCombat and x.db.profile.hideConfig then
     if not shownWarning then
-      print(L["|cffFF0000x|r|cffFFFF00CT+|r will open the |cff798BDDConfiguration Tool|r after combat."])
+      print(L["|cff11a34axCT+|r will open the |cff798BDDConfiguration Tool|r after combat."])
       shownWarning = true
       lastConfigState = true
     end
@@ -1152,5 +1222,5 @@ function x:TrackxCTCommand(input)
   end
 
   x:UpdatePlayer()
-  print("|cffFF0000x|r|cffFFFF00CT+|r Tracking Unit:", name or "default")
+  print("|cff11a34axCT+|r Tracking Unit:", name or "default")
 end

@@ -43,6 +43,11 @@ addon.defaults = {
     hideConfig = true,
     bypassCVars = false,
 
+    -- Minimap button (uses LibDBIcon)
+    minimap = {
+      hide = false,
+    },
+
     blizzardFCT = {
       blizzardHeadNumbers = false, -- enable the head numbers
       enabled = false,             -- enable custom font for head numbers
@@ -130,6 +135,36 @@ addon.defaults = {
 
       [tostring(SCHOOL_MASK_PHYSICAL + SCHOOL_MASK_FIRE + SCHOOL_MASK_FROST + SCHOOL_MASK_ARCANE + SCHOOL_MASK_NATURE + SCHOOL_MASK_SHADOW + SCHOOL_MASK_HOLY)]
         = { enabled = false, desc = STRING_SCHOOL_ALL, default = { 0.78, 0.70, 0.65 } },
+    },
+
+    -- Sound Alerts (uses LibSharedMedia sound names)
+    sounds = {
+      -- Master toggle
+      enabled = false,
+
+      -- Individual sound events
+      criticalHit = {
+        enabled = false,
+        sound = "None",
+      },
+      killingBlow = {
+        enabled = false,
+        sound = "None",
+      },
+      incomingCrit = {
+        enabled = false,
+        sound = "None",
+      },
+      lowHealth = {
+        enabled = false,
+        threshold = 35,
+        sound = "None",
+      },
+      lowMana = {
+        enabled = false,
+        threshold = 20,
+        sound = "None",
+      },
     },
 
     frameSettings = {

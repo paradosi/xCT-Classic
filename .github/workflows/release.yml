@@ -1,31 +1,22 @@
-name: Release to CurseForge
+name: Package and release
 
 on:
   push:
     tags:
-      - 'v*'
-
-permissions:
-  contents: write
+      - '**'
 
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
-      - name: Create addon zip
-        run: |
-          mkdir -p release
-          zip -r release/xCT+.zip . -x ".git/*" -x ".github/*" -x "*.md" -x "LICENSE" -x ".luarc.json"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Clone project
+        uses: actions/checkout@v3
         with:
-          files: release/xCT+.zip
-          generate_release_notes: true
+          fetch-depth: 0
+
+      - name: Package and release
+        uses: BigWigsMods/packager@master

@@ -1276,7 +1276,7 @@ StaticPopupDialogs["XCT_PLUS_CONFIGURING"] = {
 
 	button1			= SAVE_CHANGES,
 	button2			= CANCEL,
-	OnAccept		= function() x:SaveAllFrames(); x.EndConfigMode(); x:ShowConfigTool() print(L["|cffFF0000x|r|cffFFFF00CT+|r  Frames have been saved. Please fasten your seat belts."]) end,
+	OnAccept		= function() x:SaveAllFrames(); x.EndConfigMode(); x:ShowConfigTool() print(L["|cff11a34axCT+|r  Frames have been saved. Please fasten your seat belts."]) end,
 	OnCancel		= function() x:UpdateFrames(); x.EndConfigMode(); x:ShowConfigTool() end,
 	hideOnEscape	= false,
 

@@ -12,4 +12,6 @@
   <Include file="UTF8\include.xml" />
   <Script  file="xCombatParser-1.0\xCombatParser-1.0.lua" />
   <Script  file="LibSink-2.0\LibSink-2.0.lua" />
+  <Script  file="LibDataBroker-1.1\LibDataBroker-1.1.lua" />
+  <Script  file="LibDBIcon-1.0\LibDBIcon-1.0.lua" />
 </Ui>

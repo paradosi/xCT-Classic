@@ -1,5 +1,13 @@
 # xCT+ TBC Classic Changelog
 
+## 4.6.4 — 2026-02-09
+
+### New Features
+- **Sound Alerts** — Play sounds on combat events like critical hits, killing blows, incoming crits, and low health/mana warnings. All sounds are disabled by default and can be individually toggled. Uses LibSharedMedia for sound selection (your custom sounds will appear in the dropdown). Access via xCT+ Options > Sound Alerts.
+- **Minimap Button** — Added a minimap button for quick access. Left-click opens options, right-click toggles frames. Can be hidden via Frames > Show Minimap Button.
+
+---
+
 ## 4.6.3 — 2026-02-09
 
 ### New Features

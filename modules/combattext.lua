@@ -73,6 +73,34 @@ x.POWER_LOOKUP = {
 	[Enum.PowerType.ComboPoints] = "COMBO_POINTS",
 }
 
+--[=====================================================[
+ Sound Alert System
+--]=====================================================]
+local LSM = LibStub("LibSharedMedia-3.0")
+local lastSoundTime = {}
+local SOUND_COOLDOWN = 0.5 -- Minimum seconds between same sound
+
+local function PlaySoundAlert(soundType)
+	local sounds = x.db.profile.sounds
+	if not sounds.enabled then return end
+
+	local soundConfig = sounds[soundType]
+	if not soundConfig or not soundConfig.enabled then return end
+	if not soundConfig.sound or soundConfig.sound == "None" then return end
+
+	-- Throttle sounds to prevent spam
+	local now = GetTime()
+	if lastSoundTime[soundType] and (now - lastSoundTime[soundType]) < SOUND_COOLDOWN then
+		return
+	end
+	lastSoundTime[soundType] = now
+
+	-- Play the sound via LibSharedMedia
+	local soundFile = LSM:Fetch("sound", soundConfig.sound)
+	if soundFile then
+		PlaySoundFile(soundFile, "Master")
+	end
+end
 
 --[=====================================================[
  Holds player info; use AddOn:UpdatePlayer()
@@ -730,7 +758,9 @@ x.combat_events = {
 --]=====================================================]
 x.events = {
   ["UNIT_HEALTH"] = function()
-      if ShowLowResources() and UnitHealth(x.player.unit) / UnitHealthMax(x.player.unit) <= COMBAT_TEXT_LOW_HEALTH_THRESHOLD then
+      local healthPct = UnitHealth(x.player.unit) / UnitHealthMax(x.player.unit)
+      local threshold = (x.db.profile.sounds.lowHealth and x.db.profile.sounds.lowHealth.threshold or 35) / 100
+      if ShowLowResources() and healthPct <= COMBAT_TEXT_LOW_HEALTH_THRESHOLD then
         if not x.lowHealth then
           x:AddMessage('general', HEALTH_LOW, 'lowResourcesHealth')
           x.lowHealth = true
@@ -738,18 +768,38 @@ x.events = {
       else
         x.lowHealth = false
       end
+      -- Sound alert uses custom threshold
+      if healthPct <= threshold then
+        if not x.lowHealthSound then
+          PlaySoundAlert("lowHealth")
+          x.lowHealthSound = true
+        end
+      else
+        x.lowHealthSound = false
+      end
     end,
   ["UNIT_POWER_UPDATE"] = function(unit, powerType)
       -- Update for Class Combo Points
       UpdateUnitPower(unit, powerType)
 
-      if select(2, UnitPowerType(x.player.unit)) == "MANA" and ShowLowResources() and UnitPower(x.player.unit) / UnitPowerMax(x.player.unit) <= COMBAT_TEXT_LOW_MANA_THRESHOLD then
+      local manaPct = UnitPower(x.player.unit) / UnitPowerMax(x.player.unit)
+      local threshold = (x.db.profile.sounds.lowMana and x.db.profile.sounds.lowMana.threshold or 20) / 100
+      if select(2, UnitPowerType(x.player.unit)) == "MANA" and ShowLowResources() and manaPct <= COMBAT_TEXT_LOW_MANA_THRESHOLD then
         if not x.lowMana then
           x:AddMessage('general', MANA_LOW, 'lowResourcesMana')
           x.lowMana = true
         end
       else
         x.lowMana = false
+      end
+      -- Sound alert uses custom threshold
+      if select(2, UnitPowerType(x.player.unit)) == "MANA" and manaPct <= threshold then
+        if not x.lowManaSound then
+          PlaySoundAlert("lowMana")
+          x.lowManaSound = true
+        end
+      else
+        x.lowManaSound = false
       end
     end,
   ["PLAYER_REGEN_ENABLED"] = function()
@@ -1310,6 +1360,8 @@ local CombatEventHandlers = {
 			elseif not isSwing and not isAutoShot then
 				outputFrame = 'critical'
 			end
+			-- Play critical hit sound
+			PlaySoundAlert("criticalHit")
 		end
 
 		-- Lookup the color
@@ -1436,6 +1488,8 @@ local CombatEventHandlers = {
 		if not message then
 			-- Format Criticals and also abbreviate values
 			if args.critical then
+				-- Play incoming critical sound
+				PlaySoundAlert("incomingCrit")
 				message = sformat(format_crit, x.db.profile.frames['damage'].critPrefix,
 				                               x:Abbreviate(-args.amount, 'damage'),
 				                               x.db.profile.frames['damage'].critPostfix)
@@ -1603,6 +1657,9 @@ local CombatEventHandlers = {
 
 	["KilledUnit"] = function (args)
 		if not ShowPartyKill() then return end
+
+		-- Play killing blow sound
+		PlaySoundAlert("killingBlow")
 
 		local color = 'killingBlow'
 		if args.destGUID then

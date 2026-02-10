@@ -34,14 +34,14 @@ addon.options = {
       order = 0,
       type = 'description',
       fontSize = 'large',
-      name = L["|cffFF0000x|rCT|cffFFFF00+|r |cff798BDDConfiguration Tool|r\n"],
+      name = L["|cff11a34axCT+|r Configuration Tool\n"],
       width = 'double',
     },
 
     spacer0 = {
       order = 1,
       type = 'description',
-      name = L["|cffFFFF00Helpful Tips:|r\n\n"],
+      name = L["|cff11a34aHelpful Tips:|r\n\n"],
       width = 'half',
     },
 
@@ -49,7 +49,7 @@ addon.options = {
       order = 2,
       type = 'description',
       fontSize = 'medium',
-      name = L["On the left list, under the |cffFFFF00Startup Message|r checkbox, you can click on the |cff798BDD+ Buttons|r (plus) to show more options."],
+      name = L["On the left list, under the |cff848482Startup Message|r checkbox, you can click on the |cff11a34a+ Buttons|r (plus) to show more options."],
       width = 'double',
     },
 
@@ -74,6 +74,17 @@ addon.options = {
       desc = L["This option helps prevent UI taints by closing the config when you enter combat.\n\n|cffFF8000Highly Recommended Enabled|r"],
       get = function(info) return x.db.profile.hideConfig end,
       set = function(info, value) x.db.profile.hideConfig = value; if not value then StaticPopup_Show("XCT_PLUS_HIDE_IN_COMBAT") end end,
+    },
+    showMinimapButton = {
+      order = 13,
+      type = 'toggle',
+      name = L["Minimap Button"],
+      desc = L["Show or hide the xCT+ minimap button."],
+      get = function() return not x.db.profile.minimap.hide end,
+      set = function(_, value)
+        x.db.profile.minimap.hide = not value
+        x:ToggleMinimapButton()
+      end,
     },
     space2 = {
       order = 20,
@@ -449,7 +460,7 @@ local function GetSpellHistory()
 
   for i in pairs(x.spellCache.spells) do
     local name, _, icon = GetSpellInfo(i)
-    spellHistory[tostring(i)] = sformat("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s (|cff798BDD%d)", icon or 0, 16, 16, name or UNKNOWN, i)
+    spellHistory[tostring(i)] = sformat("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s (|cff11a34a%d)", icon or 0, 16, 16, name or UNKNOWN, i)
   end
 
   return spellHistory
@@ -485,7 +496,7 @@ local function GetDamageIncomingHistory()
 
   for i in pairs(x.spellCache.damage) do
     local name, _, icon = GetSpellInfo(i)
-    damageHistory[tostring(i)] = sformat("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s (|cff798BDD%d)", icon or 0, 16, 16, name or UNKNOWN, i)
+    damageHistory[tostring(i)] = sformat("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s (|cff11a34a%d)", icon or 0, 16, 16, name or UNKNOWN, i)
   end
 
   return damageHistory
@@ -496,7 +507,7 @@ local function GetHealingIncomingHistory()
 
   for i in pairs(x.spellCache.healing) do
     local name, _, icon = GetSpellInfo(i)
-    healingHistory[tostring(i)] = sformat("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s (|cff798BDD%d)", icon or 0, 16, 16, name or UNKNOWN, i)
+    healingHistory[tostring(i)] = sformat("|T%s:%d:%d:0:0:64:64:5:59:5:59|t %s (|cff11a34a%d)", icon or 0, 16, 16, name or UNKNOWN, i)
   end
 
   return healingHistory
@@ -535,7 +546,7 @@ addon.options.args["spells"] = {
         listSpacer1 = {
           type = "description",
           order = 10,
-          name = L["\n|cff798BDDMerge Incoming Healing|r:"],
+          name = L["\n|cff11a34aMerge Incoming Healing|r:"],
           fontSize = 'large',
         },
 
@@ -552,7 +563,7 @@ addon.options.args["spells"] = {
         listSpacer2 = {
           type = "description",
           order = 20,
-          name = L["\n|cff798BDDMerge Multiple Dispells|r:"],
+          name = L["\n|cff11a34aMerge Multiple Dispells|r:"],
           fontSize = 'large',
         },
 
@@ -569,7 +580,7 @@ addon.options.args["spells"] = {
         listSpacer3 = {
           type = "description",
           order = 30,
-          name = L["\n|cff798BDDMerge Auto-Attacks|r:"],
+          name = L["\n|cff11a34aMerge Auto-Attacks|r:"],
           fontSize = 'large',
         },
 
@@ -577,7 +588,7 @@ addon.options.args["spells"] = {
           order = 31,
           type = 'toggle',
           name = L["Merge Melee Swings"],
-          desc = L["|cffFF0000ID|r 6603 |cff798BDD(Player Melee)|r\n|cffFF0000ID|r 0 |cff798BDD(Pet Melee)|r"],
+          desc = L["|cffFF0000ID|r 6603 |cff11a34a(Player Melee)|r\n|cffFF0000ID|r 0 |cff11a34a(Pet Melee)|r"],
           get = get0_1,
           set = set0_1,
         },
@@ -594,7 +605,7 @@ addon.options.args["spells"] = {
         listSpacer4 = {
           type = "description",
           order = 34,
-          name = L["\n|cff798BDDMerge Pet Attacks|r:"],
+          name = L["\n|cff11a34aMerge Pet Attacks|r:"],
           fontSize = 'large',
         },
 
@@ -618,7 +629,7 @@ addon.options.args["spells"] = {
         listSpacer5 = {
           type = "description",
           order = 40,
-          name = L["\n|cff798BDDMerge Critical Hits|r (Choose one):"],
+          name = L["\n|cff11a34aMerge Critical Hits|r (Choose one):"],
           fontSize = 'large',
         },
 
@@ -626,7 +637,7 @@ addon.options.args["spells"] = {
           order = 41,
           type = 'toggle',
           name = L["Don't Merge Critical Hits Together"],
-          desc = L["Crits will not get merged in the critical frame, but they will be included in the outgoing total. |cffFFFF00(Default)|r"],
+          desc = L["Crits will not get merged in the critical frame, but they will be included in the outgoing total. |cff848482(Default)|r"],
           get = get0_1,
           set = setSpecialCriticalOptions,
           width = 'full',
@@ -666,7 +677,7 @@ addon.options.args["spells"] = {
     },
 
     classList = {
-      name = L["Class Spells"], --"List of Mergeable Spells |cff798BDD(Class Specific)|r",
+      name = L["Class Spells"], --"List of Mergeable Spells |cff11a34a(Class Specific)|r",
       type = 'group',
       order = 21,
       childGroups = 'select',
@@ -674,7 +685,7 @@ addon.options.args["spells"] = {
         title = {
           type = 'description',
           order = 0,
-          name = L["List of Mergeable Spells |cff798BDD(Class Specific)|r"],
+          name = L["List of Mergeable Spells |cff11a34a(Class Specific)|r"],
           fontSize = "large",
           width = "double",
         },
@@ -683,7 +694,7 @@ addon.options.args["spells"] = {
           type = "description",
           order = 1,
           fontSize = "small",
-          name = L["Uncheck a spell if you do not want it merged. Contact me to add new spells. See |cffFFFF00Credits|r for contact info.\n\n"],
+          name = L["Uncheck a spell if you do not want it merged. Contact me to add new spells. See |cff11a34aCredits|r for contact info.\n\n"],
         },
 
         -- Death Knight, Demon Hunter, Monk removed - not in TBC
@@ -708,7 +719,7 @@ addon.options.args["spells"] = {
         title = {
           type = 'description',
           order = 0,
-          name = L["List of Mergeable Spells |cff798BDD(See Category)|r"],
+          name = L["List of Mergeable Spells |cff11a34a(See Category)|r"],
           fontSize = "large",
           width = "double",
         },
@@ -716,7 +727,7 @@ addon.options.args["spells"] = {
           type = "description",
           order = 1,
           fontSize = "small",
-          name = L["Uncheck an item if you do not want it merged. Contact me to add new items. See |cffFFFF00Credits|r for contact info.\n\n"],
+          name = L["Uncheck an item if you do not want it merged. Contact me to add new items. See |cff11a34aCredits|r for contact info.\n\n"],
         },
       },
     },
@@ -729,7 +740,7 @@ addon.options.args["spells"] = {
         title = {
           type = 'description',
           order = 0,
-          name = L["List of Mergeable Spells |cff798BDD(See Category)|r"],
+          name = L["List of Mergeable Spells |cff11a34a(See Category)|r"],
           fontSize = "large",
           width = "double",
         },
@@ -737,7 +748,7 @@ addon.options.args["spells"] = {
           type = "description",
           order = 1,
           fontSize = "small",
-          name = L["Uncheck an item if you do not want it merged. Contact me to add new items. See |cffFFFF00Credits|r for contact info.\n\n"],
+          name = L["Uncheck an item if you do not want it merged. Contact me to add new items. See |cff11a34aCredits|r for contact info.\n\n"],
         },
       },
     },
@@ -759,7 +770,7 @@ addon.options.args["spellFilter"] = {
         listSpacer0 = {
           type = "description",
           order = 0,
-          name = L["|cff798BDDIncoming Player Power Threshold|r: (Mana, Rage, Energy, etc.)"],
+          name = L["|cff11a34aIncoming Player Power Threshold|r: (Mana, Rage, Energy, etc.)"],
           fontSize = "large",
         },
 
@@ -775,7 +786,7 @@ addon.options.args["spellFilter"] = {
         listSpacer1 = {
           type = "description",
           order = 10,
-          name = L["\n|cff798BDDOutgoing Damage and Healing Threshold|r:"],
+          name = L["\n|cff11a34aOutgoing Damage and Healing Threshold|r:"],
           fontSize = "large",
         },
 
@@ -849,7 +860,7 @@ addon.options.args["spellFilter"] = {
         listSpacer2 = {
           type = "description",
           order = 20,
-          name = L["\n|cff798BDDIncoming Damage and Healing Threshold|r:"],
+          name = L["\n|cff11a34aIncoming Damage and Healing Threshold|r:"],
           fontSize = "large",
         },
 
@@ -942,7 +953,7 @@ addon.options.args["spellFilter"] = {
 
 
     listBuffs = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDBuffs|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aBuffs|r"],
       type = 'group',
       order = 20,
       guiInline = false,
@@ -950,7 +961,7 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter out |cff1AFF1ABuff|r auras that your player gains or loses.  In order to filter them, you need to type the |cffFFFF00exact name of the aura|r (case sensitive)."],
+          name = L["These options allow you to filter out |cff1AFF1ABuff|r auras that your player gains or loses.  In order to filter them, you need to type the |cff11a34aexact name of the aura|r (case sensitive)."],
         },
         whitelistBuffs = {
           order = 1,
@@ -965,7 +976,7 @@ addon.options.args["spellFilter"] = {
           order = 6,
           type = 'input',
           name = L["Aura Name"],
-          desc = L["The full, case-sensitive name of the |cff1AFF1ABuff|r you want to filter.\n\nYou can add/remove |cff798BDDmultiple|r entries by separating them with a |cffFF8000semicolon|r (e.g. 'Shadowform;Power Word: Fortitude')."],
+          desc = L["The full, case-sensitive name of the |cff1AFF1ABuff|r you want to filter.\n\nYou can add/remove |cff11a34amultiple|r entries by separating them with a |cffFF8000semicolon|r (e.g. 'Shadowform;Power Word: Fortitude')."],
           set = setSpell,
           get = noop,
         },
@@ -983,7 +994,7 @@ addon.options.args["spellFilter"] = {
           order = 8,
           type = 'select',
           name = L["Buff History:"],
-          desc = L["A list of |cff1AFF1ABuff|r names that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cff1AFF1ABuff|r names that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetBuffHistory,
           get = noop,
@@ -993,7 +1004,7 @@ addon.options.args["spellFilter"] = {
     },
 
     listDebuffs = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDDebuffs|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aDebuffs|r"],
       type = 'group',
       order = 30,
       guiInline = false,
@@ -1001,7 +1012,7 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter out |cffFF1A1ADebuff|r auras that your player gains or loses. In order to filter them, you need to type the |cffFFFF00exact name of the aura|r (case sensitive)."],
+          name = L["These options allow you to filter out |cffFF1A1ADebuff|r auras that your player gains or loses. In order to filter them, you need to type the |cff11a34aexact name of the aura|r (case sensitive)."],
         },
         whitelistDebuffs = {
           order = 1,
@@ -1034,7 +1045,7 @@ addon.options.args["spellFilter"] = {
           order = 4,
           type = 'select',
           name = L["Debuff History:"],
-          desc = L["A list of |cffFF1A1ABuff|r names that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cffFF1A1ABuff|r names that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetDebuffHistory,
           get = noop,
@@ -1044,7 +1055,7 @@ addon.options.args["spellFilter"] = {
     },
 
     listProcs = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDProcs|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aProcs|r"],
       type = 'group',
       order = 40,
       guiInline = false,
@@ -1052,7 +1063,7 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter out spell |cffFFFF00Procs|r that your player triggers.  In order to filter them, you need to type the |cffFFFF00exact name of the proc|r (case sensitive)."],
+          name = L["These options allow you to filter out spell |cff11a34aProcs|r that your player triggers.  In order to filter them, you need to type the |cff11a34aexact name of the proc|r (case sensitive)."],
         },
         whitelistProcs = {
           order = 1,
@@ -1067,7 +1078,7 @@ addon.options.args["spellFilter"] = {
           order = 6,
           type = 'input',
           name = L["Proc Name"],
-          desc = L["The full, case-sensitive name of the |cff1AFF1AProc|r you want to filter.\n\nYou can add/remove |cff798BDDmultiple|r entries by separating them with a |cffFF8000semicolon|r (e.g. 'Shadowform;Power Word: Fortitude')."],
+          desc = L["The full, case-sensitive name of the |cff1AFF1AProc|r you want to filter.\n\nYou can add/remove |cff11a34amultiple|r entries by separating them with a |cffFF8000semicolon|r (e.g. 'Shadowform;Power Word: Fortitude')."],
           set = setProc,
           get = noop,
         },
@@ -1085,7 +1096,7 @@ addon.options.args["spellFilter"] = {
           order = 8,
           type = 'select',
           name = L["Proc History:"],
-          desc = L["A list of |cff1AFF1AProc|r items that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cff1AFF1AProc|r items that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetProcHistory,
           get = noop,
@@ -1095,7 +1106,7 @@ addon.options.args["spellFilter"] = {
     },
 
     listSpells = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDOutgoing Spells|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aOutgoing Spells|r"],
       type = 'group',
       order = 50,
       guiInline = false,
@@ -1103,7 +1114,7 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter |cff71d5ffOutgoing Spells|r that your player does. In order to filter them, you need to type the |cffFFFF00Spell ID|r of the spell."],
+          name = L["These options allow you to filter |cff71d5ffOutgoing Spells|r that your player does. In order to filter them, you need to type the |cff11a34aSpell ID|r of the spell."],
         },
         whitelistSpells = {
           order = 1,
@@ -1136,7 +1147,7 @@ addon.options.args["spellFilter"] = {
           order = 4,
           type = 'select',
           name = L["Spell History:"],
-          desc = L["A list of |cff71d5ffOutgoing Spell|r IDs that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cff71d5ffOutgoing Spell|r IDs that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetSpellHistory,
           get = noop,
@@ -1146,7 +1157,7 @@ addon.options.args["spellFilter"] = {
     },
 
     listItems = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDItems (Plus)|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aItems (Plus)|r"],
       type = 'group',
       order = 60,
       guiInline = false,
@@ -1154,13 +1165,13 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter out |cff8020FFItems|r that your player collects.  In order to filter them, you need to type the |cffFFFF00exact name of the item|r (case sensitive)."],
+          name = L["These options allow you to filter out |cff8020FFItems|r that your player collects.  In order to filter them, you need to type the |cff11a34aexact name of the item|r (case sensitive)."],
         },
         whitelistItems = {
           order = 1,
           type = 'toggle',
           name = L["Whitelist"],
-          desc = L["Filtered |cff798BDDItems (Plus)|r will be on a whitelist (opposed to a blacklist)."],
+          desc = L["Filtered |cff11a34aItems (Plus)|r will be on a whitelist (opposed to a blacklist)."],
           set = set0_1,
           get = get0_1,
           width = "full",
@@ -1169,7 +1180,7 @@ addon.options.args["spellFilter"] = {
           order = 2,
           type = 'input',
           name = L["Item ID"],
-          desc = L["The Item ID of the |cff798BDDItem|r you want to filter."],
+          desc = L["The Item ID of the |cff11a34aItem|r you want to filter."],
           set = setSpell,
           get = noop,
         },
@@ -1187,7 +1198,7 @@ addon.options.args["spellFilter"] = {
           order = 4,
           type = 'select',
           name = L["Item History:"],
-          desc = L["A list of |cff798BDDItem|r IDs that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cff11a34aItem|r IDs that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetItemHistory,
           get = noop,
@@ -1198,7 +1209,7 @@ addon.options.args["spellFilter"] = {
 
 
     listDamage = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDIncoming Damage|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aIncoming Damage|r"],
       type = 'group',
       order = 70,
       guiInline = false,
@@ -1206,7 +1217,7 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter out certain |cffFFFF00Spell ID|rs from |cff798BDDIncoming Damage|r to your character.  In order to add a new item, you need to type the |cffFFFF00Spell ID|r. Checking |cffFFFF00Remove|r and typing in a |cffFFFF00Spell ID|r will remove it from the list.\n"],
+          name = L["These options allow you to filter out certain |cff11a34aSpell ID|rs from |cff11a34aIncoming Damage|r to your character.  In order to add a new item, you need to type the |cff11a34aSpell ID|r. Checking |cff11a34aRemove|r and typing in a |cff11a34aSpell ID|r will remove it from the list.\n"],
         },
         whitelistDamage = {
           order = 1,
@@ -1221,7 +1232,7 @@ addon.options.args["spellFilter"] = {
           order = 2,
           type = 'input',
           name = L["Spell ID"],
-          desc = L["The Spell ID of the |cff798BDDSpell|r you want to filter."],
+          desc = L["The Spell ID of the |cff11a34aSpell|r you want to filter."],
           set = setSpell,
           get = noop,
         },
@@ -1239,7 +1250,7 @@ addon.options.args["spellFilter"] = {
           order = 4,
           type = 'select',
           name = L["Spell History:"],
-          desc = L["A list of |cff798BDDSpell|r IDs that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cff11a34aSpell|r IDs that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetDamageIncomingHistory,
           get = noop,
@@ -1249,7 +1260,7 @@ addon.options.args["spellFilter"] = {
     },
 
     listHealing = {
-      name = L["|cffFFFFFFFilter:|r |cff798BDDIncoming Healing|r"],
+      name = L["|cffFFFFFFFilter:|r |cff11a34aIncoming Healing|r"],
       type = 'group',
       order = 80,
       guiInline = false,
@@ -1257,7 +1268,7 @@ addon.options.args["spellFilter"] = {
         title = {
           order = 0,
           type = "description",
-          name = L["These options allow you to filter out certain |cffFFFF00Spell ID|rs from |cff798BDDIncoming Healing|r to your character.  In order to add a new item, you need to type the |cffFFFF00Spell ID|r. Checking |cffFFFF00Remove|r and typing in a |cffFFFF00Spell ID|r will remove it from the list.\n"],
+          name = L["These options allow you to filter out certain |cff11a34aSpell ID|rs from |cff11a34aIncoming Healing|r to your character.  In order to add a new item, you need to type the |cff11a34aSpell ID|r. Checking |cff11a34aRemove|r and typing in a |cff11a34aSpell ID|r will remove it from the list.\n"],
         },
         whitelistHealing = {
           order = 1,
@@ -1272,7 +1283,7 @@ addon.options.args["spellFilter"] = {
           order = 2,
           type = 'input',
           name = L["Spell ID"],
-          desc = L["The Spell ID of the |cff798BDDSpell|r you want to filter."],
+          desc = L["The Spell ID of the |cff11a34aSpell|r you want to filter."],
           set = setSpell,
           get = noop,
         },
@@ -1290,7 +1301,7 @@ addon.options.args["spellFilter"] = {
           order = 4,
           type = 'select',
           name = L["Spell History:"],
-          desc = L["A list of |cff798BDDSpell|r IDs that have been seen. |cffFF0000Requires:|r |cff798BDDTrack Spell History|r"],
+          desc = L["A list of |cff11a34aSpell|r IDs that have been seen. |cffFF0000Requires:|r |cff11a34aTrack Spell History|r"],
           disabled = IsTrackSpellsDisabled,
           values = GetHealingIncomingHistory,
           get = noop,
@@ -1315,14 +1326,14 @@ addon.options.args["Credits"] = {
     specialThanksTitle = {
       type = 'description',
       order = 1,
-      name = "|cffFFFF00Special Thanks|r",
+      name = "|cff11a34aSpecial Thanks|r",
       fontSize = "large",
     },
     specialThanksList = {
       type = 'description',
       order = 2,
       fontSize = "medium",
-      name = "  |cffAA0000Tukz|r, |cffAA0000Elv|r, |cffFFFF00Affli|r, |cffFF8000BuG|r, |cff8080FFShestak|r, |cffAAAAFFToludin|r, Nidra, gnangnan, NitZo, Naughtia, Derap, sortokk, ckaotik, Cecile.",
+      name = "  |cffAA0000Tukz|r, |cffAA0000Elv|r, |cff11a34aAffli|r, |cffFF8000BuG|r, |cff8080FFShestak|r, |cffAAAAFFToludin|r, Nidra, gnangnan, NitZo, Naughtia, Derap, sortokk, ckaotik, Cecile.",
     },
     testerTitleSpace1 = {
       type = 'description',
@@ -1333,7 +1344,7 @@ addon.options.args["Credits"] = {
     testerTitle = {
       type = 'description',
       order = 10,
-      name = "|cffFFFF00Beta Testers - Version 3.0.0|r",
+      name = "|cff11a34aBeta Testers - Version 3.0.0|r",
       fontSize = "large",
     },
     userName1 = {
@@ -1351,7 +1362,7 @@ addon.options.args["Credits"] = {
     curseTitle = {
       type = 'description',
       order = 21,
-      name = "|cffFFFF00Beta Testers - Version 4.0.0 (Curse)|r",
+      name = "|cff11a34aBeta Testers - Version 4.0.0 (Curse)|r",
       fontSize = "large",
     },
     userName2 = {
@@ -1369,7 +1380,7 @@ addon.options.args["Credits"] = {
     tukuiTitle = {
       type = 'description',
       order = 31,
-      name = "|cffFFFF00Beta Testers - Version 4.0.0 (Tukui)|r",
+      name = "|cff11a34aBeta Testers - Version 4.0.0 (Tukui)|r",
       fontSize = "large",
     },
     userName3 = {
@@ -1387,7 +1398,7 @@ addon.options.args["Credits"] = {
     tukuiTitleLegion = {
       type = 'description',
       order = 34,
-      name = "|cffFFFF00Beta Testers - Version 4.3.0+ (Legion)|r",
+      name = "|cff11a34aBeta Testers - Version 4.3.0+ (Legion)|r",
       fontSize = "large",
     },
     userName3Legion = {
@@ -1405,7 +1416,7 @@ addon.options.args["Credits"] = {
     tukuiTitleBfA = {
       type = 'description',
       order = 37,
-      name = "|cffFFFF00Beta Testers - Version 4.4.0+ (Battle for Azeroth)|r",
+      name = "|cff11a34aBeta Testers - Version 4.4.0+ (Battle for Azeroth)|r",
       fontSize = "large",
     },
 
@@ -1424,7 +1435,7 @@ addon.options.args["Credits"] = {
     githubTitleSL = {
       type = 'description',
       order = 41,
-      name = "|cffFFFF00Github Contributors - Version 4.5.0+ (Shadowlands)|r",
+      name = "|cff11a34aGitHub Contributors - Version 4.5.0+ (Shadowlands)|r",
       fontSize = "large",
     },
     userNameSL = {
@@ -1443,7 +1454,7 @@ addon.options.args["Credits"] = {
     githubTitle = {
       type = 'description',
       order = 46,
-      name = "|cffFFFF00Thank You Github Contributors!|r",
+      name = "|cff11a34aThank You GitHub Contributors!|r",
       fontSize = "large",
     },
     userName4 = {
@@ -1465,7 +1476,7 @@ addon.options.args["Credits"] = {
     contactTitle = {
       type = 'description',
       order = 51,
-      name = "|cffFFFF00Contact Me|r",
+      name = "|cff11a34aContact Me|r",
       fontSize = "large",
     },
 
@@ -1498,7 +1509,7 @@ addon.options.args["FloatingCombatText"] = {
         listSpacer0 = {
           type = "description",
           order = 0,
-          name = L["|cff798BDDFloating Combat Text Options|r:\n"],
+          name = L["|cff11a34aFloating Combat Text Options|r:\n"],
           fontSize = 'large',
         },
 
@@ -1531,7 +1542,7 @@ addon.options.args["FloatingCombatText"] = {
         headerAppearance = {
           type = "description",
           order = 4,
-          name = L["|cffFFFF00Floating Combat Text Appearance:|r"],
+          name = L["|cff11a34aFloating Combat Text Appearance:|r"],
           fontSize = 'medium',
         },
 
@@ -1560,7 +1571,7 @@ addon.options.args["FloatingCombatText"] = {
         headerDamage = {
           type = "description",
           order = 10,
-          name = L["|cffFFFF00Damage:|r"],
+          name = L["|cff11a34aDamage:|r"],
           fontSize = 'medium',
         },
 
@@ -1613,7 +1624,7 @@ addon.options.args["FloatingCombatText"] = {
         headerHealingAbsorbs = {
           type = "description",
           order = 20,
-          name = L["\n|cffFFFF00Healing and Absorbs:|r"],
+          name = L["\n|cff11a34aHealing and Absorbs:|r"],
           fontSize = 'medium',
         },
 
@@ -1648,7 +1659,7 @@ addon.options.args["FloatingCombatText"] = {
         headerGains = {
           type = "description",
           order = 30,
-          name = L["\n|cffFFFF00Player Gains:|r"],
+          name = L["\n|cff11a34aPlayer Gains:|r"],
           fontSize = 'medium',
         },
 
@@ -1701,7 +1712,7 @@ addon.options.args["FloatingCombatText"] = {
         headerStatusEffects = {
           type = "description",
           order = 40,
-          name = L["\n|cffFFFF00Status Effects:|r"],
+          name = L["\n|cff11a34aStatus Effects:|r"],
           fontSize = 'medium',
         },
 
@@ -1772,7 +1783,7 @@ addon.options.args["FloatingCombatText"] = {
         headerPlayerStatus = {
           type = "description",
           order = 50,
-          name = L["\n|cffFFFF00Player Status:|r"],
+          name = L["\n|cff11a34aPlayer Status:|r"],
           fontSize = 'medium',
         },
 
@@ -1816,7 +1827,7 @@ addon.options.args["FloatingCombatText"] = {
         listSpacer1 = {
           type = "description",
           order = 3,
-          name = L["|cff798BDDFloating Combat Text|r |cffFF0000Advanced Settings|r:\n"],
+          name = L["|cff11a34aFloating Combat Text|r |cffFF0000Advanced Settings|r:\n"],
           fontSize = 'large',
         },
 
@@ -1853,8 +1864,288 @@ addon.options.args["SpellSchools"] = {
     title = {
       type = "description",
       order = 0,
-      name = L["|cff798BDDCustomize Spell School Colors|r:\n"],
+      name = L["|cff11a34aCustomize Spell School Colors|r:\n"],
       fontSize = 'large',
+    },
+  },
+}
+
+-- Helper function to get LSM sound list
+local function GetSoundList()
+  local sounds = { ["None"] = "None" }
+  for name in pairs(LSM:HashTable("sound")) do
+    sounds[name] = name
+  end
+  return sounds
+end
+
+-- Helper to play a sound from LSM
+local function TestSound(soundName)
+  if soundName and soundName ~= "None" then
+    local soundFile = LSM:Fetch("sound", soundName)
+    if soundFile then
+      PlaySoundFile(soundFile, "Master")
+    end
+  end
+end
+
+addon.options.args["SoundAlerts"] = {
+  name = L["Sound Alerts"],
+  type = 'group',
+  order = 6,
+  args = {
+    title = {
+      type = "description",
+      order = 0,
+      name = L["|cff11a34aSound Alerts|r:\n\nPlay sounds when certain combat events occur. All sounds are disabled by default.\n"],
+      fontSize = 'medium',
+    },
+
+    enableSounds = {
+      order = 1,
+      type = 'toggle',
+      width = 'full',
+      name = L["Enable Sound Alerts"],
+      desc = L["Master toggle for all sound alerts. Individual sounds must also be enabled below."],
+      get = function() return x.db.profile.sounds.enabled end,
+      set = function(_, value) x.db.profile.sounds.enabled = value end,
+    },
+
+    spacer1 = {
+      type = "description",
+      order = 2,
+      name = "\n",
+    },
+
+    -- Critical Hit
+    criticalHitHeader = {
+      type = "description",
+      order = 10,
+      name = L["|cff11a34aOutgoing Critical Hits|r:"],
+      fontSize = 'medium',
+    },
+
+    criticalHitEnabled = {
+      order = 11,
+      type = 'toggle',
+      name = L["Enable"],
+      desc = L["Play a sound when you land a critical hit."],
+      get = function() return x.db.profile.sounds.criticalHit.enabled end,
+      set = function(_, value) x.db.profile.sounds.criticalHit.enabled = value end,
+      disabled = function() return not x.db.profile.sounds.enabled end,
+    },
+
+    criticalHitSound = {
+      order = 12,
+      type = 'select',
+      dialogControl = 'LSM30_Sound',
+      name = L["Sound"],
+      values = AceGUIWidgetLSMlists.sound,
+      get = function() return x.db.profile.sounds.criticalHit.sound end,
+      set = function(_, value) x.db.profile.sounds.criticalHit.sound = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.criticalHit.enabled end,
+    },
+
+    criticalHitTest = {
+      order = 13,
+      type = 'execute',
+      name = L["Test Sound"],
+      func = function() TestSound(x.db.profile.sounds.criticalHit.sound) end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.criticalHit.enabled end,
+    },
+
+    spacer2 = {
+      type = "description",
+      order = 19,
+      name = "\n",
+    },
+
+    -- Killing Blow
+    killingBlowHeader = {
+      type = "description",
+      order = 20,
+      name = L["|cff11a34aKilling Blows|r:"],
+      fontSize = 'medium',
+    },
+
+    killingBlowEnabled = {
+      order = 21,
+      type = 'toggle',
+      name = L["Enable"],
+      desc = L["Play a sound when you land a killing blow."],
+      get = function() return x.db.profile.sounds.killingBlow.enabled end,
+      set = function(_, value) x.db.profile.sounds.killingBlow.enabled = value end,
+      disabled = function() return not x.db.profile.sounds.enabled end,
+    },
+
+    killingBlowSound = {
+      order = 22,
+      type = 'select',
+      dialogControl = 'LSM30_Sound',
+      name = L["Sound"],
+      values = AceGUIWidgetLSMlists.sound,
+      get = function() return x.db.profile.sounds.killingBlow.sound end,
+      set = function(_, value) x.db.profile.sounds.killingBlow.sound = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.killingBlow.enabled end,
+    },
+
+    killingBlowTest = {
+      order = 23,
+      type = 'execute',
+      name = L["Test Sound"],
+      func = function() TestSound(x.db.profile.sounds.killingBlow.sound) end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.killingBlow.enabled end,
+    },
+
+    spacer3 = {
+      type = "description",
+      order = 29,
+      name = "\n",
+    },
+
+    -- Incoming Crit
+    incomingCritHeader = {
+      type = "description",
+      order = 30,
+      name = L["|cff11a34aIncoming Critical Hits|r:"],
+      fontSize = 'medium',
+    },
+
+    incomingCritEnabled = {
+      order = 31,
+      type = 'toggle',
+      name = L["Enable"],
+      desc = L["Play a sound when you are hit by a critical strike."],
+      get = function() return x.db.profile.sounds.incomingCrit.enabled end,
+      set = function(_, value) x.db.profile.sounds.incomingCrit.enabled = value end,
+      disabled = function() return not x.db.profile.sounds.enabled end,
+    },
+
+    incomingCritSound = {
+      order = 32,
+      type = 'select',
+      dialogControl = 'LSM30_Sound',
+      name = L["Sound"],
+      values = AceGUIWidgetLSMlists.sound,
+      get = function() return x.db.profile.sounds.incomingCrit.sound end,
+      set = function(_, value) x.db.profile.sounds.incomingCrit.sound = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.incomingCrit.enabled end,
+    },
+
+    incomingCritTest = {
+      order = 33,
+      type = 'execute',
+      name = L["Test Sound"],
+      func = function() TestSound(x.db.profile.sounds.incomingCrit.sound) end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.incomingCrit.enabled end,
+    },
+
+    spacer4 = {
+      type = "description",
+      order = 39,
+      name = "\n",
+    },
+
+    -- Low Health
+    lowHealthHeader = {
+      type = "description",
+      order = 40,
+      name = L["|cff11a34aLow Health Warning|r:"],
+      fontSize = 'medium',
+    },
+
+    lowHealthEnabled = {
+      order = 41,
+      type = 'toggle',
+      name = L["Enable"],
+      desc = L["Play a sound when your health drops below the threshold."],
+      get = function() return x.db.profile.sounds.lowHealth.enabled end,
+      set = function(_, value) x.db.profile.sounds.lowHealth.enabled = value end,
+      disabled = function() return not x.db.profile.sounds.enabled end,
+    },
+
+    lowHealthSound = {
+      order = 42,
+      type = 'select',
+      dialogControl = 'LSM30_Sound',
+      name = L["Sound"],
+      values = AceGUIWidgetLSMlists.sound,
+      get = function() return x.db.profile.sounds.lowHealth.sound end,
+      set = function(_, value) x.db.profile.sounds.lowHealth.sound = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.lowHealth.enabled end,
+    },
+
+    lowHealthThreshold = {
+      order = 43,
+      type = 'range',
+      name = L["Threshold"],
+      desc = L["Health percentage to trigger the warning."],
+      min = 10, max = 50, step = 5,
+      get = function() return x.db.profile.sounds.lowHealth.threshold end,
+      set = function(_, value) x.db.profile.sounds.lowHealth.threshold = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.lowHealth.enabled end,
+    },
+
+    lowHealthTest = {
+      order = 44,
+      type = 'execute',
+      name = L["Test Sound"],
+      func = function() TestSound(x.db.profile.sounds.lowHealth.sound) end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.lowHealth.enabled end,
+    },
+
+    spacer5 = {
+      type = "description",
+      order = 49,
+      name = "\n",
+    },
+
+    -- Low Mana
+    lowManaHeader = {
+      type = "description",
+      order = 50,
+      name = L["|cff11a34aLow Mana Warning|r:"],
+      fontSize = 'medium',
+    },
+
+    lowManaEnabled = {
+      order = 51,
+      type = 'toggle',
+      name = L["Enable"],
+      desc = L["Play a sound when your mana drops below the threshold."],
+      get = function() return x.db.profile.sounds.lowMana.enabled end,
+      set = function(_, value) x.db.profile.sounds.lowMana.enabled = value end,
+      disabled = function() return not x.db.profile.sounds.enabled end,
+    },
+
+    lowManaSound = {
+      order = 52,
+      type = 'select',
+      dialogControl = 'LSM30_Sound',
+      name = L["Sound"],
+      values = AceGUIWidgetLSMlists.sound,
+      get = function() return x.db.profile.sounds.lowMana.sound end,
+      set = function(_, value) x.db.profile.sounds.lowMana.sound = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.lowMana.enabled end,
+    },
+
+    lowManaThreshold = {
+      order = 53,
+      type = 'range',
+      name = L["Threshold"],
+      desc = L["Mana percentage to trigger the warning."],
+      min = 5, max = 40, step = 5,
+      get = function() return x.db.profile.sounds.lowMana.threshold end,
+      set = function(_, value) x.db.profile.sounds.lowMana.threshold = value end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.lowMana.enabled end,
+    },
+
+    lowManaTest = {
+      order = 54,
+      type = 'execute',
+      name = L["Test Sound"],
+      func = function() TestSound(x.db.profile.sounds.lowMana.sound) end,
+      disabled = function() return not x.db.profile.sounds.enabled or not x.db.profile.sounds.lowMana.enabled end,
     },
   },
 }
@@ -1876,7 +2167,7 @@ addon.options.args["Frames"] = {
         listSpacer0 = {
           type = "description",
           order = 1,
-          name = L["|cff798BDDWhen Moving the Frames|r:"],
+          name = L["|cff11a34aWhen Moving the Frames|r:"],
           fontSize = 'large',
         },
 
@@ -1884,7 +2175,7 @@ addon.options.args["Frames"] = {
           order = 2,
           type = 'toggle',
           name = L["Show Align Grid"],
-          desc = L["Shows a grid after you |cffFFFF00Toggle Frames|r to help you align |cffFF0000x|r|cffFFFF00CT|r|cffFF0000+|r frames better."],
+          desc = L["Shows a grid after you |cff11a34aToggle Frames|r to help you align |cff11a34axCT+|r frames better."],
           get = get0,
           set = set0,
         },
@@ -1893,7 +2184,7 @@ addon.options.args["Frames"] = {
           order = 3,
           type = 'toggle',
           name = L["Show Positions"],
-          desc = L["Shows the locations and sizes of your frames after you |cffFFFF00Toggle Frames|r to help you align |cffFF0000x|r|cffFFFF00CT|r|cffFF0000+|r frames better."],
+          desc = L["Shows the locations and sizes of your frames after you |cff11a34aToggle Frames|r to help you align |cff11a34axCT+|r frames better."],
           get = get0,
           set = set0,
         },
@@ -1901,7 +2192,7 @@ addon.options.args["Frames"] = {
         listSpacer1 = {
           type = "description",
           order = 10,
-          name = L["\n|cff798BDDWhen Showing the Frames|r:"],
+          name = L["\n|cff11a34aWhen Showing the Frames|r:"],
           fontSize = 'large',
         },
 
@@ -1909,13 +2200,13 @@ addon.options.args["Frames"] = {
           type = 'select',
           order = 11,
           name = L["Frame Strata"],
-          desc = L["The Z-Layer to place the |cffFF0000x|r|cffFFFF00CT|r|cffFF0000+|r frames onto. If you find that another addon is in front of |cffFF0000x|r|cffFFFF00CT|r|cffFF0000+|r frames, try increasing the Frame Strata."],
+          desc = L["The Z-Layer to place the |cff11a34axCT+|r frames onto. If you find that another addon is in front of |cff11a34axCT+|r frames, try increasing the Frame Strata."],
           values = {
             --["1PARENT"]             = "Parent |cffFF0000(Lowest)|r",
             ["2BACKGROUND"]         = L["Background |cffFF0000(Lowest)|r"],
             ["3LOW"]                = L["Low"],
             ["4MEDIUM"]             = L["Medium"],
-            ["5HIGH"]               = L["High |cffFFFF00(Default)|r"],
+            ["5HIGH"]               = L["High |cff848482(Default)|r"],
             ["6DIALOG"]             = L["Dialog"],
             ["7FULLSCREEN"]         = L["Fullscreen"],
             ["8FULLSCREEN_DIALOG"]  = L["Fullscreen Dialog"],
@@ -1928,7 +2219,7 @@ addon.options.args["Frames"] = {
         listSpacer2 = {
           type = "description",
           order = 20,
-          name = L["\n|cff798BDDWhen Leaving Combat|r:"],
+          name = L["\n|cff11a34aWhen Leaving Combat|r:"],
           fontSize = 'large',
         },
 
@@ -1960,7 +2251,7 @@ addon.options.args["Frames"] = {
         listSpacer0 = {
           type = "description",
           order = 0,
-          name = L["|cff798BDDFormat Numbers in the Frames|r (Choose one):"],
+          name = L["|cff11a34aFormat Numbers in the Frames|r (Choose one):"],
           fontSize = 'large',
         },
         formatAbbreviate = {
@@ -1974,7 +2265,7 @@ addon.options.args["Frames"] = {
           type = 'toggle',
           order = 2,
           name = L["Decimal Marks"],
-          desc = L["Groups decimals and separates them by commas; this allows for better responsiveness when reading numbers.\n\n|cffFF0000EXAMPLE|r |cff798BDD12,890|r"],
+          desc = L["Groups decimals and separates them by commas; this allows for better responsiveness when reading numbers.\n\n|cffFF0000EXAMPLE|r |cff11a34a12,890|r"],
           set = setFormating,
           get = getDBSpells,
         },
@@ -1982,21 +2273,21 @@ addon.options.args["Frames"] = {
         abbDesc = {
           type = "description",
           order = 9,
-          name = L["\n\n|cffFFFF00PLEASE NOTE|r |cffAAAAAAFormat settings need to be independently enabled on each frame through its respective settings page.|r"],
+          name = L["\n\n|cff848482Note:|r |cffAAAAAAFormat settings need to be independently enabled on each frame through its respective settings page.|r"],
           fontSize = 'small',
         },
 
         listSpacer1 = {
           type = "description",
           order = 10,
-          name = L["\n|cff798BDDAdditional Abbreviation Settings|r:"],
+          name = L["\n|cff11a34aAdditional Abbreviation Settings|r:"],
           fontSize = 'large',
         },
         thousandSymbol = {
           order = 11,
           type = 'input',
           name = L["Thousand"],
-          desc = L["Symbol for: |cffFF0000Thousands|r |cff798BDD(10e+3)|r"],
+          desc = L["Symbol for: |cffFF0000Thousands|r |cff11a34a(10e+3)|r"],
           get = getTextIn0,
           set = setTextIn0,
         },
@@ -2004,7 +2295,7 @@ addon.options.args["Frames"] = {
           order = 12,
           type = 'input',
           name = L["Million"],
-          desc = L["Symbol for: |cffFF0000Millions|r |cff798BDD(10e+6)|r"],
+          desc = L["Symbol for: |cffFF0000Millions|r |cff11a34a(10e+6)|r"],
           get = getTextIn0,
           set = setTextIn0,
         },
@@ -2012,7 +2303,7 @@ addon.options.args["Frames"] = {
           order = 14,
           type = 'input',
           name = L["Billion"],
-          desc = L["Symbol for: |cffFF0000Billions|r |cff798BDD(10e+9)|r"],
+          desc = L["Symbol for: |cffFF0000Billions|r |cff11a34a(10e+9)|r"],
           get = getTextIn0,
           set = setTextIn0,
         },
@@ -2020,7 +2311,7 @@ addon.options.args["Frames"] = {
           order = 15,
           type = 'toggle',
           name = L["Single Decimal Precision"],
-          desc = L["Shows a single digit of precision when abbreviating the value (e.g. will show |cff798BDD5.9K|r instead of |cff798BDD6K|r)."],
+          desc = L["Shows a single digit of precision when abbreviating the value (e.g. will show |cff11a34a5.9K|r instead of |cff11a34a6K|r)."],
           get = get0,
           set = set0,
         },
@@ -2037,12 +2328,12 @@ addon.options.args["Frames"] = {
       order = 5,
       type = 'group',
       guiInline = true,
-      name = L["Global Frame Settings |cffFFFFFF(Experimental)|r"],
+      name = L["Global Frame Settings"],
       args = {
         miscDesc = {
           type = "description",
           order = 0,
-          name = L["The following settings are marked as experimental. They should all work, but they might not be very useful. Expect chanrges or updates to these in the near future.\n\nClick |cffFFFF00Set All|r to apply setting to all |cffFF0000x|r|cffFFFF00CT|r|cffFF0000+|r frames.\n"],
+          name = L["The following settings are marked as experimental. They should all work, but they might not be very useful. Expect chanrges or updates to these in the near future.\n\nClick |cff11a34aSet All|r to apply setting to all |cff11a34axCT+|r frames.\n"],
         },
 
 
@@ -2167,7 +2458,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -2225,7 +2516,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Number Formatting"],
-              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff798BDDAbbreviation|r or |cff798BDDDecimal Marks|r. "],
+              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff11a34aAbbreviation|r or |cff11a34aDecimal Marks|r. "],
               get = get2,
               set = set2,
             },
@@ -2233,7 +2524,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -2265,7 +2556,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 20,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -2281,7 +2572,7 @@ addon.options.args["Frames"] = {
               order = 22,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -2290,7 +2581,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 23,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -2300,7 +2591,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 24,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -2319,7 +2610,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -2377,7 +2668,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -2431,7 +2722,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -2473,14 +2764,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -2506,7 +2797,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -2520,7 +2811,7 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDMiscellaneous Settings|r:"],
+              name = L["|cff11a34aMiscellaneous Settings|r:"],
               fontSize = 'large',
             },
             showInterrupts = {
@@ -2616,7 +2907,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -2674,7 +2965,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Number Formatting"],
-              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff798BDDAbbreviation|r or |cff798BDDDecimal Marks|r. "],
+              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff11a34aAbbreviation|r or |cff11a34aDecimal Marks|r. "],
               get = get2,
               set = set2,
             },
@@ -2682,7 +2973,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -2714,7 +3005,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 30,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -2730,7 +3021,7 @@ addon.options.args["Frames"] = {
               order = 32,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -2739,7 +3030,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 33,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -2749,7 +3040,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 34,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -2768,7 +3059,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -2826,7 +3117,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -2880,7 +3171,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -2922,14 +3213,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -2955,7 +3246,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -2972,14 +3263,14 @@ addon.options.args["Frames"] = {
             namesDescription = {
               type = 'description',
               order = 1,
-              name = L["The |cffFFFF00Names Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cffFFFF00Spam Merger|r will preempt formatting."],
+              name = L["The |cff11a34aNames Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cff11a34aSpam Merger|r will preempt formatting."],
               fontSize = 'small'
             },
 
             nameAppearance = {
               type = 'description',
               order = 2,
-              name = L["|cff798BDDName Appearance|r:\n\n"],
+              name = L["|cff11a34aName Appearance|r:\n\n"],
               fontSize = 'large',
               width = 'normal'
             },
@@ -3010,7 +3301,7 @@ addon.options.args["Frames"] = {
                 playerNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDPlayer Name Format Settings|r:"],
+                  name = L["|cff11a34aPlayer Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3048,7 +3339,7 @@ addon.options.args["Frames"] = {
                 playerSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3094,7 +3385,7 @@ addon.options.args["Frames"] = {
                   type = 'select',
                   order = 30,
                   name = L["Display Player Name"],
-                  desc = L["|cff798BDDNone|r - Disabled\n\n|cff798BDDPlayer Name|r - The name of the player that is affected by the event\n\n|cff798BDDSpell Name|r - The name of the spell that is affecting the player"],
+                  desc = L["|cff11a34aNone|r - Disabled\n\n|cff11a34aPlayer Name|r - The name of the player that is affected by the event\n\n|cff11a34aSpell Name|r - The name of the spell that is affecting the player"],
                   width = 'double',
                   style = 'radio',
                   values = {
@@ -3117,7 +3408,7 @@ addon.options.args["Frames"] = {
                 npcNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDNPC Name Format Settings|r:"],
+                  name = L["|cff11a34aNPC Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3132,7 +3423,7 @@ addon.options.args["Frames"] = {
                 npcSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3177,7 +3468,7 @@ addon.options.args["Frames"] = {
                   type = 'select',
                   order = 21,
                   name = L["Display NPC Name"],
-                  desc = L["|cff798BDDNone|r - Disabled\n\n|cff798BDDNPC's Name|r - The name of the target that is affected by the event\n\n|cff798BDDSpell Name|r - The name of the spell that is affecting the target"],
+                  desc = L["|cff11a34aNone|r - Disabled\n\n|cff11a34aNPC's Name|r - The name of the target that is affected by the event\n\n|cff11a34aSpell Name|r - The name of the spell that is affecting the target"],
                   width = 'double',
                   style = 'radio',
                   values = {
@@ -3203,13 +3494,13 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDDamage Settings|r:"],
+              name = L["|cff11a34aDamage Settings|r:"],
               fontSize = 'large',
             },
             specialTweaks_PlayerDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Player Settings|r:"],
+              name = L["\n|cff11a34aPlayer Settings|r:"],
               fontSize = 'small',
             },
             enableOutDmg = {
@@ -3240,7 +3531,7 @@ addon.options.args["Frames"] = {
             specialTweaks_PetVehicleDesc = {
               type = 'description',
               order = 20,
-              name = L["\n|cffFFFF00Pet and Vehicle Settings|r:"],
+              name = L["\n|cff11a34aPet and Vehicle Settings|r:"],
               fontSize = 'small',
             },
 
@@ -3264,7 +3555,7 @@ addon.options.args["Frames"] = {
               order = 23,
               type = 'toggle',
               name = L["Show Kill Command"],
-              desc = L["Change the source of |cff798BDDKill Command|r to be the |cffFF8000Player|r. This is helpful when you to turn off |cffFF8000Pet|r damage."],
+              desc = L["Change the source of |cff11a34aKill Command|r to be the |cffFF8000Player|r. This is helpful when you to turn off |cffFF8000Pet|r damage."],
               get = get2,
               set = set2,
               hidden = function()return x.player.class~='HUNTER'end
@@ -3281,7 +3572,7 @@ addon.options.args["Frames"] = {
             healingSettings = {
               type = 'description',
               order = 30,
-              name = L["\n|cff798BDDHealing Settings|r:"],
+              name = L["\n|cff11a34aHealing Settings|r:"],
               fontSize = 'large',
             },
             enableOutHeal = {
@@ -3352,7 +3643,7 @@ addon.options.args["Frames"] = {
               order = 45,
               type = 'input',
               name = L["Overhealing Prefix"],
-              desc = L["Text placed before the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: (O:\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              desc = L["Text placed before the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: (O:\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff11a34aFormat Overhealing|r"],
               get = getTextIn2,
               set = setTextIn2,
               disabled = function(info)
@@ -3365,7 +3656,7 @@ addon.options.args["Frames"] = {
               order = 46,
               type = 'input',
               name = L["Overhealing Postfix"],
-              desc = L["Text placed after the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: )\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              desc = L["Text placed after the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: )\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff11a34aFormat Overhealing|r"],
               get = getTextIn2,
               set = setTextIn2,
               disabled = function(info)
@@ -3378,7 +3669,7 @@ addon.options.args["Frames"] = {
             missTypeSettings = {
               type = 'description',
               order = 50,
-              name = L["\n|cff798BDDMiss Type Settings|r:"],
+              name = L["\n|cff11a34aMiss Type Settings|r:"],
               fontSize = 'large',
             },
             enableImmunes = {
@@ -3429,7 +3720,7 @@ addon.options.args["Frames"] = {
     },
 
     critical = {
-      name = L["|cffFFFFFFOutgoing|r |cff798BDD(Criticals)|r"],
+      name = L["|cffFFFFFFOutgoing|r |cff11a34a(Criticals)|r"],
       type = 'group',
       order = 13,
       childGroups = 'tab',
@@ -3444,7 +3735,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -3502,7 +3793,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Number Formatting"],
-              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff798BDDAbbreviation|r or |cff798BDDDecimal Marks|r. "],
+              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff11a34aAbbreviation|r or |cff11a34aDecimal Marks|r. "],
               get = get2,
               set = set2,
             },
@@ -3510,7 +3801,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -3542,7 +3833,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 30,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -3558,7 +3849,7 @@ addon.options.args["Frames"] = {
               order = 32,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -3567,7 +3858,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 33,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -3577,7 +3868,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 34,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -3588,7 +3879,7 @@ addon.options.args["Frames"] = {
             stickyCrits = {
               type = 'description',
               order = 40,
-              name = L["\n|cff798BDDSticky Crits|r:"],
+              name = L["\n|cff11a34aSticky Crits|r:"],
               fontSize = 'large',
             },
             enableStickyMode = {
@@ -3603,7 +3894,7 @@ addon.options.args["Frames"] = {
             stickyDuration = {
               order = 42,
               name = L["Extra Duration"],
-              desc = L["Additional seconds to keep critical hits on screen beyond the normal visibility time. |cffFFFF00(Default: |cff798BDD3|r)|r\n\n|cffFF0000Requires:|r |cff798BDDEnable Sticky Crits|r"],
+              desc = L["Additional seconds to keep critical hits on screen beyond the normal visibility time. |cff848482(Default: |cff11a34a3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aEnable Sticky Crits|r"],
               type = 'range',
               min = 1, max = 10, step = 1,
               get = get2,
@@ -3624,7 +3915,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -3682,7 +3973,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -3736,7 +4027,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -3778,14 +4069,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -3811,7 +4102,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -3828,14 +4119,14 @@ addon.options.args["Frames"] = {
             namesDescription = {
               type = 'description',
               order = 1,
-              name = L["The |cffFFFF00Names Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cffFFFF00Spam Merger|r will preempt formatting."],
+              name = L["The |cff11a34aNames Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cff11a34aSpam Merger|r will preempt formatting."],
               fontSize = 'small'
             },
 
             nameAppearance = {
               type = 'description',
               order = 2,
-              name = L["|cff798BDDName Appearance|r:\n\n"],
+              name = L["|cff11a34aName Appearance|r:\n\n"],
               fontSize = 'large',
               width = 'normal'
             },
@@ -3866,7 +4157,7 @@ addon.options.args["Frames"] = {
                 playerNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDPlayer Name Format Settings|r:"],
+                  name = L["|cff11a34aPlayer Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3904,7 +4195,7 @@ addon.options.args["Frames"] = {
                 playerSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3973,7 +4264,7 @@ addon.options.args["Frames"] = {
                 npcNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDNPC Name Format Settings|r:"],
+                  name = L["|cff11a34aNPC Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -3988,7 +4279,7 @@ addon.options.args["Frames"] = {
                 npcSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4059,7 +4350,7 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDMiscellaneous Settings|r:"],
+              name = L["|cff11a34aMiscellaneous Settings|r:"],
               fontSize = 'large',
             },
             enableAutoAttack_Critical = {
@@ -4090,7 +4381,7 @@ addon.options.args["Frames"] = {
             criticalAppearance = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDCritical Appearance|r:"],
+              name = L["\n|cff11a34aCritical Appearance|r:"],
               fontSize = 'large',
             },
             critPrefix = {
@@ -4134,7 +4425,7 @@ addon.options.args["Frames"] = {
     },
 
     damage = {
-      name = L["|cffFFFFFFIncoming|r |cff798BDD(Damage)|r"],
+      name = L["|cffFFFFFFIncoming|r |cff11a34a(Damage)|r"],
       type = 'group',
       order = 14,
       childGroups = 'tab',
@@ -4148,7 +4439,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -4206,7 +4497,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Number Formatting"],
-              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff798BDDAbbreviation|r or |cff798BDDDecimal Marks|r. "],
+              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff11a34aAbbreviation|r or |cff11a34aDecimal Marks|r. "],
               get = get2,
               set = set2,
             },
@@ -4214,7 +4505,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -4246,7 +4537,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 20,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -4262,7 +4553,7 @@ addon.options.args["Frames"] = {
               order = 22,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -4271,7 +4562,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 23,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -4281,7 +4572,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 24,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -4300,7 +4591,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -4358,7 +4649,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -4412,7 +4703,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -4447,7 +4738,7 @@ addon.options.args["Frames"] = {
             iconAdditionalSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDAdditional Settings|r:"],
+              name = L["\n|cff11a34aAdditional Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabledAutoAttack = {
@@ -4470,14 +4761,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -4503,7 +4794,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -4520,14 +4811,14 @@ addon.options.args["Frames"] = {
             namesDescription = {
               type = 'description',
               order = 1,
-              name = L["The |cffFFFF00Names Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cffFFFF00Spam Merger|r will preempt formatting."],
+              name = L["The |cff11a34aNames Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cff11a34aSpam Merger|r will preempt formatting."],
               fontSize = 'small'
             },
 
             nameAppearance = {
               type = 'description',
               order = 2,
-              name = L["|cff798BDDName Appearance|r:\n\n"],
+              name = L["|cff11a34aName Appearance|r:\n\n"],
               fontSize = 'large',
               width = 'normal'
             },
@@ -4558,7 +4849,7 @@ addon.options.args["Frames"] = {
                 playerNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDPlayer Name Format Settings|r:"],
+                  name = L["|cff11a34aPlayer Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4596,7 +4887,7 @@ addon.options.args["Frames"] = {
                 playerSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4665,7 +4956,7 @@ addon.options.args["Frames"] = {
                 npcNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDNPC Name Format Settings|r:"],
+                  name = L["|cff11a34aNPC Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4680,7 +4971,7 @@ addon.options.args["Frames"] = {
                 npcSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4748,7 +5039,7 @@ addon.options.args["Frames"] = {
                 environmentNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDD\"Environment\" Format Settings|r:"],
+                  name = L["|cff11a34a\"Environment\" Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4785,7 +5076,7 @@ addon.options.args["Frames"] = {
                 environmentSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -4863,7 +5154,7 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDMiscellaneous Settings|r:"],
+              name = L["|cff11a34aMiscellaneous Settings|r:"],
               fontSize = 'large',
             },
             showDodgeParryMiss = {
@@ -4886,7 +5177,7 @@ addon.options.args["Frames"] = {
             criticalAppearance = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDCritical Appearance|r:"],
+              name = L["\n|cff11a34aCritical Appearance|r:"],
               fontSize = 'large',
             },
             critPrefix = {
@@ -4913,7 +5204,7 @@ addon.options.args["Frames"] = {
     },
 
     healing = {
-      name = L["|cffFFFFFFIncoming|r |cff798BDD(Healing)|r"],
+      name = L["|cffFFFFFFIncoming|r |cff11a34a(Healing)|r"],
       type = 'group',
       order = 15,
       childGroups = 'tab',
@@ -4927,7 +5218,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -4985,7 +5276,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Number Formatting"],
-              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff798BDDAbbreviation|r or |cff798BDDDecimal Marks|r. "],
+              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff11a34aAbbreviation|r or |cff11a34aDecimal Marks|r. "],
               get = get2,
               set = set2,
             },
@@ -4993,7 +5284,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -5025,7 +5316,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 20,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -5041,7 +5332,7 @@ addon.options.args["Frames"] = {
               order = 22,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -5050,7 +5341,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 23,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -5060,7 +5351,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 24,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -5079,7 +5370,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -5137,7 +5428,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -5191,7 +5482,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -5233,14 +5524,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -5266,7 +5557,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -5283,14 +5574,14 @@ addon.options.args["Frames"] = {
             namesDescription = {
               type = 'description',
               order = 1,
-              name = L["The |cffFFFF00Names Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cffFFFF00Spam Merger|r will preempt formatting."],
+              name = L["The |cff11a34aNames Settings|r allows you to further format and customize your combat text frames. By selecting values from below, you will be able to see the source, destination or spell names of certain events.\n\n|cffFF8040NOTE:|r The |cff11a34aSpam Merger|r will preempt formatting."],
               fontSize = 'small'
             },
 
             nameAppearance = {
               type = 'description',
               order = 2,
-              name = L["|cff798BDDName Appearance|r:\n\n"],
+              name = L["|cff11a34aName Appearance|r:\n\n"],
               fontSize = 'large',
               width = 'normal'
             },
@@ -5321,7 +5612,7 @@ addon.options.args["Frames"] = {
                 playerNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDPlayer Name Format Settings|r:"],
+                  name = L["|cff11a34aPlayer Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -5359,7 +5650,7 @@ addon.options.args["Frames"] = {
                 playerSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -5428,7 +5719,7 @@ addon.options.args["Frames"] = {
                 npcNames = {
                   type = 'description',
                   order = 1,
-                  name = L["|cff798BDDNPC Name Format Settings|r:"],
+                  name = L["|cff11a34aNPC Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -5443,7 +5734,7 @@ addon.options.args["Frames"] = {
                 npcSpellNames = {
                   type = 'description',
                   order = 10,
-                  name = L["\n|cff798BDDSpell Name Format Settings|r:"],
+                  name = L["\n|cff11a34aSpell Name Format Settings|r:"],
                   fontSize = 'large',
                 },
 
@@ -5514,7 +5805,7 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDMiscellaneous Settings|r:"],
+              name = L["|cff11a34aMiscellaneous Settings|r:"],
               fontSize = 'large',
             },
             enableOverHeal = {
@@ -5529,7 +5820,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Subtract Overhealing"],
-              desc = L["Subtract the overhealed amount from the Total Amount.\n\n|cffFF0000Requires:|r |cff798BDDShow Overheals|r"],
+              desc = L["Subtract the overhealed amount from the Total Amount.\n\n|cffFF0000Requires:|r |cff11a34aShow Overheals|r"],
               get = get2,
               set = set2,
               disabled = function(info)
@@ -5541,7 +5832,7 @@ addon.options.args["Frames"] = {
               order = 6,
               type = 'toggle',
               name = L["Format Overhealing"],
-              desc = L["Splits overhealing into its own section. Example: +43,000 (O: 12,000)\n\n|cffFF0000Requires:|r |cff798BDDShow Overheals|r"],
+              desc = L["Splits overhealing into its own section. Example: +43,000 (O: 12,000)\n\n|cffFF0000Requires:|r |cff11a34aShow Overheals|r"],
               get = get2,
               set = set2,
               disabled = function(info)
@@ -5553,7 +5844,7 @@ addon.options.args["Frames"] = {
               order = 7,
               type = 'input',
               name = L["Overhealing Prefix"],
-              desc = L["Text placed before the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: (O:\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              desc = L["Text placed before the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: (O:\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff11a34aFormat Overhealing|r"],
               get = getTextIn2,
               set = setTextIn2,
               disabled = function(info)
@@ -5566,7 +5857,7 @@ addon.options.args["Frames"] = {
               order = 8,
               type = 'input',
               name = L["Overhealing Postfix"],
-              desc = L["Text placed after the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: )\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff798BDDFormat Overhealing|r"],
+              desc = L["Text placed after the overheal amount.\n\nExample result: +5000 (O: 1200)\nDefault: )\n\nColor codes are optional. See warcraft.wiki.gg/wiki/UI_escape_sequences\n\n|cffFF0000Requires:|r |cff11a34aFormat Overhealing|r"],
               get = getTextIn2,
               set = setTextIn2,
               disabled = function(info)
@@ -5628,7 +5919,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -5686,7 +5977,7 @@ addon.options.args["Frames"] = {
               order = 5,
               type = 'toggle',
               name = L["Number Formatting"],
-              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff798BDDAbbreviation|r or |cff798BDDDecimal Marks|r. "],
+              desc = L["Enables number formatting. This option can be customized in the main |cff00FF00Frames|r options page to be either |cff11a34aAbbreviation|r or |cff11a34aDecimal Marks|r. "],
               get = get2,
               set = set2,
             },
@@ -5694,7 +5985,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -5726,7 +6017,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 20,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -5742,7 +6033,7 @@ addon.options.args["Frames"] = {
               order = 22,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -5751,7 +6042,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 23,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -5761,7 +6052,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 24,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -5780,7 +6071,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -5838,7 +6129,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -5893,14 +6184,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -5926,7 +6217,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -5940,7 +6231,7 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDMiscellaneous Settings|r:"],
+              name = L["|cff11a34aMiscellaneous Settings|r:"],
               fontSize = 'large',
             },
             showEnergyGains = {
@@ -5971,7 +6262,7 @@ addon.options.args["Frames"] = {
             title1 = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFilter Resources|r:"],
+              name = L["\n|cff11a34aFilter Resources|r:"],
               fontSize = 'large',
             },
             title2 = {
@@ -5986,7 +6277,7 @@ addon.options.args["Frames"] = {
             disableResource_MANA = {
               order = 100,
               type = 'toggle',
-              name = L["Disable |cff798BDD"]..MANA,
+              name = L["Disable |cff11a34a"]..MANA,
               get = get2,
               set = set2,
               width = "normal",
@@ -5994,7 +6285,7 @@ addon.options.args["Frames"] = {
             disableResource_RAGE = {
               order = 101,
               type = 'toggle',
-              name = L["Disable |cff798BDD"]..RAGE,
+              name = L["Disable |cff11a34a"]..RAGE,
               get = get2,
               set = set2,
               width = "normal",
@@ -6002,7 +6293,7 @@ addon.options.args["Frames"] = {
             disableResource_FOCUS = {
               order = 102,
               type = 'toggle',
-              name = L["Disable |cff798BDD"]..FOCUS,
+              name = L["Disable |cff11a34a"]..FOCUS,
               get = get2,
               set = set2,
               width = "normal",
@@ -6010,7 +6301,7 @@ addon.options.args["Frames"] = {
             disableResource_ENERGY = {
               order = 103,
               type = 'toggle',
-              name = L["Disable |cff798BDD"]..(ENERGY or "Energy"),
+              name = L["Disable |cff11a34a"]..(ENERGY or "Energy"),
               get = get2,
               set = set2,
               width = "normal",
@@ -6022,7 +6313,7 @@ addon.options.args["Frames"] = {
     },
 
     procs = {
-      name = L["|cffFFFFFFSpecial Effects|r |cff798BDD(Procs)|r"],
+      name = L["|cffFFFFFFSpecial Effects|r |cff11a34a(Procs)|r"],
       type = 'group',
       order = 18,
       childGroups = 'tab',
@@ -6036,7 +6327,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -6094,7 +6385,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -6126,7 +6417,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 20,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -6142,7 +6433,7 @@ addon.options.args["Frames"] = {
               order = 22,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -6151,7 +6442,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 23,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -6161,7 +6452,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 24,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -6179,7 +6470,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -6237,7 +6528,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -6291,7 +6582,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -6333,14 +6624,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -6366,7 +6657,7 @@ addon.options.args["Frames"] = {
             customColors_Desc = {
               type = 'description',
               order = 4,
-              name = L["\n|cffFFFF00Other Color Settings|r:"],
+              name = L["\n|cff11a34aOther Color Settings|r:"],
               fontSize = 'small',
             },
           },
@@ -6390,7 +6681,7 @@ addon.options.args["Frames"] = {
             frameSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFrame Settings|r:"],
+              name = L["|cff11a34aFrame Settings|r:"],
               fontSize = 'large',
             },
             enabledFrame = {
@@ -6448,7 +6739,7 @@ addon.options.args["Frames"] = {
             frameScrolling = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDScrollable Frame Settings|r:"],
+              name = L["\n|cff11a34aScrollable Frame Settings|r:"],
               fontSize = 'large',
             },
             enableScrollable = {
@@ -6480,7 +6771,7 @@ addon.options.args["Frames"] = {
             frameFading = {
               type = 'description',
               order = 30,
-              name = L["\n|cff798BDDFading Text Settings|r:"],
+              name = L["\n|cff11a34aFading Text Settings|r:"],
               fontSize = 'large',
             },
             enableCustomFade = {
@@ -6496,7 +6787,7 @@ addon.options.args["Frames"] = {
               order = 32,
               type = 'toggle',
               name = L["Enable"],
-              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["Turn off to disable fading all together.\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               width = 'half',
               get = get2,
               set = set2_update,
@@ -6505,7 +6796,7 @@ addon.options.args["Frames"] = {
             fadeTime = {
               order = 33,
               name = L["Fade Out Duration"],
-              desc = L["The duration of the fade out animation. |cffFFFF00(Default: |cff798BDD0.3|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration of the fade out animation. |cff848482(Default: |cff11a34a0.3|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 0, max = 2, step = .1,
               get = get2,
@@ -6515,7 +6806,7 @@ addon.options.args["Frames"] = {
             visibilityTime = {
               order = 34,
               name = L["Visibility Duration"],
-              desc = L["The duration that the text is shown in the frame. |cffFFFF00(Default: |cff798BDD5|r)|r\n\n|cffFF0000Requires:|r |cffFFFF00Use Custom Fade|r"],
+              desc = L["The duration that the text is shown in the frame. |cff848482(Default: |cff11a34a5|r)|r\n\n|cffFF0000Requires:|r |cff11a34aUse Custom Fade|r"],
               type = 'range',
               min = 2, max = 15, step = 1,
               get = get2,
@@ -6534,7 +6825,7 @@ addon.options.args["Frames"] = {
             fontSettings = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDFont Settings|r:"],
+              name = L["|cff11a34aFont Settings|r:"],
               fontSize = 'large',
             },
             font = {
@@ -6592,7 +6883,7 @@ addon.options.args["Frames"] = {
             fontShadowSettings = {
               type = 'description',
               order = 10,
-              name = L["\n|cff798BDDFont Shadow Settings|r:"],
+              name = L["\n|cff11a34aFont Shadow Settings|r:"],
               fontSize = 'large',
             },
 
@@ -6646,7 +6937,7 @@ addon.options.args["Frames"] = {
             iconSizeSettings = {
               type = 'description',
               order = 1,
-              name = L["|cff798BDDIcon Settings|r:"],
+              name = L["|cff11a34aIcon Settings|r:"],
               fontSize = 'large',
             },
             iconsEnabled = {
@@ -6688,14 +6979,14 @@ addon.options.args["Frames"] = {
             customColors_label = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDCustom Colors|r:"],
+              name = L["|cff11a34aCustom Colors|r:"],
               fontSize = 'large',
             },
 
             customColors_OverrideDesc = {
               type = 'description',
               order = 1,
-              name = L["\n|cffFFFF00Override All Frame Color Settings|r:"],
+              name = L["\n|cff11a34aOverride All Frame Color Settings|r:"],
               fontSize = 'small',
             },
 
@@ -6729,7 +7020,7 @@ addon.options.args["Frames"] = {
             specialTweaks = {
               type = 'description',
               order = 0,
-              name = L["|cff798BDDMiscellaneous Settings|r:"],
+              name = L["|cff11a34aMiscellaneous Settings|r:"],
               fontSize = 'large',
             },
             showMoney = {
