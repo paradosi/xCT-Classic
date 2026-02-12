@@ -7,5 +7,7 @@
 ## RequiredDeps: Blizzard_CombatText
 ## OptionalDeps: xCT, ElvUI
 ## SavedVariables: xCTSavedDB
+## X-Wago-ID: bGoyz860
+## X-Curse-Project-ID: 1456663
 
 include.xml
