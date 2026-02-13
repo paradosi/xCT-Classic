@@ -1,6 +1,6 @@
 # xCT+ TBC Classic
 
-![xCT+ Logo](logo.png)
+![xCT+ Logo](https://raw.githubusercontent.com/paradosi/xCT_TBC_Classic/main/logo.png)
 
 Highly customizable floating combat text for **TBC Classic (2.5.5)** - 2026 Anniversary Edition.
 
