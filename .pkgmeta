@@ -1,19 +1,14 @@
 package-as: xCT+
 
-externals:
-  libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
-  libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-  libs/AceAddon-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceAddon-3.0
-  libs/AceDB-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceDB-3.0
-  libs/AceConsole-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConsole-3.0
-  libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
-  libs/AceDBOptions-3.0: https://repos.wowace.com/wow/ace3/trunk/AceDBOptions-3.0
-  libs/AceGUI-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
-  libs/AceGUI-3.0-SharedMediaWidgets: https://repos.curseforge.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
-  libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
-  libs/LibSink-2.0: https://repos.curseforge.com/wow/libsink-2-0/trunk/LibSink-2.0
-
 ignore:
-  - .gitignore
-  - .github/*
   - README.md
+  - CHANGELOG.md
+  - LICENSE
+  - .github
+  - .gitignore
+  - logo.png
+  - libs/LibStub/tests
+  - libs/LibDataBroker-1.1/README.textile
+  - libs/UTF8/Changelog-UTF8-v1.1.txt
+  - libs/xCombatParser-1.0/eventargs.md
+  - libs/xCombatParser-1.0/eventparameters.md
