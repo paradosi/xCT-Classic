@@ -181,7 +181,6 @@ function x:UpdateCombatTextEvents(enable)
     f:RegisterEvent("UNIT_AURA")
     --f:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     --f:RegisterEvent("UNIT_COMBO_POINTS")
-    f:RegisterEvent("PLAYER_TARGET_CHANGED")
 
     x.combatEvents = f
     f:SetScript("OnEvent", x.OnCombatTextEvent)
@@ -211,7 +210,7 @@ local function ShowOnlyMyHeals() return x.db.profile.frames.healing.showOnlyMyHe
 local function ShowOnlyMyPetsHeals() return x.db.profile.frames.healing.showOnlyPetHeals end
 local function ShowDamage() return x.db.profile.frames["outgoing"].enableOutDmg end
 local function ShowHealing() return x.db.profile.frames["outgoing"].enableOutHeal end
-local function ShowAbsorbs() return x.db.profile.frames["outgoing"].enableOutAbsorbs end
+local function ShowOutAbsorbs() return x.db.profile.frames["outgoing"].enableOutAbsorbs end
 local function ShowPetDamage() return x.db.profile.frames["outgoing"].enablePetDmg end
 local function ShowVehicleDamage() return x.db.profile.frames["outgoing"].enableVehicleDmg end
 local function ShowKillCommand() return x.db.profile.frames["outgoing"].enableKillCommand end
@@ -665,32 +664,16 @@ end
  Looted Item - Latency Update Adpation
 --]=====================================================]
 local function LootFrame_OnUpdate(self, elapsed)
-  local removeItems = { }
-  for i, item in ipairs(self.items) do
+  -- Iterate backwards so we can remove in-place without index shifting
+  for i = #self.items, 1, -1 do
+    local item = self.items[i]
     item.t = item.t + elapsed
 
     -- Time to wait before showing a looted item
     if item.t > 0.5 then
       x:AddMessage("loot", sformat(item.message, sformat(format_lewtz_total, C_Item.GetItemCount(item.id))), {item.r, item.g, item.b})
-      removeItems[i] = true
+      tremove(self.items, i)
     end
-  end
-
-  for k in pairs(removeItems) do
-    --self.items[k] = nil
-    tremove( self.items, k )
-  end
-
-  if #removeItems > 1 then
-    local index, newList = 1, { }
-
-    -- Rebalance the Lua list
-    for _, v in pairs(self.items) do
-      newList[index] = v
-      index = index + 1
-    end
-
-    self.items = newList
   end
 
   if #self.items < 1 then
@@ -758,7 +741,9 @@ x.combat_events = {
 --]=====================================================]
 x.events = {
   ["UNIT_HEALTH"] = function()
-      local healthPct = UnitHealth(x.player.unit) / UnitHealthMax(x.player.unit)
+      local maxHealth = UnitHealthMax(x.player.unit)
+      if maxHealth == 0 then return end
+      local healthPct = UnitHealth(x.player.unit) / maxHealth
       local threshold = (x.db.profile.sounds.lowHealth and x.db.profile.sounds.lowHealth.threshold or 35) / 100
       if ShowLowResources() and healthPct <= COMBAT_TEXT_LOW_HEALTH_THRESHOLD then
         if not x.lowHealth then
@@ -782,9 +767,15 @@ x.events = {
       -- Update for Class Combo Points
       UpdateUnitPower(unit, powerType)
 
-      local manaPct = UnitPower(x.player.unit) / UnitPowerMax(x.player.unit)
+      local _, powerToken = UnitPowerType(x.player.unit)
+      if powerToken ~= "MANA" then return end
+
+      local maxPower = UnitPowerMax(x.player.unit)
+      if maxPower == 0 then return end
+      local manaPct = UnitPower(x.player.unit) / maxPower
       local threshold = (x.db.profile.sounds.lowMana and x.db.profile.sounds.lowMana.threshold or 20) / 100
-      if select(2, UnitPowerType(x.player.unit)) == "MANA" and ShowLowResources() and manaPct <= COMBAT_TEXT_LOW_MANA_THRESHOLD then
+
+      if ShowLowResources() and manaPct <= COMBAT_TEXT_LOW_MANA_THRESHOLD then
         if not x.lowMana then
           x:AddMessage('general', MANA_LOW, 'lowResourcesMana')
           x.lowMana = true
@@ -793,7 +784,7 @@ x.events = {
         x.lowMana = false
       end
       -- Sound alert uses custom threshold
-      if select(2, UnitPowerType(x.player.unit)) == "MANA" and manaPct <= threshold then
+      if manaPct <= threshold then
         if not x.lowManaSound then
           PlaySoundAlert("lowMana")
           x.lowManaSound = true
@@ -1218,7 +1209,7 @@ local CombatEventHandlers = {
 		-- Keep track of spells that go by
 		if TrackSpells() then x.spellCache.spells[args.spellId] = true end
 
-		if not ShowAbsorbs() then return end
+		if not ShowOutAbsorbs() then return end
 
 		-- Filter Ougoing Healing Spell or Amount
 		if IsSpellFiltered(args.spellId) or FilterOutgoingHealing(args.amount) then return end
