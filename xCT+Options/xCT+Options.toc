@@ -3,7 +3,7 @@
 ## IconTexture: Interface\AddOns\xCT+\media\Textures\xtc_logo.tga
 ## Notes: Options for xCT+
 ## Author: paradosi-Dreamscythe
-## Version: 4.6.4-TBC
+## Version: 4.6.5-TBC
 ## LoadOnDemand: 1
 ## Dependencies: xCT+
 
