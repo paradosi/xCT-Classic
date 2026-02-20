@@ -1,8 +1,5 @@
 package-as: xCT+
 
-move-folders:
-  xCT+Options: xCT+Options
-
 ignore:
   - README.md
   - CHANGELOG.md
