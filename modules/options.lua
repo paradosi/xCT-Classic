@@ -2886,6 +2886,14 @@ addon.options.args["Frames"] = {
               get = get2,
               set = set2,
             },
+            showSkillUps = {
+              order = 10,
+              type = 'toggle',
+              name = L["Show Skill Ups"],
+              desc = L["Displays profession and weapon skill increases in the General frame."],
+              get = get2,
+              set = set2,
+            },
           },
         },
 

@@ -214,6 +214,7 @@ addon.defaults = {
           ["interrupts"]   = { enabled = false, desc = INTERRUPTS,     default = { 1.00, 0.50, 0.00 } },
           ["killingBlow"]  = { enabled = false, desc = KILLING_BLOWS,  default = { 0.20, 1.00, 0.20 } },
           ["honorGains"]   = { enabled = false, desc = HONOR_GAINED,   default = { 0.10, 0.10, 1.00 } },
+          ["skillUp"]      = { enabled = false, desc = L["Skill Up"],  default = { 0.00, 1.00, 0.50 } },
 
           ["auras"] = {
             enabled = false, desc = L["Buffs and Debuffs"],
@@ -281,6 +282,7 @@ addon.defaults = {
         ["showCombatState"] = true,
         ["showRepChanges"] = true,
         ["showHonorGains"] = true,
+        ["showSkillUps"] = true,
       },
 
       outgoing = {

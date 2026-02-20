@@ -1,5 +1,12 @@
 # xCT+ TBC Classic Changelog
 
+## 4.6.8 — 2026-02-20
+
+### New Features
+- **Skill Ups** — Profession and weapon skill increases now display in the General frame (e.g. `+ Herbalism (301)`). Toggle via General frame options → Show Skill Ups. Enabled by default with a customizable color (General → Font Colors → Skill Up).
+
+---
+
 ## 4.6.7 — 2026-02-20
 
 ### Bug Fixes

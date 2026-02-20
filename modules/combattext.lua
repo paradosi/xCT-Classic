@@ -174,6 +174,9 @@ function x:UpdateCombatTextEvents(enable)
     f:RegisterEvent("CHAT_MSG_CURRENCY")
     f:RegisterEvent("CHAT_MSG_MONEY")
 
+    -- skill ups
+    f:RegisterEvent("CHAT_MSG_SKILL")
+
     -- damage and healing
     --f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
@@ -199,6 +202,7 @@ end
 local function ShowMissTypes() return x.db.profile.frames.damage.showDodgeParryMiss end
 local function ShowResistances() return x.db.profile.frames.damage.showDamageReduction end
 local function ShowHonor() return x.db.profile.frames.damage.showHonorGains end
+local function ShowSkillUps() return x.db.profile.frames.general.showSkillUps end
 local function ShowFaction() return x.db.profile.frames.general.showRepChanges end
 local function ShowReactives() return x.db.profile.frames.procs.enabledFrame end
 local function ShowLowResources() return x.db.profile.frames.general.showLowManaHealth end
@@ -722,6 +726,19 @@ x.combat_events = {
 		local num = mfloor(tonumber(amount) or 0)
 		if num > 0 and ShowHonor() then
 			x:AddMessage('general', sformat(format_honor, HONOR, x:Abbreviate(amount,"general")), 'honorGains')
+		end
+	end,
+
+	["CHAT_MSG_SKILL"] = function(msg)
+		if not ShowSkillUps() then return end
+		-- TBC message format: "Your skill in <Name> has increased to <Rank>."
+		-- Fall back to a generic number-at-end pattern for other locales.
+		local skillName, rank = msg:match("skill in (.+) has increased to (%d+)")
+		if not skillName then
+			skillName, rank = msg:match("(.+)%s+(%d+)%.")
+		end
+		if skillName and rank then
+			x:AddMessage('general', sformat("+ %s (%s)", skillName, rank), 'skillUp')
 		end
 	end,
 
