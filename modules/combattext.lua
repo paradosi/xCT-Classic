@@ -1693,7 +1693,7 @@ local CombatEventHandlers = {
 		end
 
 		-- Check for filtered immunes
-		if args.missType == "ABSORB" and not ShowAbsorbs() then return end
+		if args.missType == "ABSORB" and not ShowOutAbsorbs() then return end
 		if args.missType == "IMMUNE" and not ShowImmunes() then return end
 		if args.missType ~= "IMMUNE" and not ShowMisses() then return end
 
@@ -1819,8 +1819,13 @@ function x.CombatLogEvent (args)
 		args.isPlayer = true
 	end
 
+	-- Fallback: xCombatParser's playerGUID can be nil if PLAYER_ENTERING_WORLD
+	-- fires before the library is fully initialized. Cross-check against x.player.guid.
+	local isPlayer = args.isPlayer or (x.player.guid ~= nil and x.player.guid == args.sourceGUID)
+	local atPlayer = args.atPlayer or (x.player.guid ~= nil and x.player.guid == args.destGUID)
+
 	-- Is the source someone we care about?
-	if args.isPlayer or args:IsSourceMyVehicle() or ShowPetDamage() and args:IsSourceMyPet() then
+	if isPlayer or args:IsSourceMyVehicle() or ShowPetDamage() and args:IsSourceMyPet() then
 		if args.suffix == "_HEAL" then
 			CombatEventHandlers.HealingOutgoing(args)
 
@@ -1849,7 +1854,7 @@ function x.CombatLogEvent (args)
 	end
 
 	-- Is the destination someone we care about?
-	if args.atPlayer or args:IsDestinationMyVehicle() then
+	if atPlayer or args:IsDestinationMyVehicle() then
 		if args.suffix == "_HEAL" then
 			CombatEventHandlers.HealingIncoming(args)
 
@@ -1884,7 +1889,7 @@ function x.CombatLogEvent (args)
 	end
 
 	-- Player Auras
-	if args.atPlayer and BuffsOrDebuffs[args.suffix] then
+	if atPlayer and BuffsOrDebuffs[args.suffix] then
 		CombatEventHandlers.AuraIncoming(args)
 	end
 end

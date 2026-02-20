@@ -197,7 +197,7 @@ end)
 -- Store the current addon version in the profile
 function x:CompatibilityLogic()
     local addonVersionString = C_AddOns.GetAddOnMetadata("xCT+", "Version")
-    if not addonVersionString or string_find(addonVersionString, "project%-version") then addonVersionString = "4.6.6-TBC" end
+    if not addonVersionString or string_find(addonVersionString, "project%-version") then addonVersionString = "4.6.7-TBC" end
     self.db.profile.dbVersion = addonVersionString
     return true
 end

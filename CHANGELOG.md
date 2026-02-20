@@ -1,5 +1,15 @@
 # xCT+ TBC Classic Changelog
 
+## 4.6.7 — 2026-02-20
+
+### Bug Fixes
+- **Fix: Real combat damage not displaying** — xCombatParser-1.0 uses an internal `playerGUID` upvalue to set `args.isPlayer`. In edge cases (e.g. PLAYER_ENTERING_WORLD timing), this value could remain `nil`, causing every `args.isPlayer` check to return false and silently dropping all outgoing/incoming damage/healing events. Fixed in two ways:
+  1. Added lazy-init in xCombatParser: if `playerGUID` is nil when a `COMBAT_LOG_EVENT_UNFILTERED` fires, it immediately fetches `UnitGUID("player")`.
+  2. Added fallback in `x.CombatLogEvent`: if `args.isPlayer` or `args.atPlayer` are false, cross-check against `x.player.guid` (which is always kept up-to-date by `UpdatePlayer()`).
+- **Fix: Lua error on absorb miss events** — `OutgoingMiss` handler was calling `ShowAbsorbs()` which was renamed to `ShowOutAbsorbs()` in v4.6.6. This caused a Lua error ("attempt to call nil value") whenever an absorb miss event occurred. Fixed by updating the call to use `ShowOutAbsorbs()`.
+
+---
+
 ## 4.6.4 — 2026-02-09
 
 ### New Features

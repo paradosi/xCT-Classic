@@ -352,6 +352,10 @@ do
 			-- Destroy the old
 			private.destroy(t)
 
+			-- Lazy-initialize playerGUID in case PLAYER_ENTERING_WORLD fired before
+			-- this frame's SetScript was registered (e.g. on first login edge cases).
+			if not playerGUID then playerGUID = UnitGUID("player") end
+
 			-- IsPlayer helpers
 			args.isPlayer = playerGUID == args.sourceGUID
 			args.atPlayer = playerGUID == args.destGUID
