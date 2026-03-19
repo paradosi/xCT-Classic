@@ -1,4 +1,11 @@
-# xCT+ TBC Classic Changelog
+# xCT+ Classic Changelog
+
+## 4.6.9 — 2026-03-18
+
+### New Features
+- **Classic Era Support** — Added `xCT+_Vanilla.toc` for Classic Era (Interface 11508). The existing compat layer handles all API differences automatically. TBC-only spells in merge lists are gracefully skipped on Classic Era.
+
+---
 
 ## 4.6.8 — 2026-02-20
 
