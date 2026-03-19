@@ -1,6 +1,6 @@
 # xCT+ Classic
 
-![xCT+ Logo](https://raw.githubusercontent.com/paradosi/xCT_TBC_Classic/main/logo.png)
+![xCT+ Logo](https://raw.githubusercontent.com/paradosi/xCT-Classic/main/logo.png)
 
 Highly customizable floating combat text for **WoW Classic Era** and **TBC Classic Anniversary**.
 
@@ -22,7 +22,7 @@ Highly customizable floating combat text for **WoW Classic Era** and **TBC Class
 Search for "xCT+ TBC Classic" or install via your addon manager.
 
 ### Manual Install
-1. Download the latest release from [GitHub Releases](https://github.com/paradosi/xCT_TBC_Classic/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/paradosi/xCT-Classic/releases)
 2. Extract the `xCT+` folder to your AddOns directory:
    - Classic Era: `_classic_era_/Interface/AddOns/`
    - TBC Anniversary: `_anniversary_/Interface/AddOns/`
