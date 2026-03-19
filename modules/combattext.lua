@@ -166,8 +166,6 @@ function x:UpdateCombatTextEvents(enable)
     f:RegisterEvent("UNIT_EXITING_VEHICLE")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
     f:RegisterEvent("UNIT_PET")
-    f:RegisterEvent("PLAYER_TARGET_CHANGED")
-    f:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
 
     -- if loot
     f:RegisterEvent("CHAT_MSG_LOOT")
@@ -176,14 +174,6 @@ function x:UpdateCombatTextEvents(enable)
 
     -- skill ups
     f:RegisterEvent("CHAT_MSG_SKILL")
-
-    -- damage and healing
-    --f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
-    -- Class combo points
-    f:RegisterEvent("UNIT_AURA")
-    --f:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-    --f:RegisterEvent("UNIT_COMBO_POINTS")
 
     x.combatEvents = f
     f:SetScript("OnEvent", x.OnCombatTextEvent)
@@ -264,10 +254,6 @@ local function ShowOutgoingOverHealing() return x.db.profile.frames["outgoing"].
 local function IsOutgoingOverHealingFormatted() return x.db.profile.frames["outgoing"].enableOverhealingFormat end
 local function IsOverhealingSubtracted() return x.db.profile.frames["outgoing"].enableOverhealingSubtraction end
 local function FormatOutgoingOverhealing(amount) return x.db.profile.frames["outgoing"].overhealingPrefix .. amount .. x.db.profile.frames["outgoing"].overhealingPostfix end
-
--- Combo Points (TBC - disabled, would need implementation)
-local function ShowRogueComboPoints() return false end
-local function ShowFeralComboPoints() return false end
 
 local function ClearWhenLeavingCombat() return x.db.profile.frameSettings.clearLeavingCombat end
 
@@ -383,8 +369,6 @@ local function MergeSpells()
 	return x.db.profile.spells.enableMerger
 end
 
-local function UseStandardSpellColors() return not x.db.profile.frames["outgoing"].standardSpellColor end
-
 --[=====================================================[
  String Formatters
 --]=====================================================]
@@ -438,43 +422,13 @@ local format_currency           = "%s: %s [%s] |cff798BDDx%s|r |cffFFFF00(%s)|r"
 --]=====================================================]
 local xCTFormat = { }
 
-function xCTFormat:SPELL_HEAL( outputFrame, spellID, amount, overhealing, critical, merged, args, settings )
-  local outputColor, message = "healingOut"
+function xCTFormat:SPELL_HEAL( outputFrame, spellID, amount, overhealing, critical, merged, args, settings, outputColor )
+  outputColor = outputColor or "healingOut"
+  local message
 
   -- Format Criticals and also abbreviate values
   if critical then
     outputColor = "healingOutCritical"
-    message = sformat( format_crit, x.db.profile.frames["critical"].critPrefix,
-                                    x:Abbreviate( amount, "critical" ),
-                                    x.db.profile.frames["critical"].critPostfix )
-  else
-    message = x:Abbreviate( amount, outputFrame )
-  end
-
-  -- Show and Format Overhealing values
-  if overhealing > 0 and IsOutgoingOverHealingFormatted() then
-    overhealing = x:Abbreviate( overhealing, outputFrame )
-    message = message .. FormatOutgoingOverhealing(overhealing)
-  end
-
-  -- Add names
-  message = message .. x.formatName(args, settings.names)
-
-  -- Add Icons
-  message = x:GetSpellTextureFormatted( spellID,
-                                        message,
-       x.db.profile.frames[outputFrame].iconsEnabled and x.db.profile.frames[outputFrame].iconsSize or -1,
-       x.db.profile.frames[outputFrame].spacerIconsEnabled,
-       x.db.profile.frames[outputFrame].fontJustify )
-
-  x:AddMessage(outputFrame, message, outputColor)
-end
-
-function xCTFormat:SPELL_PERIODIC_HEAL( outputFrame, spellID, amount, overhealing, critical, merged, args, settings )
-  local outputColor, message = "healingOutPeriodic"
-
-  -- Format Criticals and also abbreviate values
-  if critical then
     message = sformat( format_crit, x.db.profile.frames["critical"].critPrefix,
                                     x:Abbreviate( amount, "critical" ),
                                     x.db.profile.frames["critical"].critPostfix )
@@ -538,23 +492,6 @@ local COMBATLOG_FILTER_MY_VEHICLE = bit.bor( COMBATLOG_OBJECT_AFFILIATION_MINE,
   to go.
 --]=====================================================]
 function x.OnCombatTextEvent(self, event, ...)
-
-	--[====[
-	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-    local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, srcFlags2, destGUID, destName, destFlags, destFlags2 = CombatLogGetCurrentEventInfo()
-	--local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, srcFlags2, destGUID, destName, destFlags, destFlags2 = select(1, ...)
-
-    if sourceGUID == x.player.guid or
-    	( sourceGUID == UnitGUID("pet") and ShowPetDamage() ) or
-    	sourceFlags == COMBATLOG_FILTER_MY_VEHICLE
-    then
-      if x.outgoing_events[eventType] then
-        x.outgoing_events[eventType](...)
-      end
-    end
-  else
-	]====]
-
   if event == "COMBAT_TEXT_UPDATE" then
     local subevent = ...
     local arg2, arg3 = GetCurrentCombatTextEventInfo()
@@ -639,30 +576,6 @@ function x:GetSpellTextureFormatted( spellID, message, iconSize, showInvisibleIc
   return message
 end
 
-
---[=====================================================[
- Combo Points - Rogues / Feral
---]=====================================================]
-local function UpdateComboPoints()
-  if ShowRogueComboPoints() or ShowFeralComboPoints() then
-    local comboPoints, outputColor = GetComboPoints(x.player.unit, "target"), "comboPoints"
-    if comboPoints == MAX_COMBO_POINTS then outputColor = "comboPointsMax" end
-    if comboPoints > 0 then
-      x.cpUpdated = true
-      x:AddMessage("class", comboPoints, outputColor)
-    elseif x.cpUpdated then
-      x.cpUpdated = false
-      x:AddMessage("class", " ", outputColor)
-    end
-  end
-end
-
---[=====================================================[
-  Combo Points - Class Power Types (TBC: Not implemented)
---]=====================================================]
-local function UpdateUnitPower(unit, powertype)
-  -- TBC doesn't have the modern class resource system
-end
 
 --[=====================================================[
  Looted Item - Latency Update Adpation
@@ -781,9 +694,6 @@ x.events = {
       end
     end,
   ["UNIT_POWER_UPDATE"] = function(unit, powerType)
-      -- Update for Class Combo Points
-      UpdateUnitPower(unit, powerType)
-
       local _, powerToken = UnitPowerType(x.player.unit)
       if powerToken ~= "MANA" then return end
 
@@ -831,10 +741,6 @@ x.events = {
         x:AddMessage('general', sformat(format_gain, ENTERING_COMBAT), 'combatEntering')
       end
     end,
-  ["UNIT_COMBO_POINTS"] = function() UpdateComboPoints() end,
-
-  ["PLAYER_TARGET_CHANGED"] = function() UpdateComboPoints() end,
-
   ["UNIT_ENTERED_VEHICLE"] = function(unit) if unit == "player" then x:UpdatePlayer() end end,
   ["UNIT_EXITING_VEHICLE"] = function(unit) if unit == "player" then x:UpdatePlayer() end end,
   ["PLAYER_ENTERING_WORLD"] = function()
@@ -1006,13 +912,6 @@ x.events = {
 
       x:AddMessage("loot", o, {1, 1, 0}) -- yellow
     end,
-
-  ["SPELL_ACTIVATION_OVERLAY_GLOW_SHOW"] = function(spellID)
-      if spellID == 32379 then  -- Shadow Word: Death
-        local name = GetSpellInfo(spellID)
-        --x:AddMessage("procs", name, "spellProc")
-      end
-    end,
 }
 
 -- =====================================================
@@ -1045,12 +944,9 @@ end
 
 -- Format Handlers for name
 local CLASS_LOOKUP = {
-	[1] = "DEATHKNIGHT",
-	[2] = "DEMONHUNTER",
 	[4] = "DRUID",
 	[8] = "HUNTER",
 	[16] = "MAGE",
-	[32] = "MONK",
 	[64] = "PALADIN",
 	[128] = "PRIEST",
 	[256] = "ROGUE",
@@ -1305,9 +1201,9 @@ local CombatEventHandlers = {
 		end
 
 		if args.event == "SPELL_PERIODIC_HEAL" then
-			xCTFormat:SPELL_PERIODIC_HEAL(outputFrame, spellID, amount, overhealing, critical, merged, args, settings)
+			xCTFormat:SPELL_HEAL(outputFrame, spellID, amount, overhealing, critical, merged, args, settings, "healingOutPeriodic")
 		elseif args.event == "SPELL_HEAL" then
-			xCTFormat:SPELL_HEAL(outputFrame, spellID, amount, overhealing, critical, merged, args, settings)
+			xCTFormat:SPELL_HEAL(outputFrame, spellID, amount, overhealing, critical, merged, args, settings, "healingOut")
 		end
 	end,
 

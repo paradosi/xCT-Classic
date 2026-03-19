@@ -1355,8 +1355,4 @@ StaticPopupDialogs["XCT_PLUS_FORCE_CVAR_UPDATE"] = {
 	preferredIndex	= 3,
 }
 
-StaticPopupDialogs["XCT_PLUS_SUGGEST_MULTISTRIKE_OFF"] = {
-	text            = ""
-
-}
 

@@ -1,9 +1,20 @@
 # xCT+ Classic Changelog
 
-## 4.6.9 — 2026-03-18
+## 4.7.0 — 2026-03-18
 
 ### New Features
 - **Classic Era Support** — Added `xCT+_Vanilla.toc` for Classic Era (Interface 11508). The existing compat layer handles all API differences automatically. TBC-only spells in merge lists are gracefully skipped on Classic Era.
+
+### Code Cleanup
+- Merged duplicate `SPELL_HEAL` / `SPELL_PERIODIC_HEAL` formatters into a single function (-31 lines)
+- Removed dead combo points code (`UpdateComboPoints`, `UpdateUnitPower`, `ShowRogueComboPoints`, `ShowFeralComboPoints`) — always returned false
+- Removed commented-out `COMBAT_LOG_EVENT_UNFILTERED` block from `OnCombatTextEvent`
+- Removed no-op `SPELL_ACTIVATION_OVERLAY_GLOW_SHOW` event handler and registration
+- Removed unused `UseStandardSpellColors` function
+- Removed non-TBC classes from `CLASS_LOOKUP` (Death Knight, Demon Hunter, Monk)
+- Removed empty `XCT_PLUS_SUGGEST_MULTISTRIKE_OFF` popup (Retail leftover)
+- Unregistered unused events (`UNIT_AURA`, `PLAYER_TARGET_CHANGED`)
+- Total: ~108 lines of dead code removed
 
 ---
 
