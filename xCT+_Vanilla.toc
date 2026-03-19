@@ -1,0 +1,13 @@
+## Interface: 11508
+## Title: |cff11a34axCT+|r Classic
+## IconTexture: Interface\AddOns\xCT+\media\Textures\xtc_logo.tga
+## Notes: An Add-On that can out-perform or enhance the default Floating Combat Text!
+## Author: paradosi-Dreamscythe
+## Version: 4.6.8
+## RequiredDeps: Blizzard_CombatText
+## OptionalDeps: xCT, ElvUI
+## SavedVariables: xCTSavedDB
+## X-Wago-ID: bGoyz860
+## X-Curse-Project-ID: 1456663
+
+include.xml

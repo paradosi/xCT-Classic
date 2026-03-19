@@ -1,8 +1,10 @@
-# xCT+ TBC Classic
+# xCT+ Classic
 
 ![xCT+ Logo](https://raw.githubusercontent.com/paradosi/xCT_TBC_Classic/main/logo.png)
 
-Highly customizable floating combat text for **TBC Classic (2.5.5)** - 2026 Anniversary Edition.
+Highly customizable floating combat text for **WoW Classic Era** and **TBC Classic Anniversary**.
+
+![Classic Era: 11508](https://img.shields.io/badge/Classic_Era-11508-yellow) ![TBC Anniversary: 20505](https://img.shields.io/badge/TBC_Anniversary-20505-blue)
 
 ## Features
 
@@ -21,7 +23,9 @@ Search for "xCT+ TBC Classic" or install via your addon manager.
 
 ### Manual Install
 1. Download the latest release from [GitHub Releases](https://github.com/paradosi/xCT_TBC_Classic/releases)
-2. Extract the `xCT+` folder to `World of Warcraft/_anniversary_/Interface/AddOns/`
+2. Extract the `xCT+` folder to your AddOns directory:
+   - Classic Era: `_classic_era_/Interface/AddOns/`
+   - TBC Anniversary: `_anniversary_/Interface/AddOns/`
 3. Type `/reload` in game
 
 ## Usage
@@ -30,13 +34,13 @@ Type `/xct` to open the configuration panel.
 
 ## About This Fork
 
-This is a **TBC Classic port** of [xCT_Classic](https://github.com/Witnesscm/xCT_Classic) by Witnesscm.
+This is a **Classic port** of [xCT_Classic](https://github.com/Witnesscm/xCT_Classic) by Witnesscm, supporting both Classic Era and TBC Anniversary.
 
 **Changes from the original:**
-- Updated interface version for TBC Classic (2.5.5)
-- Added API compatibility shims for TBC (C_Spell, C_Item, C_AddOns, C_CurrencyInfo)
-- Fixed LibSink channel scanning for TBC
-- Added Enum.PowerType constants for TBC
+- Added Classic Era support (Interface 11508)
+- Added API compatibility shims (C_Spell, C_Item, C_AddOns, C_CurrencyInfo, Enum.PowerType)
+- Fixed LibSink channel scanning
+- Removed non-Classic class references (Death Knight, Demon Hunter, Monk)
 
 ## Credits
 
