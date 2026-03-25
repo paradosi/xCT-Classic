@@ -610,6 +610,7 @@ x.combat_events = {
       if IsProcFiltered(spellName) then return end
 
       local message = spellName
+      local iconSize = x.db.profile.frames["procs"].iconsSize
 
       -- Add Stacks
       local icon, spellStacks = select(2, x.GetUnitAura("player", spellName))
