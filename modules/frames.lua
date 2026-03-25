@@ -94,7 +94,7 @@ end
 
 function x:GetFrame(framename, bypassUpdate)
 	if not bypassUpdate then
-		x:UpdateFrames(specificFrame)
+		x:UpdateFrames(framename)
 	end
 	return x.frames[framename]
 end
@@ -122,7 +122,7 @@ function x:UpdateFrames(specificFrame)
 				f:ClearAllPoints()
 				f:SetMovable(true)
 				f:SetResizable(true)
-				f:SetResizeBounds(64, 32, 768, 768)
+				if f.SetResizeBounds then f:SetResizeBounds(64, 32, 768, 768) end
 				f:SetClampedToScreen(true)
 				f:SetShadowColor(0, 0, 0, 0)
 
@@ -159,7 +159,7 @@ function x:UpdateFrames(specificFrame)
 				f:SetHeight(settings.Height)
 
 				-- WoW's default movement from changing the anchor
-				local point, relativeTo, relativePoint, xOfs, yOfs = unpack(f:GetNumPoints() > 0 and {f:GetPoint(0)} or {})
+				local point, relativeTo, relativePoint, xOfs, yOfs = unpack(f:GetNumPoints() > 0 and {f:GetPoint(1)} or {})
 
 				-- If the point is not center, then something dirty happened... clean it up
 				if point and point ~= "CENTER" then
