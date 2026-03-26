@@ -297,13 +297,13 @@ end
 function x:Clear(specificFrame)
 	if not specificFrame then
 		for framename, settings in pairs(x.db.profile.frames) do
-			local frame = x:GetFrame(framename)
+			local frame = x:GetFrame(framename, true)
 			if frame then -- attempt to fix login 'attempt to index nil value frame' error
 				frame:Clear()
 			end
 		end
 	else
-		local frame = x:GetFrame(specificFrame)
+		local frame = x:GetFrame(specificFrame, true)
 		frame:Clear()
 	end
 end
