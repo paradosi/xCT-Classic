@@ -1,5 +1,12 @@
 # xCT+ Classic Changelog
 
+## 4.7.3 — 2026-04-15
+
+### New Features
+- **Extra Attack Procs** — Passive extra-attack abilities like Sword Specialization and Windfury now display in the Procs frame. Respects existing proc filters, icons, and frame settings.
+
+---
+
 ## 4.7.0 — 2026-03-18
 
 ### New Features

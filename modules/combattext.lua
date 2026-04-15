@@ -1709,6 +1709,32 @@ local CombatEventHandlers = {
 		end
 		x:AddMessage("power", sformat(format_energy, message, ShowEnergyTypes() and energy_name or ""), color)
 	end,
+
+	["ExtraAttacks"] = function (args)
+		if not ShowReactives() then return end
+
+		local spellName = args.spellName
+		if not spellName then return end
+
+		-- Respect the proc filter system
+		if TrackSpells() then x.spellCache.procs[spellName] = true end
+		if IsProcFiltered(spellName) then return end
+
+		local message = spellName
+		local iconSize = x.db.profile.frames["procs"].iconsSize
+
+		-- Add Icons
+		local icon = select(3, GetSpellInfo(args.spellId))
+		if icon and x.db.profile.frames["procs"].iconsEnabled then
+			if x.db.profile.frames["procs"].fontJustify == "LEFT" then
+				message = sformat(format_spell_icon, icon, iconSize, iconSize) .. "  " .. message
+			else
+				message = message .. sformat(format_spell_icon, icon, iconSize, iconSize)
+			end
+		end
+
+		x:AddMessage("procs", message, "spellProc")
+	end,
 }
 
 local BuffsOrDebuffs = {
@@ -1763,6 +1789,9 @@ function x.CombatLogEvent (args)
 
 		elseif (args.suffix == "_AURA_APPLIED" or args.suffix == "_AURA_REFRESH") and AbsorbList[args.spellId] then
 			CombatEventHandlers.ShieldOutgoing(args)
+
+		elseif args.suffix == "_EXTRA_ATTACKS" then
+			CombatEventHandlers.ExtraAttacks(args)
 
 		end
 	end
