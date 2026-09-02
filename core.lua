@@ -325,7 +325,7 @@ function x:UpdateSpamSpells()
     for class, specs in pairs(CLASS_NAMES) do
         spells[class].args = {}
         for spec, index in pairs(specs) do
-            local name, _ = "All Specializations"
+            local name = "All Specializations"
             if index ~= 0 then
                 name = x.specName[spec]
             end

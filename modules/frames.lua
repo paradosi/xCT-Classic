@@ -159,7 +159,7 @@ function x:UpdateFrames(specificFrame)
 				f:SetHeight(settings.Height)
 
 				-- WoW's default movement from changing the anchor
-				local point, relativeTo, relativePoint, xOfs, yOfs = unpack(f:GetNumPoints() > 0 and {f:GetPoint(1)} or {})
+				local point = unpack(f:GetNumPoints() > 0 and {f:GetPoint(1)} or {})
 
 				-- If the point is not center, then something dirty happened... clean it up
 				if point and point ~= "CENTER" then
@@ -270,18 +270,21 @@ function x:UpdateFrames(specificFrame)
 			end
 		end
 	end
+
+	-- The per-frame alpha worker only has work to do when some frame is not at
+	-- full opacity, which is the default. Arm it here rather than letting it run
+	-- an OnUpdate over every frame forever for no output.
+	if x.UpdateAlphaWorkerState then x.UpdateAlphaWorkerState() end
 end
 
 function x:EnableFrameScrolling( framename )
   local f = x.frames[framename]
-  local settings = x.db.profile.frames[framename]
   f:EnableMouseWheel(true)
   f:SetScript("OnMouseWheel", Frame_OnMouseWheel)
 end
 
 function x:DisableFrameScrolling( framename )
   local f = x.frames[framename]
-  local settings = x.db.profile.frames[framename]
   f:EnableMouseWheel(false)
   f:SetScript("OnMouseWheel", nil)
 end
@@ -448,6 +451,20 @@ end
 -- WoW - Battle for Azeroth doesn't support fading textures with SetAlpha?
 -- We have to do it on a font string level
 local ScrollingMessageFrame_OverrideAlpha_Worker = CreateFrame("FRAME")
+ScrollingMessageFrame_OverrideAlpha_Worker:Hide() -- armed by x.UpdateAlphaWorkerState
+
+-- Shown only while at least one frame uses a custom alpha; a hidden frame runs
+-- no OnUpdate. Called from x:UpdateFrames whenever settings are applied.
+function x.UpdateAlphaWorkerState()
+	for _, frame in pairs(x.frames) do
+		if frame.settings and frame.settings.alpha ~= 100 then
+			ScrollingMessageFrame_OverrideAlpha_Worker:Show()
+			return
+		end
+	end
+	ScrollingMessageFrame_OverrideAlpha_Worker:Hide()
+end
+
 ScrollingMessageFrame_OverrideAlpha_Worker:SetScript("OnUpdate", function ()
 	local now, alpha, scale = GetTime()
 	for name, frame in pairs(x.frames) do
@@ -478,7 +495,6 @@ end)
 
 
 local spamHeap, spamStack, now = {}, {}, 0
-local spam_format = "%s%s x%s"
 
 -- =====================================================
 -- AddOn:AddSpamMessage(
@@ -679,9 +695,6 @@ do
 
 			-- Show healer name (colored)
 			elseif frameName == "healing" then
-				--format_mergeCount = "%s |cffFFFF00x%s|r"
-				local strColor = "ffff00"
-
 				if settings.names[item.sourceController].nameType == 1 then
 					fakeArgs.sourceName = stack[idIndex]
 					fakeArgs.sourceGUID = item.sourceGUID
@@ -1015,8 +1028,6 @@ function x:SaveAllFrames()
 		local frame = x.frames[framename]
 		-- If frame is disabled, trying to calculate position will fail
 		if settings.enabledFrame then
-			local x_old, y_old, width_old, height_old = settings.X, settings.Y, settings.Width, settings.Height
-
 			local width = frame:GetWidth()
 			local height = frame:GetHeight()
 

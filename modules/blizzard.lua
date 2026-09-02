@@ -3,10 +3,9 @@
      MIT License ]]
 
 
-local ADDON_NAME, addon = ...
+local _, addon = ...
 local x = addon.engine
 local L = addon.L
-local LSM = LibStub("LibSharedMedia-3.0");
 
 -- Intercept Messages Sent by other Add-Ons that use CombatText_AddMessage
 hooksecurefunc('CombatText_AddMessage', function(message, scrollFunction, r, g, b, displayType, isStaggered)

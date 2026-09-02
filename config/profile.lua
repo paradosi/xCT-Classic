@@ -6,17 +6,7 @@
 local ADDON_NAME, addon = ...
 local L = addon.L
 
--- taken from: https://github.com/Gethe/wow-ui-source/blob/e337b8949ffad2876ea0489d8331db2414342d32/FrameXML/CombatFeedback.lua
-do -- blizzard hiding globals?
-  SCHOOL_MASK_NONE      = 0x00;
-  SCHOOL_MASK_PHYSICAL  = 0x01;
-  SCHOOL_MASK_HOLY      = 0x02;
-  SCHOOL_MASK_FIRE      = 0x04;
-  SCHOOL_MASK_NATURE    = 0x08;
-  SCHOOL_MASK_FROST     = 0x10;
-  SCHOOL_MASK_SHADOW    = 0x20;
-  SCHOOL_MASK_ARCANE    = 0x40;
-end
+-- SCHOOL_MASK_* are provided by compat.lua, which loads first.
 
 -- =====================================================
 -- CreateMergeSpellEntry(
@@ -26,14 +16,6 @@ end
 --  )
 --    Creates a merge settings entry for a spell.
 -- =====================================================
-local function CreateComboSpellEntry(default, spellID, watchUnit)
-  return {
-       enabled = default,
-            id = spellID,
-          unit = watchUnit  or "player",
-    }
-end
-
 -- Upvalue
 local tostring = tostring
 

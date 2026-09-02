@@ -12,7 +12,6 @@ addon.engine = LibStub("AceAddon-3.0"):NewAddon(AddonName, "AceConsole-3.0")
 xCT_Plus = addon
 
 addon.noop = noop
-addon.IsTBC = true
 
 local L = {}
 setmetatable(L, {

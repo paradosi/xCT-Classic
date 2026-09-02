@@ -2,7 +2,7 @@
      Author: paradosi-Dreamscythe
      MIT License ]]
 
-local ADDON_NAME, addon = ...
+local _, addon = ...
 local spell, class, spec, alias = unpack(addon.merge_helpers)
 
 -- Death Knight removed - not available in TBC

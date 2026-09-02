@@ -1,5 +1,34 @@
 # xCT+ Classic Changelog
 
+## 4.7.4 — 2026-09-02
+
+### Bug Fixes
+- **UTF8 library was disabled by the compat layer** — `compat.lua` loads before `libs/` and installed byte-based `string.utf8*` stubs. `libs/UTF8` only installs its real, multi-byte-aware implementations when those slots are empty, so it was silently skipped and every `utf8.sub`/`utf8.upper` call fell back to raw byte slicing. This corrupted the first character of the localized "Stole", "Killed" and "Dispelled" labels on every non-ASCII locale (zhCN, ruRU, deDE, frFR). The stub is gone; the real library now installs.
+- **Proc Name filter did nothing** — the "Proc Name" input in Filters → Procs referenced an undefined `setProc`, so its setter was `nil`. AceConfig silently ignores a nil setter, so typing a proc name appeared to work but never wrote anything. Now uses `setSpell`, like the other thirteen filter inputs.
+- **Outgoing "Show Overhealing" did nothing** — `HealingOutgoing` gated overhealing on the *incoming* Healing frame's `enableOverHeal`, leaving the Outgoing frame's own toggle unread. The two frames are now independent.
+- **Outgoing "Show Absorbs" did nothing** — the "target absorbed all damage" case was gated on `enableOutAbsorbs` ("absorbs you apply"). It now uses `enableAbsorbs`, which is the setting written for it.
+- **"Merge Ranged Attacks" did nothing** — auto shot was merged under "Merge Melee Swings". Each toggle now governs its own attack type.
+- **"Show Periodic Energy Gains" did nothing** — periodic energize was folded into the normal energize handler with no way to distinguish it. It is gated again, on the `SPELL_PERIODIC` prefix.
+- **Kill Command was never detected** — `KILLCOMMAND_ID` was `83381`, the Cataclysm-era pet damage spell, which does not exist on TBC or Classic Era. Corrected to `34026`, matching the id already used to resolve the spell name, so the "Show Kill Command" option works and pet Kill Command damage is no longer labelled as auto attack.
+- **`C_AddOns` shim was incomplete** — `libs/LibSink-2.0` upvalues `C_AddOns.EnableAddOn`, `IsAddOnLoaded` and `LoadAddOn` at load time; the shim only provided `GetAddOnMetadata`. Added, so the shim is safe on any client that lacks a native `C_AddOns`.
+
+### Performance
+- The per-frame alpha worker ran an `OnUpdate` over every frame permanently, from load, even though the default profile leaves every frame at full opacity and the loop therefore produced nothing. It is now shown only while some frame actually uses a custom alpha, and armed from `x:UpdateFrames`.
+
+### Code Cleanup
+- Removed the unused table pool (`tpool`/`tnew`/`tdel`) — never called, and `tdel` did not wipe entries before pooling them.
+- Removed the battle-pet loot branch: battle pets do not exist on TBC or Classic Era, so `linkType == "battlepet"` was unreachable. This also drops the only `C_PetJournal` call, which had no compat shim, and the `format_pet` string built from the retail-only `BATTLE_PET_CAGE_ITEM_NAME`.
+- Deleted `config/merge_race.lua` and `config/merge_item.lua` — both had their entire payload commented out and referenced retail-only races and items.
+- Deleted `media/colors.lua` — no content, and never listed in `media/include.xml`, so it shipped without ever being loaded.
+- Removed accessors that were defined but never called: `ShowFriendlyNames`, `ShowColoredFriendlyNames` and `ShowHealingRealmNames` (which read profile keys that do not exist), `MergeDontMergeCriticals` (redundant — it is the fall-through of the critical-merge chain) and `IsBearForm`.
+- Removed unused option helpers `get1`, `set1`, `set1_update`, `set2_update_force`, `outgoingSpellColorsHidden`, `isFrameEnabled`, `isFrameDisabled` and `GetSoundList`, the never-read `PLAYER_NAME`/`PLAYER_CLASS` block, and `CLASS_LOOKUP`.
+- Removed `addon.IsTBC`, which was written once, read nowhere, and hardcoded to `true` even on the Classic Era build.
+- `SCHOOL_MASK_*` moved from `config/profile.lua` to `compat.lua` alongside the other shims, and changed from an unconditional overwrite of Blizzard's globals to filling in only what the client is missing.
+- Removed duplicate `width` keys in four colour options, dead stores, unread captures and unused upvalues.
+- Added `.luacheckrc` describing the addon's WoW API surface. Static analysis now reports 39 warnings, down from 434, with zero undefined globals.
+
+---
+
 ## 4.7.3 — 2026-04-15
 
 ### New Features
