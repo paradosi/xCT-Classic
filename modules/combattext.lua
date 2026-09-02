@@ -2,14 +2,14 @@
      Author: paradosi-Dreamscythe
      MIT License ]]
 
-local ADDON_NAME, addon = ...
+local _, addon = ...
 
 -- Shorten my handle
 local x = addon.engine
 
 -- up values
-local _, _G, sformat, mfloor, mabs, ssub, smatch, sgsub, s_upper, s_lower, string, tinsert, tremove, ipairs, pairs, print, tostring, tonumber, select, unpack =
-  nil, _G, string.format, math.floor, math.abs, string.sub, string.match, string.gsub, string.upper, string.lower, string, table.insert, table.remove, ipairs, pairs, print, tostring, tonumber, select, unpack
+local _G, sformat, mfloor, mabs, smatch, sgsub, string, tinsert, print, tostring, tonumber, select =
+  _G, string.format, math.floor, math.abs, string.match, string.gsub, string, table.insert, print, tostring, tonumber, select
 
 --UTF8 Functions
 local utf8 = {
@@ -25,7 +25,7 @@ if not xCP then print("Something went wrong when xCT+ tried to load. Please rein
 
 local L_AUTOATTACK = GetSpellInfo(6603)
 local L_KILLCOMMAND =  GetSpellInfo(34026)
-local KILLCOMMAND_ID = 83381
+local KILLCOMMAND_ID = 34026 -- TBC Kill Command; 83381 is the Cataclysm+ id
 
 local replacedTextures = {
 	[136998] = "Interface\\PVPFrame\\PVP-Currency-Alliance",
@@ -44,23 +44,6 @@ x.spellCache = {
   damage = { },
   healing = { },
 }
-
---[=====================================================[
- A Simple Managed Table Pool
---]=====================================================]
-local tpool = { }
-local function tnew( )
-  if #tpool > 0 then
-    local t = tpool[1]
-    tremove( tpool, 1 )
-    return t
-  else
-    return { }
-  end
-end
-local function tdel( t )
-  tinsert( tpool, t )
-end
 
 --[=====================================================[
  Power Type Definitions (TBC)
@@ -197,9 +180,6 @@ local function ShowFaction() return x.db.profile.frames.general.showRepChanges e
 local function ShowReactives() return x.db.profile.frames.procs.enabledFrame end
 local function ShowLowResources() return x.db.profile.frames.general.showLowManaHealth end
 local function ShowCombatState() return x.db.profile.frames.general.showCombatState end
-local function ShowFriendlyNames() return x.db.profile.frames["healing"].showFriendlyHealers end
-local function ShowColoredFriendlyNames() return x.db.profile.frames["healing"].enableClassNames end
-local function ShowHealingRealmNames() return x.db.profile.frames["healing"].enableRealmNames end
 local function ShowOnlyMyHeals() return x.db.profile.frames.healing.showOnlyMyHeals end
 local function ShowOnlyMyPetsHeals() return x.db.profile.frames.healing.showOnlyPetHeals end
 local function ShowDamage() return x.db.profile.frames["outgoing"].enableOutDmg end
@@ -263,7 +243,6 @@ local function MergeRangedAttacks() return x.db.profile.spells.mergeRanged end
 local function MergePetAttacks() return x.db.profile.spells.mergePet end
 local function MergeCriticalsWithOutgoing() return x.db.profile.spells.mergeCriticalsWithOutgoing end
 local function MergeCriticalsByThemselves() return x.db.profile.spells.mergeCriticalsByThemselves end
-local function MergeDontMergeCriticals() return x.db.profile.spells.mergeDontMergeCriticals end
 local function MergeHideMergedCriticals() return x.db.profile.spells.mergeHideMergedCriticals end
 local function MergeDispells() return x.db.profile.spells.mergeDispells end
 
@@ -312,7 +291,6 @@ local function IsResourceDisabled( resource, amount )
 	return true
 end
 
-local function IsBearForm() return GetShapeshiftForm() == 1 and x.player.class == "DRUID" end
 local function IsSpellFiltered(spellID)
   local spell = x.db.profile.spellFilter.listSpells[tostring(spellID)]
   if x.db.profile.spellFilter.whitelistSpells then
@@ -377,7 +355,6 @@ local format_getCraftedItemString
 if GetLocale() == "koKR" then
   format_getCraftedItemString = "|cff(%x+)|H([^|]+)|h%[([^%]]+)%]|h|r.+ (.+)"
 end
-local format_pet  = sformat("|cff798BDD[%s]:|r %%s (%%s)", sgsub(BATTLE_PET_CAGE_ITEM_NAME,"%s?%%s","")) -- [Caged]: Pet Name (Pet Family)
 
 -- TODO: Remove old loot pattern
 --local format_loot = "([^|]*)|cff(%x*)|H([^:]*):(%d+):%d+:(%d+):[-?%d+:]+|h%[?([^%]]*)%]|h|r?%s?x?(%d*)%.?"
@@ -479,8 +456,6 @@ end
 --[=====================================================[
  Flag value for special pets and vehicles
 --]=====================================================]
-local COMBATLOG_FILTER_MY_VEHICLE = bit.bor( COMBATLOG_OBJECT_AFFILIATION_MINE,
-  COMBATLOG_OBJECT_REACTION_FRIENDLY, COMBATLOG_OBJECT_CONTROL_PLAYER, COMBATLOG_OBJECT_TYPE_GUARDIAN )
 
 --[=====================================================[
  AddOn:OnCombatTextEvent(
@@ -632,7 +607,8 @@ x.combat_events = {
 
   ["SPELL_CAST"] = function(spellName) if ShowReactives() then x:AddMessage("procs", spellName, "spellReactive") end end,
 
-  -- REMOVING PERIODIC_ENERGIZE, AS IT'S NOW COVERED BY SPELLENERGIZE Event
+  -- SPELL_PERIODIC_ENERGIZE is handled by SpellEnergize, which gates it on
+  -- the frames.power.showPeriodicEnergyGains toggle.
 
   -- TODO: Create a merger for faction and honor xp
 	["HONOR_GAINED"] = function() -- UNTESTED
@@ -759,14 +735,14 @@ x.events = {
   ["ACTIVE_TALENT_GROUP_CHANGED"] = function() x:UpdatePlayer() end,
 
   ["CHAT_MSG_LOOT"] = function(msg)
-      local preMessage, linkColor, itemString, itemName, amount = string.match(msg, format_getItemString)
+      local preMessage, _, itemString, itemName, amount = string.match(msg, format_getItemString)
 
       if not preMessage or preMessage == "" then
-        linkColor, itemString, itemName, preMessage = string.match(msg, format_getCraftedItemString)
+        _, itemString, itemName, preMessage = string.match(msg, format_getCraftedItemString)
       end
 
-      -- Decode item string: (linkQuality for pets only)
-      local linkType, linkID, _, linkQuality = strsplit(':', itemString)
+      -- Decode item string
+      local linkType, linkID = strsplit(':', itemString)
 
       -- TODO: Clean up this debug scratch stuff
       --"([^|]*)|cff(%x*)|H([^:]*):(%d+):%d+:(%d+):[-?%d+:]+|h%[?([^%]]*)%]|h|r?%s?x?(%d*)%.?"
@@ -782,20 +758,6 @@ x.events = {
       end
 
       if IsItemFiltered( linkID ) then return end
-
-      -- Check to see if this is a battle pet
-      if linkType == "battlepet" then
-        -- TODO: Add pet icons!
-        local speciesName, speciesIcon, petType = C_PetJournal.GetPetInfoBySpeciesID(linkID)
-        local petTypeName = PET_TYPE_SUFFIX[petType]
-        local message = sformat(format_pet, speciesName, petTypeName)
-
-        local r, g, b = C_Item.GetItemQualityColor(linkQuality or 0)
-
-        -- Add the message
-        x:AddMessage("loot", message, { r, g, b } )
-        return
-      end
 
       -- Check to see if this is a item
       if linkType == "item" then
@@ -942,19 +904,6 @@ local function formatNameHelper(name, enableColor, color, enableCustomColor, cus
 	end
 	return "|cffFFFFFF"..name.."|r"
 end
-
--- Format Handlers for name
-local CLASS_LOOKUP = {
-	[4] = "DRUID",
-	[8] = "HUNTER",
-	[16] = "MAGE",
-	[64] = "PALADIN",
-	[128] = "PRIEST",
-	[256] = "ROGUE",
-	[512] = "SHAMAN",
-	[1024] = "WARLOCK",
-	[2048] = "WARRIOR"
-}
 
 local formatNameTypes
 formatNameTypes = {
@@ -1159,7 +1108,7 @@ local CombatEventHandlers = {
 		if IsSpellFiltered(spellID) or FilterOutgoingHealing(amount) then return end
 
 		-- Filter Overhealing
-		if ShowOverHealing() then
+		if ShowOutgoingOverHealing() then
 			if IsOverhealingSubtracted() then
 				amount = amount - overhealing
 			end
@@ -1211,7 +1160,7 @@ local CombatEventHandlers = {
 	["DamageOutgoing"] = function (args)
 		local message, settings
 		local spellName, spellSchool = args.spellName, args.spellSchool
-		local critical, spellID, amount, merged = args.critical, args.spellId, args.amount
+		local critical, spellID, amount = args.critical, args.spellId, args.amount
 		local isEnvironmental, isSwing, isAutoShot, isDoT = args.prefix == "ENVIRONMENTAL", args.prefix == "SWING", spellID == 75, args.prefix == "SPELL_PERIODIC"
 		local outputFrame, outputColorType = "outgoing"
 
@@ -1276,8 +1225,7 @@ local CombatEventHandlers = {
 
 		local outputColor = x.GetSpellSchoolColor(spellSchool, outputColorType)
 
-		if (isSwing or isAutoShot) and MergeMeleeSwings() then
-			merged = true
+		if (isSwing and MergeMeleeSwings()) or (isAutoShot and MergeRangedAttacks()) then
 			if outputFrame == "critical" then
 				if MergeCriticalsByThemselves() then
 					x:AddSpamMessage(outputFrame, spellID, amount, outputColor, 6, nil, "auto", L_AUTOATTACK, "destinationController", args:GetDestinationController())
@@ -1293,7 +1241,6 @@ local CombatEventHandlers = {
 				return
 			end
 		elseif not isSwing and not isAutoShot and MergeSpells() then
-			merged = true
 			if critical then
 				if MergeCriticalsByThemselves() then
 					x:AddSpamMessage(outputFrame, spellID, amount, outputColor, nil, nil, "spellName", spellName, "spellSchool", spellSchool, "destinationController", args:GetDestinationController())
@@ -1349,7 +1296,6 @@ local CombatEventHandlers = {
 	["DamageIncoming"] = function (args)
 		local message
 		local settings = x.db.profile.frames["damage"]
-		local spellName, spellSchool = args.spellName, args.spellSchool
 
 		-- Keep track of spells that go by
 		if args.spellId and TrackSpells() then x.spellCache.damage[args.spellId] = true end
@@ -1463,7 +1409,7 @@ local CombatEventHandlers = {
 	end,
 
 	["HealingIncoming"] = function (args)
-		local amount, isHoT, spellID = args.amount, args.prefix == "SPELL_PERIODIC", args.spellId
+		local amount, isHoT = args.amount, args.prefix == "SPELL_PERIODIC"
 		local color = isHoT and "healingTakenPeriodic" or args.critical and "healingTakenCritical" or "healingTaken"
 		local settings = x.db.profile.frames["healing"]
 
@@ -1607,7 +1553,7 @@ local CombatEventHandlers = {
 		end
 
 		-- Check for filtered immunes
-		if args.missType == "ABSORB" and not ShowOutAbsorbs() then return end
+		if args.missType == "ABSORB" and not ShowAbsorbs() then return end
 		if args.missType == "IMMUNE" and not ShowImmunes() then return end
 		if args.missType ~= "IMMUNE" and not ShowMisses() then return end
 
@@ -1683,6 +1629,10 @@ local CombatEventHandlers = {
 		    return
 		end
 		if not ShowEnergyGains() then return end
+		-- SPELL_PERIODIC_ENERGIZE reaches this handler as prefix "SPELL_PERIODIC"
+		-- with suffix "_ENERGIZE", so the periodic toggle is applied here rather
+		-- than in a separate handler.
+		if args.prefix == "SPELL_PERIODIC" and not ShowPeriodicEnergyGains() then return end
 		if FilterPlayerPower(mabs(tonumber(amount))) then return end
 		if IsResourceDisabled( energy_type, amount ) then return end
 

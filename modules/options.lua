@@ -2,26 +2,18 @@
      Author: paradosi-Dreamscythe
      MIT License ]]
 
-local ADDON_NAME, addon = ...
+local _, addon = ...
 local L = addon.L
 local LSM = LibStub("LibSharedMedia-3.0")
 local x, noop = addon.engine, addon.noop
-local blankTable, unpack, select = {}, unpack, select
-local string_gsub, string_match, sformat, pairs = string.gsub, string.match, string.format, pairs
+local blankTable, unpack = {}, unpack
+local string_gsub, sformat, pairs = string.gsub, string.format, pairs
 
--- New Icon "!"
-local NEW = x.new
 
 -- Store Localized Strings
 -- To remove: "Changed Target!"
 local XCT_CT_DEC_0, XCT_CT_DEC_1, XCT_CT_DEC_2 = COMBAT_THREAT_DECREASE_0, COMBAT_THREAT_DECREASE_1, COMBAT_THREAT_DECREASE_2
 local XCT_CT_INC_1, XCT_CT_INC_3 = COMBAT_THREAT_INCREASE_1, COMBAT_THREAT_INCREASE_3
-
-local PLAYER_NAME = UnitName('player')
-local _, PLAYER_CLASS = UnitClass('player')
-if PLAYER_CLASS then
-  PLAYER_NAME = ('|c%s%s|r'):format(RAID_CLASS_COLORS[PLAYER_CLASS].colorStr, PLAYER_NAME)
-end
 
 -- Creating an Config
 addon.options = {
@@ -322,13 +314,9 @@ local function getColor0_1(info) return unpack(x.db.profile[info[#info-2]][info[
 local function setColor0_1(info, r, g, b) x.db.profile[info[#info-2]][info[#info]] = {r,g,b} end
 local function getTextIn0(info) return string_gsub(x.db.profile[info[#info-1]][info[#info]], "|", "||") end
 local function setTextIn0(info, value) x.db.profile[info[#info-1]][info[#info]] = string_gsub(value, "||", "|"); x.cvar_update() end
-local function get1(info) return x.db.profile.frames[info[#info-1]][info[#info]] end
-local function set1(info, value) x.db.profile.frames[info[#info-1]][info[#info]] = value; x.cvar_update() end
-local function set1_update(info, value) set1(info, value); x:UpdateFrames(info[#info-1]); x.cvar_update() end
 local function get2(info) return x.db.profile.frames[info[#info-2]][info[#info]] end
 local function set2(info, value) x.db.profile.frames[info[#info-2]][info[#info]] = value; x.cvar_update() end
 local function set2_update(info, value) set2(info, value); x:UpdateFrames(info[#info-2]); x.cvar_update() end
-local function set2_update_force(info, value) set2(info, value); x:UpdateFrames(info[#info-2]); x.cvar_update(true) end
 local function getColor2(info) return unpack(x.db.profile.frames[info[#info-2]][info[#info]] or blankTable) end
 local function setColor2(info, r, g, b) x.db.profile.frames[info[#info-2]][info[#info]] = {r,g,b} end
 local function setColor2_alpha(info, r, g, b, a) x.db.profile.frames[info[#info-2]][info[#info]] = {r,g,b,a} end
@@ -346,10 +334,7 @@ local function setNameFormatColor(info, r, g, b) x.db.profile.frames[info[#info-
 local function getNameFormatText(info) return string_gsub(x.db.profile.frames[info[#info-2]].names[info[#info]], "|", "||") end
 local function setNameFormatText(info, value) x.db.profile.frames[info[#info-2]].names[info[#info]] = string_gsub(value, "||", "|") end
 
-local function outgoingSpellColorsHidden(info) return not x.db.profile.frames["outgoing"].standardSpellColor end
 
-local function isFrameEnabled(info) return x.db.profile.frames[info[#info-1]].enabledFrame end
-local function isFrameDisabled(info) return not x.db.profile.frames[info[#info-1]].enabledFrame end
 local function isFrameItemDisabled(info) return not x.db.profile.frames[info[#info-2]].enabledFrame end
 local function isFrameNotScrollable(info) return isFrameItemDisabled(info) or not x.db.profile.frames[info[#info-2]].enableScrollable end
 local function isFrameUseCustomFade(info) return not x.db.profile.frames[info[#info-2]].enableCustomFade or isFrameItemDisabled(info) end
@@ -402,7 +387,7 @@ end
 -- For each 'comma' separated value in 'input' (string) do 'func(value, ...)'
 local function foreach(input, comma, func, ...)
   local pattern = ("[^%s]+"):format(comma)
-  local s, e = 0, 0
+  local e, s = 0
   while e do
     s, e = input:find(pattern, e + 1)
     if s and e then
@@ -1079,7 +1064,7 @@ addon.options.args["spellFilter"] = {
           type = 'input',
           name = L["Proc Name"],
           desc = L["The full, case-sensitive name of the |cff1AFF1AProc|r you want to filter.\n\nYou can add/remove |cff11a34amultiple|r entries by separating them with a |cffFF8000semicolon|r (e.g. 'Shadowform;Power Word: Fortitude')."],
-          set = setProc,
+          set = setSpell,
           get = noop,
         },
         checkAdd = {
@@ -1465,7 +1450,7 @@ addon.options.args["Credits"] = {
     },
 
 
-    
+
 
     testerTitleSpace5 = {
       type = 'description',
@@ -1871,14 +1856,6 @@ addon.options.args["SpellSchools"] = {
 }
 
 -- Helper function to get LSM sound list
-local function GetSoundList()
-  local sounds = { ["None"] = "None" }
-  for name in pairs(LSM:HashTable("sound")) do
-    sounds[name] = name
-  end
-  return sounds
-end
-
 -- Helper to play a sound from LSM
 local function TestSound(soundName)
   if soundName and soundName ~= "None" then
@@ -3380,7 +3357,6 @@ addon.options.args["Frames"] = {
                   width = 'half',
                   get = getNameFormatColor,
                   set = setNameFormatColor,
-                  width = 'half'
                 },
 
                 playerNames_Spacer2 = {
@@ -4236,7 +4212,6 @@ addon.options.args["Frames"] = {
                   width = 'half',
                   get = getNameFormatColor,
                   set = setNameFormatColor,
-                  width = 'half'
                 },
 
                 playerNames_Spacer2 = {
@@ -4928,7 +4903,6 @@ addon.options.args["Frames"] = {
                   width = 'half',
                   get = getNameFormatColor,
                   set = setNameFormatColor,
-                  width = 'half'
                 },
 
                 playerNames_Spacer2 = {
@@ -5691,7 +5665,6 @@ addon.options.args["Frames"] = {
                   width = 'half',
                   get = getNameFormatColor,
                   set = setNameFormatColor,
-                  width = 'half'
                 },
 
                 playerNames_Spacer2 = {

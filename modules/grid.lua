@@ -2,7 +2,7 @@
      Author: paradosi-Dreamscythe
      MIT License ]]
 
-local ADDON_NAME, addon = ...
+local _, addon = ...
 
 local mfloor = math.floor
 

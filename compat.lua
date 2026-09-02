@@ -33,6 +33,10 @@ if not C_AddOns then
     function C_AddOns.GetAddOnMetadata(addon, field)
         return GetAddOnMetadata(addon, field)
     end
+    -- Required by libs/LibSink-2.0, which upvalues these at load time.
+    C_AddOns.EnableAddOn = EnableAddOn
+    C_AddOns.IsAddOnLoaded = IsAddOnLoaded
+    C_AddOns.LoadAddOn = LoadAddOn
 end
 
 -- TBC Compatibility: C_CurrencyInfo
@@ -53,6 +57,19 @@ if not C_CurrencyInfo then
     end
 end
 
+-- Spell school bitmasks. Some Classic clients do not expose these, and
+-- config/profile.lua needs them at load time to key its per-school colours.
+-- Values from FrameXML/CombatFeedback.lua. Filled in only where missing, so a
+-- client that does define them keeps its own.
+SCHOOL_MASK_NONE     = SCHOOL_MASK_NONE     or 0x00
+SCHOOL_MASK_PHYSICAL = SCHOOL_MASK_PHYSICAL or 0x01
+SCHOOL_MASK_HOLY     = SCHOOL_MASK_HOLY     or 0x02
+SCHOOL_MASK_FIRE     = SCHOOL_MASK_FIRE     or 0x04
+SCHOOL_MASK_NATURE   = SCHOOL_MASK_NATURE   or 0x08
+SCHOOL_MASK_FROST    = SCHOOL_MASK_FROST    or 0x10
+SCHOOL_MASK_SHADOW   = SCHOOL_MASK_SHADOW   or 0x20
+SCHOOL_MASK_ARCANE   = SCHOOL_MASK_ARCANE   or 0x40
+
 -- TBC Compatibility: Enum.PowerType (TBC resources only)
 if not Enum then Enum = {} end
 if not Enum.PowerType then
@@ -72,11 +89,9 @@ if not GetSpecializationInfo then
     end
 end
 
--- TBC Compatibility: UTF8 string functions
-if not string.utf8len then
-    string.utf8len = string.len
-    string.utf8sub = string.sub
-    string.utf8reverse = string.reverse
-    string.utf8upper = string.upper
-    string.utf8lower = string.lower
-end
+-- NOTE: Do not shim string.utf8* here. libs/UTF8 provides real, multi-byte-aware
+-- implementations and installs them only when the slot is empty ("if not
+-- string.utf8len"). Because this file loads BEFORE libs/, any stub written here
+-- permanently wins and silently disables that library -- which corrupts the
+-- non-ASCII locales (zhCN is shipped) that the utf8.sub/upper calls in
+-- modules/combattext.lua depend on.
