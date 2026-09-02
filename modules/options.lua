@@ -1,6 +1,28 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     The AceConfig options tree for the whole addon (~7,000 lines, mostly
+     declarative). Registered by core.lua.
+
+     Setter/getter naming encodes WHERE in the profile a value lives, by how
+     far up the options path it looks:
+       get0/set0      x.db.profile[parent][key]
+       get0_1/set0_1  x.db.profile[grandparent][key]
+       get2/set2      x.db.profile.frames[grandparent][key]
+     The *_update variants also call x:UpdateFrames() so the change is visible
+     immediately. Pick the one matching your option's nesting depth or it will
+     silently read and write the wrong table.
+
+     A nil `set` is legal in AceConfig and is silently ignored at runtime --
+     no error, the value simply never gets written. A typo'd setter name
+     therefore produces a control that looks fine and does nothing.
+
+     x.cvar_update also blanks Blizzard's COMBAT_THREAT_* strings to suppress
+     the default threat text, restoring the values captured at load. That is
+     deliberate, and the restore only fires if this addon was the one that
+     blanked them.
+]]
 
 local _, addon = ...
 local L = addon.L

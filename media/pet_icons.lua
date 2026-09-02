@@ -1,6 +1,11 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Maps pet-family texture IDs to icon names, so the merged pet-damage line
+     can show a family icon. x.GetPetTexture resolves the current pet, falling
+     back to DEFAULT_PET_ICON for anything unlisted.
+]]
 
 local _, addon = ...
 

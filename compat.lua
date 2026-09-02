@@ -1,6 +1,20 @@
---[[
-    TBC Classic Compatibility Layer
-    Loads BEFORE libs to provide missing API shims
+--[[ xCT+ TBC Anniversary Classic
+     Author: paradosi-Dreamscythe
+     MIT License
+
+     COMPATIBILITY SHIMS. Loaded FIRST, before libs/ -- see include.xml.
+
+     Fills in APIs that Classic Era and TBC Anniversary lack but the addon (or
+     a vendored library) expects. Every shim is guarded so a client that
+     provides the real thing keeps it.
+
+     THE RULE THIS FILE EXISTS TO ENFORCE, AND ONCE BROKE:
+     because this loads before libs/, anything defined here WINS against a
+     library that installs itself only into an empty slot. Until 4.7.4 this
+     file installed byte-based string.utf8* stubs, which made libs/UTF8 skip
+     its real multi-byte implementations entirely -- silently corrupting every
+     non-ASCII locale. Before adding a shim, check no vendored library already
+     provides it. When in doubt, shim nothing.
 ]]
 
 -- TBC Compatibility: Provide C_Spell, C_Item, C_AddOns wrappers

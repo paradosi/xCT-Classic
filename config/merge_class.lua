@@ -1,6 +1,14 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Per-class spell merge definitions, written in the DSL from
+     merge_init.lua. Entries decide which spells condense into a single
+     ticking line and how long the merge window is.
+
+     TBC/Era only: classes and spells that do not exist on these clients are
+     simply absent rather than conditionally skipped.
+]]
 
 local _, addon = ...
 local spell, class, spec, alias = unpack(addon.merge_helpers)

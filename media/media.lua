@@ -1,6 +1,11 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Registers the bundled fonts and textures with LibSharedMedia, which is
+     what makes them selectable in the options UI. Also defines x.BLANK_ICON,
+     used as the placeholder when a spell has no texture.
+]]
 
 local ADDON_NAME, addon = ...
 
