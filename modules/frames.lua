@@ -1,8 +1,21 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
 
--- this file handles updating the frame settings and anything that changes the UI frames themselves
+     Frame creation, positioning and the message output pipeline.
+
+     x:UpdateFrames() builds or reconfigures every ScrollingMessageFrame from
+     the profile; call it after changing frame settings, and note it is also
+     what arms the per-frame alpha worker further down. x:AddMessage prints
+     immediately; x:AddSpamMessage buffers into the merge/spam system so
+     repeated hits condense into one line.
+
+     The alpha worker exists because fading a font string cannot be done with
+     SetAlpha on the frame. It runs an OnUpdate, so it is deliberately hidden
+     unless some frame actually uses a custom alpha -- do not make it
+     unconditional.
+]]
+
 local ADDON_NAME, addon = ...
 local L = addon.L
 local LSM = LibStub("LibSharedMedia-3.0");

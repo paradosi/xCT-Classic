@@ -1,6 +1,18 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Entry point: event dispatch, slash commands, options registration and
+     the startup sequence.
+
+     Startup order matters. Frames are built on PLAYER_ENTERING_WORLD rather
+     than at load, so every other addon has finished moving things first; that
+     handler is also what arms the alpha worker in modules/frames.lua, so
+     anything depending on x.frames being populated must run after it.
+
+     OnInitialize refuses to load alongside the original xCT (checks the xCT
+     and ct globals) -- the two addons cannot coexist.
+]]
 
 -- Get Addon's name and Blizzard's Addon Stub
 local AddonName, addon = ...

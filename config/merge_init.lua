@@ -1,6 +1,14 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Defines the small DSL used by merge_class.lua -- class(), spec(), spell(),
+     alias(), item(), header() -- and publishes it as addon.merge_helpers.
+     Loads before its consumers.
+
+     Historically merge_race.lua and merge_item.lua also consumed these; both
+     were removed in 4.7.4 as their content was retail-only and commented out.
+]]
 
 local _, addon = ...
 

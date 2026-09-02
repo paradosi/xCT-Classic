@@ -1,6 +1,21 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     The combat log pipeline: turns events into the text you actually see.
+
+     Events arrive from libs/xCombatParser-1.0 as a parsed `args` table
+     (prefix, suffix, spellId, amount, ...). x.CombatLogEvent dispatches on
+     args.suffix into CombatEventHandlers, each of which filters, formats and
+     hands off to x:AddMessage / x:AddSpamMessage in modules/frames.lua.
+
+     Two things to know before editing a handler:
+       - The "Fast Boolean Lookups" block below is where dead settings hide.
+         Read the warning above it.
+       - SPELL_PERIODIC_* arrives with prefix "SPELL_PERIODIC" and the bare
+         suffix, so periodic variants land in the same handler as their
+         instant counterparts and must be told apart by args.prefix.
+]]
 
 local _, addon = ...
 
@@ -171,6 +186,29 @@ end
 
 --[=====================================================[
  Fast Boolean Lookups
+
+ One tiny accessor per user-facing setting. The convention exists so the
+ handlers below read as prose ("if not ShowHots() then return end") rather
+ than as profile paths.
+
+ !! THIS BLOCK IS WHERE DEAD SETTINGS HIDE. !!
+
+ An accessor that nothing calls almost always means a setting that is shown
+ in the config UI, is written to the profile when the user toggles it, and
+ then does absolutely nothing -- the user gets no error and no clue. Five of
+ these were dead when 4.7.4 was written. Two shapes to watch for:
+
+   1. Nothing calls the accessor at all (e.g. ShowPeriodicEnergyGains was
+      orphaned when periodic energize was folded into SpellEnergize).
+   2. A handler calls the WRONG accessor -- one belonging to a different
+      frame. HealingOutgoing gated on the incoming Healing frame's toggle,
+      and the outgoing miss path gated absorbs on "absorbs you apply".
+      This shape is worse, because the setting looks wired up.
+
+ luacheck reports both as "unused function", never as an error, so nothing
+ fails. Before deleting an unused accessor, check whether its option still
+ exists in modules/options.lua -- if it does, the fix is to call it, not to
+ remove it. Run ../check from ~/projects/wowaddons.
 --]=====================================================]
 local function ShowMissTypes() return x.db.profile.frames.damage.showDodgeParryMiss end
 local function ShowResistances() return x.db.profile.frames.damage.showDamageReduction end

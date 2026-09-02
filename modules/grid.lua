@@ -1,6 +1,10 @@
 ﻿--[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     The alignment grid drawn behind the frames while in config mode, so
+     frames can be lined up against something. Purely visual.
+]]
 
 local _, addon = ...
 

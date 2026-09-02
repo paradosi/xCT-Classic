@@ -1,8 +1,19 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
 
--- This file is a static default profile.  After your first profile is created, editing this file will do nothing.
+     Static default profile. After a profile exists, editing this file only
+     affects NEW profiles -- AceDB fills in missing keys, it does not migrate
+     changed defaults.
+
+     Adding a key here is not enough to make a setting work. A setting needs
+     three things, and missing any one fails silently:
+       1. a default here,
+       2. a control in modules/options.lua,
+       3. something that actually READS it (see the accessor block in
+          modules/combattext.lua).
+]]
+
 local ADDON_NAME, addon = ...
 local L = addon.L
 

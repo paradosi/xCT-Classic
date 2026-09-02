@@ -1,6 +1,14 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Intercepts Blizzard's floating combat text.
+
+     Hooks CombatText_AddMessage, pulls the message Blizzard just queued back
+     out of COMBAT_TEXT_TO_ANIMATE, and re-routes it into xCT's General frame
+     -- so output from other addons using the Blizzard FCT API is captured
+     too. Requires Blizzard_CombatText, declared as RequiredDeps in the TOC.
+]]
 
 
 local _, addon = ...

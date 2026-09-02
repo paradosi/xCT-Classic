@@ -1,6 +1,13 @@
 --[[ xCT+ TBC Anniversary Classic
      Author: paradosi-Dreamscythe
-     MIT License ]]
+     MIT License
+
+     Namespace bootstrap. Creates the AceAddon object, publishes it as the
+     xCT_Plus global, and installs the L table -- a passthrough metatable that
+     returns the key itself, so untranslated strings render as written.
+
+     Loads after libs/ (LibStub must exist) and before everything else.
+]]
 
 -- TBC Compatibility shims loaded via compat.lua
 
