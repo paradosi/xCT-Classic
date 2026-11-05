@@ -1,5 +1,11 @@
 # xCT+ Classic Changelog
 
+## 4.7.5 — 2026-11-05
+
+### Changed
+- Updated for the current clients (TBC Anniversary 2.5.6 and Classic Era 1.15.9), so the addon no longer shows as out of date
+- Release notes on CurseForge and Wago are now this changelog instead of the commit log
+
 ## 4.7.4 — 2026-09-02
 
 ### Bug Fixes
