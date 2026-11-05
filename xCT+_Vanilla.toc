@@ -1,4 +1,4 @@
-## Interface: 11508
+## Interface: 11509
 ## Title: |cff11a34axCT+|r Classic
 ## IconTexture: Interface\AddOns\xCT+\media\Textures\xtc_logo.tga
 ## Notes: An Add-On that can out-perform or enhance the default Floating Combat Text!
