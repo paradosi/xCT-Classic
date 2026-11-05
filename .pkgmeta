@@ -16,3 +16,11 @@ ignore:
   - libs/UTF8/Changelog-UTF8-v1.1.txt
   - libs/xCombatParser-1.0/eventargs.md
   - libs/xCombatParser-1.0/eventparameters.md
+  - libs/xCombatParser-1.0/example.lua
+  # libs/include.xml loads these libraries' .lua files directly
+  - libs/AceAddon-3.0/AceAddon-3.0.xml
+  - libs/AceConsole-3.0/AceConsole-3.0.xml
+  - libs/AceDB-3.0/AceDB-3.0.xml
+  - libs/AceDBOptions-3.0/AceDBOptions-3.0.xml
+  - libs/CallbackHandler-1.0/CallbackHandler-1.0.xml
+  - libs/LibDBIcon-1.0/lib.xml

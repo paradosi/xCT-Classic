@@ -1167,7 +1167,7 @@ function x.TestMoreUpdate(self, elapsed)
 				if x.db.profile.frames[output].customColor then
 					color = x.db.profile.frames[output].fontColor
 				end
-				if COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1" then
+				if x.db.profile.blizzardFCT.floatingCombatTextFriendlyHealers then
 					local message = UnitName("player")
 					local realm = ""
 					if x.db.profile.frames["healing"].enableRealmNames then realm = "-"..GetRealmName() end

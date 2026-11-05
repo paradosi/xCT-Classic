@@ -55,16 +55,18 @@ read_globals = {
 	"SCROLLING_MESSAGE_FRAME_INSERT_MODE_TOP", "SCROLLING_MESSAGE_FRAME_INSERT_MODE_BOTTOM",
 
 	-- Blizzard floating combat text (RequiredDeps: Blizzard_CombatText)
-	"CombatTextSetActiveUnit", "CombatText_AddMessage", "CombatText_RemoveMessage",
-	"GetCurrentCombatTextEventInfo", "COMBAT_TEXT_TO_ANIMATE",
-	"COMBAT_TEXT_LABEL", "COMBAT_TEXT_HONOR_GAINED", "COMBAT_TEXT_SHOW_FRIENDLY_NAMES",
+	-- (TBC 2.5.6, and Era by 1.15.9, replaced the CombatText_* functions with the
+	-- CombatText frame's mixin, and the thresholds with CombatTextConstants;
+	-- the old threshold names stay as a fallback only.)
+	"C_CombatText", "C_UnitAuras", "AuraUtil", "CombatText", "CombatTextConstants",
+	"COMBAT_TEXT_LABEL", "COMBAT_TEXT_HONOR_GAINED",
 	"COMBAT_TEXT_LOW_HEALTH_THRESHOLD", "COMBAT_TEXT_LOW_MANA_THRESHOLD",
 	"ENTERING_COMBAT", "LEAVING_COMBAT",
 
 	-- Unit / player state
 	"UnitName", "UnitClass", "UnitRace", "UnitLevel", "UnitExists", "UnitGUID",
 	"UnitHealth", "UnitHealthMax", "UnitPower", "UnitPowerMax", "UnitPowerType",
-	"UnitAura", "UnitBuff", "UnitDebuff", "UnitIsPlayer", "UnitIsDeadOrGhost",
+	"UnitIsPlayer", "UnitIsDeadOrGhost",
 	"UnitInParty", "UnitInRaid", "UnitHasVehicleUI", "UnitFactionGroup",
 	"GetPlayerInfoByGUID", "GetShapeshiftForm", "GetComboPoints", "GetPetIcon",
 	"GetSpecialization", "GetNumSpecializations", "RAID_CLASS_COLORS", "PowerBarColor",

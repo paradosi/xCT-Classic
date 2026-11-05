@@ -17,6 +17,7 @@
 -- Get Addon's name and Blizzard's Addon Stub
 local AddonName, addon = ...
 local L = addon.L
+local CombatTextSetActiveUnit = C_CombatText.SetActiveUnit -- the global is only a deprecation fallback
 local ipairs, pairs, type, string_format, table_insert, table_remove, table_sort, print, tostring, tonumber, select, string_lower, collectgarbage, string_match, string_find =
   ipairs, pairs, type, string.format, table.insert, table.remove, table.sort, print, tostring, tonumber, select, string.lower, collectgarbage, string.match, string.find
 

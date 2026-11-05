@@ -147,6 +147,49 @@ addon.options = {
 local function isCVarsDisabled( ) return x.db.profile.bypassCVars end
 
 
+-- Blizzard's floating combat text settings, as named in the profile. TBC
+-- 2.5.6 (and Classic Era by 1.15.9) moved to the shared combat text code,
+-- where every one of these CVars carries a "_v2" suffix; written under the old names they
+-- silently did nothing. ResolveFCTCVar picks whichever name the client has
+-- and skips a setting the client lacks (the spell-mechanics ones exist only
+-- on some clients).
+local BLIZZARD_FCT_TOGGLES = {
+  "floatingCombatTextAllSpellMechanics",
+  "floatingCombatTextAuras",
+  "floatingCombatTextAuraFade",
+  "floatingCombatTextCombatDamage",
+  "floatingCombatTextCombatDamageAllAutos",
+  "floatingCombatTextCombatHealing",
+  "floatingCombatTextCombatLogPeriodicSpells",
+  "floatingCombatTextCombatState",
+  "floatingCombatTextComboPoints",
+  "floatingCombatTextDamageReduction",
+  "floatingCombatTextDodgeParryMiss",
+  "floatingCombatTextEnergyGains",
+  "floatingCombatTextFloatMode",
+  "floatingCombatTextFriendlyHealers",
+  "floatingCombatTextHonorGains",
+  "floatingCombatTextLowManaHealth",
+  "floatingCombatTextPeriodicEnergyGains",
+  "floatingCombatTextPetMeleeDamage",
+  "floatingCombatTextPetSpellDamage",
+  "floatingCombatTextReactives",
+  "floatingCombatTextRepChanges",
+  "floatingCombatTextSpellMechanics",
+  "floatingCombatTextSpellMechanicsOther",
+}
+local BLIZZARD_FCT_VALUES = {
+  "floatingCombatTextCombatDamageDirectionalOffset",
+  "floatingCombatTextCombatDamageDirectionalScale",
+}
+local function ResolveFCTCVar(name)
+  if GetCVar(name .. "_v2") ~= nil then return name .. "_v2" end
+  if GetCVar(name) ~= nil then return name end
+end
+
+-- Hides an option whose CVar this client does not have.
+local function isFCTCVarMissing(info) return ResolveFCTCVar(info[#info]) == nil end
+
 x.cvar_update = function( force )
   -- Floating Combat Text: Threat Changes
   if not x.db.profile.blizzardFCT.CombatThreatChanges then
@@ -172,158 +215,18 @@ x.cvar_update = function( force )
     SetCVar("enableFloatingCombatText", 0)
   end
 
-  if x.db.profile.blizzardFCT.floatingCombatTextAllSpellMechanics then
-    SetCVar("floatingCombatTextAllSpellMechanics", 1)
-  else
-    SetCVar("floatingCombatTextAllSpellMechanics", 0)
+  for _, key in ipairs(BLIZZARD_FCT_TOGGLES) do
+    local cvar = ResolveFCTCVar(key)
+    if cvar then
+      SetCVar(cvar, x.db.profile.blizzardFCT[key] and 1 or 0)
+    end
   end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextAuras then
-    SetCVar("floatingCombatTextAuras", 1)
-  else
-    SetCVar("floatingCombatTextAuras", 0)
+  for _, key in ipairs(BLIZZARD_FCT_VALUES) do
+    local cvar = ResolveFCTCVar(key)
+    if cvar then
+      SetCVar(cvar, x.db.profile.blizzardFCT[key])
+    end
   end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextAuraFade then
-    SetCVar("floatingCombatTextAuraFade", 1)
-  else
-    SetCVar("floatingCombatTextAuraFade", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextCombatDamage then
-    SetCVar("floatingCombatTextCombatDamage", 1)
-  else
-    SetCVar("floatingCombatTextCombatDamage", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextCombatDamageAllAutos then
-    SetCVar("floatingCombatTextCombatDamageAllAutos", 1)
-  else
-    SetCVar("floatingCombatTextCombatDamageAllAutos", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextCombatHealing then
-    SetCVar("floatingCombatTextCombatHealing", 1)
-  else
-    SetCVar("floatingCombatTextCombatHealing", 0)
-  end
-
-  -- if x.db.profile.blizzardFCT.floatingCombatTextCombatHealingAbsorbSelf then
-    -- SetCVar("floatingCombatTextCombatHealingAbsorbSelf", 1)
-  -- else
-    -- SetCVar("floatingCombatTextCombatHealingAbsorbSelf", 0)
-  -- end
-
-  -- if x.db.profile.blizzardFCT.floatingCombatTextCombatHealingAbsorbTarget then
-    -- SetCVar("floatingCombatTextCombatHealingAbsorbTarget", 1)
-  -- else
-    -- SetCVar("floatingCombatTextCombatHealingAbsorbTarget", 0)
-  -- end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextCombatLogPeriodicSpells then
-    SetCVar("floatingCombatTextCombatLogPeriodicSpells", 1)
-  else
-    SetCVar("floatingCombatTextCombatLogPeriodicSpells", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextCombatState then
-    SetCVar("floatingCombatTextCombatState", 1)
-  else
-    SetCVar("floatingCombatTextCombatState", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextComboPoints then
-    SetCVar("floatingCombatTextComboPoints", 1)
-  else
-    SetCVar("floatingCombatTextComboPoints", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextDamageReduction then
-    SetCVar("floatingCombatTextDamageReduction", 1)
-  else
-    SetCVar("floatingCombatTextDamageReduction", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextDodgeParryMiss then
-    SetCVar("floatingCombatTextDodgeParryMiss", 1)
-  else
-    SetCVar("floatingCombatTextDodgeParryMiss", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextEnergyGains then
-    SetCVar("floatingCombatTextEnergyGains", 1)
-  else
-    SetCVar("floatingCombatTextEnergyGains", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextFloatMode then
-    SetCVar("floatingCombatTextFloatMode", 1)
-  else
-    SetCVar("floatingCombatTextFloatMode", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextFriendlyHealers then
-    SetCVar("floatingCombatTextFriendlyHealers", 1)
-  else
-    SetCVar("floatingCombatTextFriendlyHealers", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextHonorGains then
-    SetCVar("floatingCombatTextHonorGains", 1)
-  else
-    SetCVar("floatingCombatTextHonorGains", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextLowManaHealth then
-    SetCVar("floatingCombatTextLowManaHealth", 1)
-  else
-    SetCVar("floatingCombatTextLowManaHealth", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextPeriodicEnergyGains then
-    SetCVar("floatingCombatTextPeriodicEnergyGains", 1)
-  else
-    SetCVar("floatingCombatTextPeriodicEnergyGains", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextPetMeleeDamage then
-    SetCVar("floatingCombatTextPetMeleeDamage", 1)
-  else
-    SetCVar("floatingCombatTextPetMeleeDamage", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextPetSpellDamage then
-    SetCVar("floatingCombatTextPetSpellDamage", 1)
-  else
-    SetCVar("floatingCombatTextPetSpellDamage", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextReactives then
-    SetCVar("floatingCombatTextReactives", 1)
-  else
-    SetCVar("floatingCombatTextReactives", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextRepChanges then
-    SetCVar("floatingCombatTextRepChanges", 1)
-  else
-    SetCVar("floatingCombatTextRepChanges", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextSpellMechanics then
-    SetCVar("floatingCombatTextSpellMechanics", 1)
-  else
-    SetCVar("floatingCombatTextSpellMechanics", 0)
-  end
-
-  if x.db.profile.blizzardFCT.floatingCombatTextSpellMechanicsOther then
-    SetCVar("floatingCombatTextSpellMechanicsOther", 1)
-  else
-    SetCVar("floatingCombatTextSpellMechanicsOther", 0)
-  end
-
-  SetCVar("floatingCombatTextCombatDamageDirectionalOffset", x.db.profile.blizzardFCT.floatingCombatTextCombatDamageDirectionalOffset)
-  SetCVar("floatingCombatTextCombatDamageDirectionalScale", x.db.profile.blizzardFCT.floatingCombatTextCombatDamageDirectionalScale)
 end
 
 -- Generic Get/Set methods
@@ -1751,6 +1654,7 @@ addon.options.args["FloatingCombatText"] = {
         },
 
         floatingCombatTextSpellMechanics = {
+          hidden = isFCTCVarMissing,
           order = 44,
           name = L["Show Effects (Mine)"],
           type = 'toggle',
@@ -1760,6 +1664,7 @@ addon.options.args["FloatingCombatText"] = {
         },
 
         floatingCombatTextSpellMechanicsOther = {
+          hidden = isFCTCVarMissing,
           order = 45,
           name = L["Show Effects (Group)"],
           type = 'toggle',
@@ -1769,6 +1674,7 @@ addon.options.args["FloatingCombatText"] = {
         },
 
         floatingCombatTextAllSpellMechanics = {
+          hidden = isFCTCVarMissing,
           order = 46,
           name = L["Show Effects (All)"],
           type = 'toggle',

@@ -36,6 +36,18 @@ local utf8 = {
 }
 
 local xCP = LibStub and LibStub("xCombatParser-1.0", true)
+
+-- UnitAura, UnitBuff, GetCurrentCombatTextEventInfo and CombatTextSetActiveUnit
+-- are only Blizzard_Deprecated fallbacks on every client now, loaded while the
+-- loadDeprecationFallbacks CVar is on. Call what they wrap instead.
+local GetCurrentCombatTextEventInfo = C_CombatText.GetCurrentEventInfo
+local CombatTextSetActiveUnit = C_CombatText.SetActiveUnit
+local function UnitAura(unit, index, filter)
+  return AuraUtil.UnpackAuraData(C_UnitAuras.GetAuraDataByIndex(unit, index, filter))
+end
+local function UnitBuff(unit, index, filter)
+  return AuraUtil.UnpackAuraData(C_UnitAuras.GetBuffDataByIndex(unit, index, filter))
+end
 if not xCP then print("Something went wrong when xCT+ tried to load. Please reinstall and inform the author.") end
 
 local L_AUTOATTACK = GetSpellInfo(6603)
@@ -77,6 +89,14 @@ x.POWER_LOOKUP = {
 local LSM = LibStub("LibSharedMedia-3.0")
 local lastSoundTime = {}
 local SOUND_COOLDOWN = 0.5 -- Minimum seconds between same sound
+
+-- Low health/mana warning thresholds. Blizzard_CombatText kept these as
+-- COMBAT_TEXT_LOW_*_THRESHOLD globals until TBC 2.5.6 (and Era by 1.15.9) moved
+-- them into CombatTextConstants; comparing against the vanished globals
+-- errored on every health and power update.
+local CTC = CombatTextConstants
+local LOW_HEALTH_THRESHOLD = (CTC and CTC.LowHealthThreshold) or COMBAT_TEXT_LOW_HEALTH_THRESHOLD or 0.2
+local LOW_MANA_THRESHOLD = (CTC and CTC.LowManaThreshold) or COMBAT_TEXT_LOW_MANA_THRESHOLD or 0.2
 
 local function PlaySoundAlert(soundType)
 	local sounds = x.db.profile.sounds
@@ -690,7 +710,7 @@ x.events = {
       if maxHealth == 0 then return end
       local healthPct = UnitHealth(x.player.unit) / maxHealth
       local threshold = (x.db.profile.sounds.lowHealth and x.db.profile.sounds.lowHealth.threshold or 35) / 100
-      if ShowLowResources() and healthPct <= COMBAT_TEXT_LOW_HEALTH_THRESHOLD then
+      if ShowLowResources() and healthPct <= LOW_HEALTH_THRESHOLD then
         if not x.lowHealth then
           x:AddMessage('general', HEALTH_LOW, 'lowResourcesHealth')
           x.lowHealth = true
@@ -717,7 +737,7 @@ x.events = {
       local manaPct = UnitPower(x.player.unit) / maxPower
       local threshold = (x.db.profile.sounds.lowMana and x.db.profile.sounds.lowMana.threshold or 20) / 100
 
-      if ShowLowResources() and manaPct <= COMBAT_TEXT_LOW_MANA_THRESHOLD then
+      if ShowLowResources() and manaPct <= LOW_MANA_THRESHOLD then
         if not x.lowMana then
           x:AddMessage('general', MANA_LOW, 'lowResourcesMana')
           x.lowMana = true

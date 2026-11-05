@@ -1,5 +1,20 @@
 # xCT+ Classic Changelog
 
+## 4.7.6 — 2026-11-05
+
+### Bug Fixes
+- **/xct and the config window failed to load on TBC 2.5.6 and the current Classic Era** — those patches rewrote Blizzard's floating combat text, removing `CombatText_AddMessage`. xCT+ hooked that function at load, so the error also stopped the rest of its setup: the `/xct` command, the config window and profile refresh. It now hooks the new combat text frame, and still moves other addons' Blizzard combat text messages into xCT+'s General frame.
+- **The low health and low mana warnings caused errors** — the thresholds they compared against were removed by the same patch. They now use Blizzard's new constants (20%).
+- **The Blizzard combat text options did nothing** — every setting under Blizzard Combat Text now has a `_v2` name on these clients, so xCT+ was writing settings that no longer exist. It now writes whichever name the client has. The three "Show Effects" options are hidden because these clients have no such setting.
+- **Test mode never showed healer names**, because it checked a setting that no longer exists. It now follows the "Show Friendly Healers" option.
+- **xCT+ no longer depends on Blizzard's deprecated fallbacks** for auras and combat text. It broke if the `loadDeprecationFallbacks` setting was off.
+
+### Changed
+- Removed unused files from the download: a library example, six library XML files the addon never loads, and an unused sound.
+- Removed 79 Chinese translations of text the addon no longer shows.
+- Removed compatibility wrappers for functions both clients already have, along with a `GetSpecializationInfo` stub that could confuse other addons into treating Classic as Retail.
+- Replaced 25 near-identical blocks of Blizzard combat text setting code with a single loop.
+
 ## 4.7.5 — 2026-11-05
 
 ### Changed
